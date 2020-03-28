@@ -4,12 +4,13 @@
       :active.sync="isLoading"
       :is-full-page="true"
     ></loading>
+    <!-- 導覽列 -->
     <div class="mb-2">
       <h4
         id="webTitle"
         @click="toggleSelectArea('reset')"
       >台鐵時刻表</h4>
-      <b-container class="mt-4 bv-example-row">
+      <b-container class="mt-3 bv-example-row">
         <b-row class="justify-content-md-center">
           <b-col
             cols="6"
@@ -23,6 +24,7 @@
             >
               出發車站<br>
               {{ selected.start.stationName }}
+              {{ selected.start.stationId }}
             </b-button>
           </b-col>
           <b-col
@@ -37,6 +39,7 @@
             >
               抵達車站<br>
               {{ selected.end.stationName }}
+              {{ selected.end.stationId }}
             </b-button>
           </b-col>
           <b-col
@@ -50,13 +53,14 @@
               class="menu"
             >
               出發日期<br>
-              {{ selected.date.toISOString().slice(0, 10) }}
-              {{ selected.time.substr(0, 5) }}
+              {{ selected.date }}
+              {{ selected.time.slice(0, -3) }}
             </b-button>
           </b-col>
         </b-row>
       </b-container>
     </div>
+    <!-- 參數調整區域 -->
     <b-container class="bv-example-row mb-2">
       <b-row v-if="isShowStartMainLine">
         <b-col
@@ -140,12 +144,14 @@
         </b-col>
       </b-row>
     </b-container>
+    <!-- 按鈕 -->
     <div class="mb-3">
       <b-button
         variant="dark"
         @click="query()"
       >query</b-button>
     </div>
+    <!-- 查詢結果 -->
     <div class="mb-3">
       {{ data }}
     </div>
@@ -186,7 +192,7 @@ export default {
           stationId: null,
           stationName: null,
         },
-        date: new Date(),
+        date: this.getDateString(),
         time: new Date().toLocaleTimeString().substr(2),
       },
     }
@@ -210,6 +216,19 @@ export default {
       // });
 
       this.traStations = traStations;
+    },
+    getDateString() {
+      let date = new Date(); // Or the date you'd like converted.
+      return new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().substring(0, 10);
+    },
+    getTimeString(seletedTime) {
+      let time;
+      if (!seletedTime) {
+        time = new Date().toLocaleTimeString();
+      } else {
+        time = seletedTime;
+      }
+      return time;
     },
     toggleSelectArea(area) {
       if (area === 'startMainLine') {
@@ -268,6 +287,7 @@ export default {
       this.isShowStartStation = false;
       this.isShowEndMainLine = true;
 
+      this.selected.start.stationId = stationId;
       this.selected.start.stationName = stationName;
     },
     selectEndMainLine(mainLine) {
@@ -284,20 +304,23 @@ export default {
       this.isShowEndStation = false;
       this.isShowDatePicker = true;
 
+      this.selected.end.stationId = stationId;
       this.selected.end.stationName = stationName;
-
-
     },
     query() {
-      this.isLoading = true;
-      this.$ajax({
-        method: 'get',
-        url: 'http://ptx.transportdata.tw/MOTC/v3/Rail/TRA/DailyTrainTimetable/OD/Inclusive/1020/to/0900/2020-03-29?$top=1&$format=JSON',
-        headers: this.$getAuthorizationHeader(),
-      }).then((res) => {
-        this.data = res;
-        this.isLoading = false;
-      });
+      if (!this.selected.start.stationId || !this.selected.end.stationId) {
+        alert('必填欄位未填');
+      } else {
+        this.isLoading = true;
+        this.$ajax({
+          method: 'get',
+          url: `http://ptx.transportdata.tw/MOTC/v3/Rail/TRA/DailyTrainTimetable/OD/Inclusive/${this.selected.start.stationId}/to/${this.selected.end.stationId}/${this.selected.date}?$format=JSON`,
+          headers: this.$getAuthorizationHeader(),
+        }).then((res) => {
+          this.data = res;
+          this.isLoading = false;
+        });
+      }
     },
   },
 }
