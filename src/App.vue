@@ -61,7 +61,7 @@
       </b-container>
     </div>
     <!-- 參數調整區域 -->
-    <b-container class="bv-example-row mb-2">
+    <b-container class="mb-2 bv-example-row">
       <b-row v-if="isShowStartMainLine">
         <b-col
           cols="6"
@@ -145,16 +145,27 @@
       </b-row>
     </b-container>
     <!-- 按鈕 -->
-    <div class="mb-3">
+    <div class="mb-4">
       <b-button
         variant="dark"
         @click="query()"
       >query</b-button>
     </div>
     <!-- 查詢結果 -->
-    <div class="mb-3">
-      {{ data }}
-    </div>
+    <b-container class="mb-3 bv-example-row">
+      <b-row>
+        <b-col
+          cols="12"
+          class="mb-3"
+          v-for="(filterTrainTime, $index) in filterDailyTrainTimetable.TrainTimetables"
+          :key="$index"
+        >
+          <div class="trainTimeCol p-2">
+            {{ filterTrainTime }}
+          </div>
+        </b-col>
+      </b-row>
+    </b-container>
   </div>
 </template>
 
@@ -171,12 +182,13 @@ export default {
   data() {
     return {
       mainLines: ['基隆市', '新北市', '臺北市', '桃園市', '新竹縣', '新竹市', '苗栗縣', '臺中市', '彰化縣', '南投縣', '雲林縣', '嘉義縣', '嘉義市', '臺南市', '高雄市', '屏東縣', '臺東縣', '花蓮縣', '宜蘭縣'],
+      isLoading: false,
       traStations: [],
       filterTraStartStations: [],
       filterTraEndStations: [],
-      data: [],
-      isLoading: false,
-      isShowStartMainLine: true,
+      dailyTrainTimetable: {},
+      filterDailyTrainTimetable: {},
+      isShowStartMainLine: false,
       isShowStartStation: false,
       isShowEndMainLine: false,
       isShowEndStation: false,
@@ -221,15 +233,6 @@ export default {
       let date = new Date(); // Or the date you'd like converted.
       return new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().substring(0, 10);
     },
-    getTimeString(seletedTime) {
-      let time;
-      if (!seletedTime) {
-        time = new Date().toLocaleTimeString();
-      } else {
-        time = seletedTime;
-      }
-      return time;
-    },
     toggleSelectArea(area) {
       if (area === 'startMainLine') {
         this.isShowStartMainLine = true;
@@ -250,7 +253,7 @@ export default {
         this.isShowEndStation = false;
         this.isShowDatePicker = true;
       } else if (area === 'reset') {
-        this.isShowStartMainLine = true;
+        this.isShowStartMainLine = false;
         this.isShowStartStation = false;
         this.isShowEndMainLine = false;
         this.isShowEndStation = false;
@@ -267,9 +270,12 @@ export default {
             stationId: null,
             stationName: null,
           },
-          date: new Date(),
+          date: this.getDateString(),
           time: new Date().toLocaleTimeString().substr(2),
         };
+
+        this.dailyTrainTimetable = {};
+        this.filterDailyTrainTimetable = {};
       }
     },
     selectStartMainLine(mainLine) {
@@ -317,7 +323,8 @@ export default {
           url: `http://ptx.transportdata.tw/MOTC/v3/Rail/TRA/DailyTrainTimetable/OD/Inclusive/${this.selected.start.stationId}/to/${this.selected.end.stationId}/${this.selected.date}?$format=JSON`,
           headers: this.$getAuthorizationHeader(),
         }).then((res) => {
-          this.data = res;
+          this.dailyTrainTimetable = res.data;
+          Object.assign(this.filterDailyTrainTimetable, this.dailyTrainTimetable);
           this.isLoading = false;
         });
       }
@@ -347,5 +354,10 @@ export default {
 
 .w100 {
   width: 100%;
+}
+
+.trainTimeCol {
+  border: 1px solid #343a40;
+  border-radius: 0.25rem;
 }
 </style>
