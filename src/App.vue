@@ -160,8 +160,18 @@
           v-for="(filterTrainTime, $index) in filterDailyTrainTimetable.TrainTimetables"
           :key="$index"
         >
-          <div class="trainTimeCol p-2">
-            {{ filterTrainTime }}
+          <div class="trainTimeCol bv-example-row-flex-cols p-2">
+            <b-row align-v="center">
+              <b-col cols="3">
+                {{ filterTrainTime.TrainInfo.TrainNo }}<br>
+                {{ filterTrainTime.TrainInfo.TrainTypeName.Zh_tw }}<br>
+                {{ filterTrainTime.TrainInfo.StartingStationName.Zh_tw }} - {{ filterTrainTime.TrainInfo.EndingStationName.Zh_tw }}
+              </b-col>
+              <b-col cols="6">
+                {{ filterTrainTime.StopTimes[0].DepartureTime }} - {{ filterTrainTime.StopTimes[filterTrainTime.StopTimes.length - 1].ArrivalTime }}<br>
+              </b-col>
+            </b-row>
+            <!-- {{ filterTrainTime }} -->
           </div>
         </b-col>
       </b-row>
@@ -287,7 +297,6 @@ export default {
       const filterTraStations = this.traStations.filter(traStation => traStation.StationAddress.replace(/[0-9]/g, '').substr(0, 3) === mainLine);
       this.filterTraStartStations = [];
       Object.assign(this.filterTraStartStations, filterTraStations);
-
     },
     selectStartStation(stationId, stationName) {
       this.isShowStartStation = false;
@@ -317,7 +326,13 @@ export default {
       if (!this.selected.start.stationId || !this.selected.end.stationId) {
         alert('必填欄位未填');
       } else {
+        this.isShowStartMainLine = false;
+        this.isShowStartStation = false;
+        this.isShowEndMainLine = false;
+        this.isShowEndStation = false;
+        this.isShowDatePicker = false;
         this.isLoading = true;
+
         this.$ajax({
           method: 'get',
           url: `http://ptx.transportdata.tw/MOTC/v3/Rail/TRA/DailyTrainTimetable/OD/Inclusive/${this.selected.start.stationId}/to/${this.selected.end.stationId}/${this.selected.date}?$format=JSON`,
@@ -325,6 +340,9 @@ export default {
         }).then((res) => {
           this.dailyTrainTimetable = res.data;
           Object.assign(this.filterDailyTrainTimetable, this.dailyTrainTimetable);
+          this.filterDailyTrainTimetable.TrainTimetables.sort((a, b) => {
+            return a.StopTimes[0].DepartureTime.localeCompare(b.StopTimes[0].DepartureTime);
+          });
           this.isLoading = false;
         });
       }
