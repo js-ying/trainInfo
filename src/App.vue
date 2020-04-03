@@ -215,7 +215,7 @@ export default {
           stationName: null,
         },
         date: this.getDateString(),
-        time: new Date().toLocaleTimeString().substr(2),
+        time: new Date().toLocaleTimeString('en-GB'),
       },
     }
   },
