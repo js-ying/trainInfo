@@ -21,6 +21,7 @@
             <b-button
               variant="outline-dark"
               class="menu"
+              :class="{ active : isShowStartMainLine || isShowStartStation }"
             >
               出發車站<br>
               {{ selected.start.stationName }}
@@ -36,6 +37,7 @@
             <b-button
               variant="outline-dark"
               class="menu"
+              :class="{ active : isShowEndMainLine || isShowEndStation }"
             >
               抵達車站<br>
               {{ selected.end.stationName }}
@@ -51,6 +53,7 @@
             <b-button
               variant="outline-dark"
               class="menu"
+              :class="{ active : isShowDatePicker }"
             >
               出發日期<br>
               {{ selected.date }}
