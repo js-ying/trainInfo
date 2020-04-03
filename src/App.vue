@@ -322,30 +322,70 @@ export default {
       this.selected.end.stationId = stationId;
       this.selected.end.stationName = stationName;
     },
-    query() {
-      if (!this.selected.start.stationId || !this.selected.end.stationId) {
-        alert('必填欄位未填');
-      } else {
-        this.isShowStartMainLine = false;
-        this.isShowStartStation = false;
-        this.isShowEndMainLine = false;
-        this.isShowEndStation = false;
-        this.isShowDatePicker = false;
-        this.isLoading = true;
+    checkRequired(complete) {
 
-        this.$ajax({
-          method: 'get',
-          url: `http://ptx.transportdata.tw/MOTC/v3/Rail/TRA/DailyTrainTimetable/OD/Inclusive/${this.selected.start.stationId}/to/${this.selected.end.stationId}/${this.selected.date}?$format=JSON`,
-          headers: this.$getAuthorizationHeader(),
-        }).then((res) => {
-          this.dailyTrainTimetable = res.data;
-          Object.assign(this.filterDailyTrainTimetable, this.dailyTrainTimetable);
-          this.filterDailyTrainTimetable.TrainTimetables.sort((a, b) => {
-            return a.StopTimes[0].DepartureTime.localeCompare(b.StopTimes[0].DepartureTime);
-          });
-          this.isLoading = false;
+      if (!this.selected.start.stationId || !this.selected.end.stationId) {
+
+        let errMsg = '';
+
+        if (!this.selected.start.stationId && !this.selected.end.stationId) {
+          errMsg = '【出發車站】與【抵達車站】'
+        } else if (!this.selected.start.stationId) {
+          errMsg = '【出發車站】'
+        } else if (!this.selected.end.stationId) {
+          errMsg = '【抵達車站】'
+        }
+
+        this.$swal({
+          title: '必填未填',
+          text: '請選擇' + errMsg + '。',
+          icon: 'error',
+          confirmButtonText: '關閉'
         });
+
+      } else {
+        complete();
       }
+
+    },
+    checkDateNotInPast(date, complete) {
+      const selectedDate = new Date(date);
+      // 如果選擇的日期是過去
+      if (new Date(selectedDate.toDateString()) < new Date(new Date().toDateString())) {
+        this.$swal({
+          title: '參數錯誤',
+          text: '出發日期不能小於今天。',
+          icon: 'error',
+          confirmButtonText: '關閉'
+        });
+      } else {
+        complete();
+      }
+    },
+    query() {
+      this.checkRequired(() => {
+        this.checkDateNotInPast(this.selected.date, () => {
+          this.isShowStartMainLine = false;
+          this.isShowStartStation = false;
+          this.isShowEndMainLine = false;
+          this.isShowEndStation = false;
+          this.isShowDatePicker = false;
+          this.isLoading = true;
+
+          this.$ajax({
+            method: 'get',
+            url: `http://ptx.transportdata.tw/MOTC/v3/Rail/TRA/DailyTrainTimetable/OD/Inclusive/${this.selected.start.stationId}/to/${this.selected.end.stationId}/${this.selected.date}?$format=JSON`,
+            headers: this.$getAuthorizationHeader(),
+          }).then((res) => {
+            this.dailyTrainTimetable = res.data;
+            Object.assign(this.filterDailyTrainTimetable, this.dailyTrainTimetable);
+            this.filterDailyTrainTimetable.TrainTimetables.sort((a, b) => {
+              return a.StopTimes[0].DepartureTime.localeCompare(b.StopTimes[0].DepartureTime);
+            });
+            this.isLoading = false;
+          });
+        });
+      });
     },
   },
 }
