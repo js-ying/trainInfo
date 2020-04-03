@@ -166,8 +166,8 @@
           <div class="trainTimeCol bv-example-row-flex-cols p-2">
             <b-row align-v="center">
               <b-col cols="3">
-                {{ filterTrainTime.TrainInfo.TrainNo }} {{ tripLineToName(filterTrainTime.TrainInfo.TripLine) }}<br>
-                <b-badge :variant="getTrainTypeVariant(filterTrainTime.TrainInfo.TrainTypeCode)">{{ trainTypeCodeToName(filterTrainTime.TrainInfo.TrainTypeCode) }}</b-badge><br>
+                {{ filterTrainTime.TrainInfo.TrainNo }} {{ transformTripLineToName(filterTrainTime.TrainInfo.TripLine) }}<br>
+                <b-badge :variant="getTrainTypeVariant(filterTrainTime.TrainInfo.TrainTypeCode)">{{ transformTrainTypeCodeToName(filterTrainTime.TrainInfo.TrainTypeCode) }}</b-badge><br>
                 {{ filterTrainTime.TrainInfo.StartingStationName.Zh_tw }} - {{ filterTrainTime.TrainInfo.EndingStationName.Zh_tw }}
               </b-col>
               <b-col cols="6">
@@ -176,37 +176,37 @@
               </b-col>
               <b-col cols="3">
                 <img
-                  src="../src/assets/train-service-icon/disability.png"
+                  src="./assets/train-service-icon/disability.png"
                   class="trainServiceIcon"
                   v-if="filterTrainTime.TrainInfo.WheelChairFlag"
                 >
                 <img
-                  src="../src/assets/train-service-icon/suitcase.png"
+                  src="./assets/train-service-icon/suitcase.png"
                   class="trainServiceIcon"
                   v-if="filterTrainTime.TrainInfo.PackageServiceFlag"
                 >
                 <img
-                  src="../src/assets/train-service-icon/lunch.png"
+                  src="./assets/train-service-icon/lunch.png"
                   class="trainServiceIcon"
                   v-if="filterTrainTime.TrainInfo.DiningFlag"
                 >
                 <img
-                  src="../src/assets/train-service-icon/breast-feeding.png"
+                  src="./assets/train-service-icon/breast-feeding.png"
                   class="trainServiceIcon"
                   v-if="filterTrainTime.TrainInfo.BreastFeedFlag"
                 >
                 <img
-                  src="../src/assets/train-service-icon/bicycle.png"
+                  src="./assets/train-service-icon/bicycle.png"
                   class="trainServiceIcon"
                   v-if="filterTrainTime.TrainInfo.BikeFlag"
                 >
                 <img
-                  src="../src/assets/train-service-icon/car.png"
+                  src="./assets/train-service-icon/car.png"
                   class="trainServiceIcon"
                   v-if="filterTrainTime.TrainInfo.CarFlag"
                 >
                 <img
-                  src="../src/assets/train-service-icon/train.png"
+                  src="./assets/train-service-icon/train.png"
                   class="trainServiceIcon"
                   v-if="filterTrainTime.TrainInfo.ExtraTrainFlag"
                 >
@@ -420,9 +420,17 @@ export default {
           }).then((res) => {
             this.dailyTrainTimetable = res.data;
             Object.assign(this.filterDailyTrainTimetable, this.dailyTrainTimetable);
+
+            // 依駛離日期由小到大排序
             this.filterDailyTrainTimetable.TrainTimetables.sort((a, b) => {
               return a.StopTimes[0].DepartureTime.localeCompare(b.StopTimes[0].DepartureTime);
             });
+
+            // 只顯示大於查詢條件【出發日期 HH:mm】的結果
+            this.filterDailyTrainTimetable.TrainTimetables = this.filterDailyTrainTimetable.TrainTimetables.filter((trainTimeTable) => {
+              return trainTimeTable.StopTimes[0].DepartureTime > this.selected.time.slice(0, -3);
+            });
+
             this.isLoading = false;
           });
         });
@@ -442,7 +450,7 @@ export default {
 
       return trainTypeMap[trainTypeCode];
     },
-    trainTypeCodeToName(trainTypeCode) {
+    transformTrainTypeCodeToName(trainTypeCode) {
       const trainTypeMap = {
         '1': '太魯閣',
         '2': '普悠瑪',
@@ -462,7 +470,7 @@ export default {
       console.log(a, b);
       return '';
     },
-    tripLineToName(tripLine) {
+    transformTripLineToName(tripLine) {
       const trainLineMap = {
         '0': '', // 不經山海線
         '1': '山線',
