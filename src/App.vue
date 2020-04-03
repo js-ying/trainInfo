@@ -152,7 +152,7 @@
       <b-button
         variant="dark"
         @click="query()"
-      >query</b-button>
+      >查詢</b-button>
     </div>
     <!-- 查詢結果 -->
     <b-container class="mb-3 bv-example-row">
@@ -166,12 +166,50 @@
           <div class="trainTimeCol bv-example-row-flex-cols p-2">
             <b-row align-v="center">
               <b-col cols="3">
-                {{ filterTrainTime.TrainInfo.TrainNo }}<br>
-                {{ filterTrainTime.TrainInfo.TrainTypeName.Zh_tw }}<br>
+                {{ filterTrainTime.TrainInfo.TrainNo }} {{ tripLineToName(filterTrainTime.TrainInfo.TripLine) }}<br>
+                <b-badge :variant="getTrainTypeVariant(filterTrainTime.TrainInfo.TrainTypeCode)">{{ trainTypeCodeToName(filterTrainTime.TrainInfo.TrainTypeCode) }}</b-badge><br>
                 {{ filterTrainTime.TrainInfo.StartingStationName.Zh_tw }} - {{ filterTrainTime.TrainInfo.EndingStationName.Zh_tw }}
               </b-col>
               <b-col cols="6">
                 {{ filterTrainTime.StopTimes[0].DepartureTime }} - {{ filterTrainTime.StopTimes[filterTrainTime.StopTimes.length - 1].ArrivalTime }}<br>
+                {{ caculateTimeRange(filterTrainTime.StopTimes[0].DepartureTime, filterTrainTime.StopTimes[filterTrainTime.StopTimes.length - 1].ArrivalTime) }}
+              </b-col>
+              <b-col cols="3">
+                <img
+                  src="../src/assets/train-service-icon/disability.png"
+                  class="trainServiceIcon"
+                  v-if="filterTrainTime.TrainInfo.WheelChairFlag"
+                >
+                <img
+                  src="../src/assets/train-service-icon/suitcase.png"
+                  class="trainServiceIcon"
+                  v-if="filterTrainTime.TrainInfo.PackageServiceFlag"
+                >
+                <img
+                  src="../src/assets/train-service-icon/lunch.png"
+                  class="trainServiceIcon"
+                  v-if="filterTrainTime.TrainInfo.DiningFlag"
+                >
+                <img
+                  src="../src/assets/train-service-icon/breast-feeding.png"
+                  class="trainServiceIcon"
+                  v-if="filterTrainTime.TrainInfo.BreastFeedFlag"
+                >
+                <img
+                  src="../src/assets/train-service-icon/bicycle.png"
+                  class="trainServiceIcon"
+                  v-if="filterTrainTime.TrainInfo.BikeFlag"
+                >
+                <img
+                  src="../src/assets/train-service-icon/car.png"
+                  class="trainServiceIcon"
+                  v-if="filterTrainTime.TrainInfo.CarFlag"
+                >
+                <img
+                  src="../src/assets/train-service-icon/train.png"
+                  class="trainServiceIcon"
+                  v-if="filterTrainTime.TrainInfo.ExtraTrainFlag"
+                >
               </b-col>
             </b-row>
             <!-- {{ filterTrainTime }} -->
@@ -390,6 +428,49 @@ export default {
         });
       });
     },
+    getTrainTypeVariant(trainTypeCode) {
+      const trainTypeMap = {
+        '1': 'success',
+        '2': 'dark',
+        '3': 'info',
+        '4': 'danger',
+        '5': 'warning',
+        '6': 'primary',
+        '7': 'primary',
+        '10': 'primary',
+      }
+
+      return trainTypeMap[trainTypeCode];
+    },
+    trainTypeCodeToName(trainTypeCode) {
+      const trainTypeMap = {
+        '1': '太魯閣',
+        '2': '普悠瑪',
+        '3': '自強',
+        '4': '莒光',
+        '5': '復興',
+        '6': '區間',
+        '7': '普快',
+        '10': '區間快',
+      }
+
+      return trainTypeMap[trainTypeCode];
+    },
+    caculateTimeRange(startTime, endTime) {
+      let a = startTime;
+      let b = endTime;
+      console.log(a, b);
+      return '';
+    },
+    tripLineToName(tripLine) {
+      const trainLineMap = {
+        '0': '', // 不經山海線
+        '1': '山線',
+        '2': '海遍',
+      }
+
+      return trainLineMap[tripLine];
+    },
   },
 }
 </script>
@@ -420,5 +501,9 @@ export default {
 .trainTimeCol {
   border: 1px solid #343a40;
   border-radius: 0.25rem;
+}
+
+.trainServiceIcon {
+  width: 20px;
 }
 </style>
