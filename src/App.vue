@@ -271,7 +271,7 @@ export default {
       // this.isLoading = true;
       // this.$ajax({
       //   method: 'get',
-      //   url: 'http://ptx.transportdata.tw/MOTC/v3/Rail/TRA/Station?$orderby=StationUID&$format=JSON',
+      //   url: 'https://ptx.transportdata.tw/MOTC/v3/Rail/TRA/Station?$orderby=StationUID&$format=JSON',
       //   headers: this.$getAuthorizationHeader(),
       // }).then((res) => {
       //   this.traStations = res.data.Stations;
@@ -322,7 +322,7 @@ export default {
             stationName: null,
           },
           date: this.getDateString(),
-          time: new Date().toLocaleTimeString().substr(2),
+          time: new Date().toLocaleTimeString('en-GB'),
         };
 
         this.dailyTrainTimetable = {};
@@ -415,7 +415,7 @@ export default {
 
           this.$ajax({
             method: 'get',
-            url: `http://ptx.transportdata.tw/MOTC/v3/Rail/TRA/DailyTrainTimetable/OD/Inclusive/${this.selected.start.stationId}/to/${this.selected.end.stationId}/${this.selected.date}?$format=JSON`,
+            url: `https://ptx.transportdata.tw/MOTC/v3/Rail/TRA/DailyTrainTimetable/OD/Inclusive/${this.selected.start.stationId}/to/${this.selected.end.stationId}/${this.selected.date}?$format=JSON`,
             headers: this.$getAuthorizationHeader(),
           }).then((res) => {
             this.dailyTrainTimetable = res.data;
@@ -474,7 +474,7 @@ export default {
       const trainLineMap = {
         '0': '', // 不經山海線
         '1': '山線',
-        '2': '海遍',
+        '2': '海線',
       }
 
       return trainLineMap[tripLine];
