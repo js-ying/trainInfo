@@ -7,7 +7,7 @@
     <!-- 導覽列 -->
     <div class="mb-2">
       <h4
-        id="webTitle"
+        id="web-title"
         @click="toggleSelectArea('reset')"
       >台鐵時刻表</h4>
       <b-container class="mt-3 bv-example-row">
@@ -156,6 +156,16 @@
     </div>
     <!-- 查詢結果 -->
     <b-container class="mb-3 bv-example-row">
+      <b-button-group
+        size="sm"
+        class="mb-3"
+        v-if="filterDailyTrainTimetable.TrainTimetables"
+      >
+        <b-button
+          v-for="trainTypeFIlterBtn in trainTypeFilterBtns"
+          :key="trainTypeFIlterBtn.value"
+        >{{ trainTypeFIlterBtn.name }}</b-button>
+      </b-button-group>
       <b-row>
         <b-col
           cols="12"
@@ -163,7 +173,7 @@
           v-for="(filterTrainTime, $index) in filterDailyTrainTimetable.TrainTimetables"
           :key="$index"
         >
-          <div class="trainTimeCol bv-example-row-flex-cols p-2">
+          <div class="train-time-col bv-example-row-flex-cols p-2">
             <b-row align-v="center">
               <b-col cols="3">
                 {{ filterTrainTime.TrainInfo.TrainNo }} {{ transformTripLineToName(filterTrainTime.TrainInfo.TripLine) }}<br>
@@ -172,42 +182,42 @@
               </b-col>
               <b-col cols="6">
                 {{ filterTrainTime.StopTimes[0].DepartureTime }} - {{ filterTrainTime.StopTimes[filterTrainTime.StopTimes.length - 1].ArrivalTime }}<br>
-                {{ caculateTimeRange(filterTrainTime.StopTimes[0].DepartureTime, filterTrainTime.StopTimes[filterTrainTime.StopTimes.length - 1].ArrivalTime) }}
+                <!-- {{ caculateTimeRange(filterTrainTime.StopTimes[0].DepartureTime, filterTrainTime.StopTimes[filterTrainTime.StopTimes.length - 1].ArrivalTime) }} -->
               </b-col>
               <b-col cols="3">
                 <img
                   src="./assets/train-service-icon/disability.png"
-                  class="trainServiceIcon"
+                  class="train-service-icon"
                   v-if="filterTrainTime.TrainInfo.WheelChairFlag"
                 >
                 <img
                   src="./assets/train-service-icon/suitcase.png"
-                  class="trainServiceIcon"
+                  class="train-service-icon"
                   v-if="filterTrainTime.TrainInfo.PackageServiceFlag"
                 >
                 <img
                   src="./assets/train-service-icon/lunch.png"
-                  class="trainServiceIcon"
+                  class="train-service-icon"
                   v-if="filterTrainTime.TrainInfo.DiningFlag"
                 >
                 <img
                   src="./assets/train-service-icon/breast-feeding.png"
-                  class="trainServiceIcon"
+                  class="train-service-icon"
                   v-if="filterTrainTime.TrainInfo.BreastFeedFlag"
                 >
                 <img
                   src="./assets/train-service-icon/bicycle.png"
-                  class="trainServiceIcon"
+                  class="train-service-icon"
                   v-if="filterTrainTime.TrainInfo.BikeFlag"
                 >
                 <img
                   src="./assets/train-service-icon/car.png"
-                  class="trainServiceIcon"
+                  class="train-service-icon"
                   v-if="filterTrainTime.TrainInfo.CarFlag"
                 >
                 <img
                   src="./assets/train-service-icon/train.png"
-                  class="trainServiceIcon"
+                  class="train-service-icon"
                   v-if="filterTrainTime.TrainInfo.ExtraTrainFlag"
                 >
               </b-col>
@@ -227,6 +237,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import traStations from './assets/traStations';
+import { TrainTypes, TripLines } from './assets/constants';
 
 export default {
   name: 'App',
@@ -258,6 +269,7 @@ export default {
         date: this.getDateString(),
         time: new Date().toLocaleTimeString('en-GB'),
       },
+      trainTypeFilterBtns: [],
     }
   },
   components: {
@@ -265,6 +277,7 @@ export default {
   },
   mounted() {
     this.gettTraStation();
+    this.getTrainTypeFilterBtns();
   },
   methods: {
     gettTraStation() {
@@ -279,6 +292,14 @@ export default {
       // });
 
       this.traStations = traStations;
+    },
+    getTrainTypeFilterBtns() {
+      for (const trainType in TrainTypes) {
+        this.trainTypeFilterBtns.push({
+          name: TrainTypes[trainType].name,
+          value: TrainTypes[trainType].value,
+        });
+      }
     },
     getDateString() {
       let date = new Date(); // Or the date you'd like converted.
@@ -437,47 +458,35 @@ export default {
       });
     },
     getTrainTypeVariant(trainTypeCode) {
-      const trainTypeMap = {
-        '1': 'success',
-        '2': 'dark',
-        '3': 'info',
-        '4': 'danger',
-        '5': 'warning',
-        '6': 'primary',
-        '7': 'primary',
-        '10': 'primary',
+      const trainTypeVariantMap = {};
+
+      for (const trainType in TrainTypes) {
+        trainTypeVariantMap[TrainTypes[trainType].value] = TrainTypes[trainType].labelColorClass;
       }
 
-      return trainTypeMap[trainTypeCode];
+      return trainTypeVariantMap[trainTypeCode];
     },
     transformTrainTypeCodeToName(trainTypeCode) {
-      const trainTypeMap = {
-        '1': '太魯閣',
-        '2': '普悠瑪',
-        '3': '自強',
-        '4': '莒光',
-        '5': '復興',
-        '6': '區間',
-        '7': '普快',
-        '10': '區間快',
+      const trainTypeMap = {};
+
+      for (const trainType in TrainTypes) {
+        trainTypeMap[TrainTypes[trainType].value] = TrainTypes[trainType].name
       }
 
       return trainTypeMap[trainTypeCode];
     },
-    caculateTimeRange(startTime, endTime) {
-      let a = startTime;
-      let b = endTime;
-      console.log(a, b);
-      return '';
-    },
+    // caculateTimeRange(startTime, endTime) {
+    //   console.log(startTime, endTime);
+    //   return '';
+    // },
     transformTripLineToName(tripLine) {
-      const trainLineMap = {
-        '0': '', // 不經山海線
-        '1': '山線',
-        '2': '海線',
+      const tripLineMap = {};
+
+      for (const tripLine in TripLines) {
+        tripLineMap[TripLines[tripLine].value] = TripLines[tripLine].name
       }
 
-      return trainLineMap[tripLine];
+      return tripLineMap[tripLine];
     },
   },
 }
@@ -493,7 +502,11 @@ export default {
   margin-top: 30px;
 }
 
-#webTitle {
+.w100 {
+  width: 100%;
+}
+
+#web-title {
   cursor: pointer;
 }
 
@@ -502,16 +515,12 @@ export default {
   height: 60px;
 }
 
-.w100 {
-  width: 100%;
-}
-
-.trainTimeCol {
+.train-time-col {
   border: 1px solid #343a40;
   border-radius: 0.25rem;
 }
 
-.trainServiceIcon {
+.train-service-icon {
   width: 20px;
 }
 </style>
