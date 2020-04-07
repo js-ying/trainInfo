@@ -155,70 +155,75 @@
       >查詢</b-button>
     </div>
     <!-- 查詢結果 -->
-    <b-container class="mb-3 bv-example-row">
+    <b-container
+      class="mb-3 bv-example-row"
+      v-if="dailyTrainTimetable.TrainTimetables"
+    >
       <b-button-group
         size="sm"
         class="mb-3"
-        v-if="filterDailyTrainTimetable.TrainTimetables"
       >
         <b-button
-          v-for="trainTypeFIlterBtn in trainTypeFilterBtns"
-          :key="trainTypeFIlterBtn.value"
-        >{{ trainTypeFIlterBtn.name }}</b-button>
+          v-for="trainTypeFilterBtn in trainTypeFilterBtns"
+          :key="trainTypeFilterBtn.value"
+          :class="{ active : trainTypeFilterBtn.actived }"
+          @click="filterTrainType(trainTypeFilterBtn.value)"
+        >{{ trainTypeFilterBtn.name }}</b-button>
+        {{ this.filterTrainTypesRegExp }}
       </b-button-group>
       <b-row>
         <b-col
           cols="12"
           class="mb-3"
-          v-for="(filterTrainTime, $index) in filterDailyTrainTimetable.TrainTimetables"
+          v-for="(filterTrainTimetable, $index) in filterTrainTimetables"
           :key="$index"
         >
           <div class="train-time-col bv-example-row-flex-cols p-2">
             <b-row align-v="center">
               <b-col cols="3">
-                {{ filterTrainTime.TrainInfo.TrainNo }} {{ transformTripLineToName(filterTrainTime.TrainInfo.TripLine) }}<br>
-                <b-badge :variant="getTrainTypeVariant(filterTrainTime.TrainInfo.TrainTypeCode)">{{ transformTrainTypeCodeToName(filterTrainTime.TrainInfo.TrainTypeCode) }}</b-badge><br>
-                {{ filterTrainTime.TrainInfo.StartingStationName.Zh_tw }} - {{ filterTrainTime.TrainInfo.EndingStationName.Zh_tw }}
+                {{ filterTrainTimetable.TrainInfo.TrainNo }} {{ transformTripLineToName(filterTrainTimetable.TrainInfo.TripLine) }}<br>
+                <b-badge :variant="getTrainTypeVariant(filterTrainTimetable.TrainInfo.TrainTypeCode)">{{ transformTrainTypeCodeToName(filterTrainTimetable.TrainInfo.TrainTypeCode) }}</b-badge><br>
+                {{ filterTrainTimetable.TrainInfo.StartingStationName.Zh_tw }} - {{ filterTrainTimetable.TrainInfo.EndingStationName.Zh_tw }}
               </b-col>
               <b-col cols="6">
-                {{ filterTrainTime.StopTimes[0].DepartureTime }} - {{ filterTrainTime.StopTimes[filterTrainTime.StopTimes.length - 1].ArrivalTime }}<br>
-                <!-- {{ caculateTimeRange(filterTrainTime.StopTimes[0].DepartureTime, filterTrainTime.StopTimes[filterTrainTime.StopTimes.length - 1].ArrivalTime) }} -->
+                {{ filterTrainTimetable.StopTimes[0].DepartureTime }} - {{ filterTrainTimetable.StopTimes[filterTrainTimetable.StopTimes.length - 1].ArrivalTime }}<br>
+                <!-- {{ caculateTimeRange(filterTrainTimetable.StopTimes[0].DepartureTime, filterTrainTimetable.StopTimes[filterTrainTimetable.StopTimes.length - 1].ArrivalTime) }} -->
               </b-col>
               <b-col cols="3">
                 <img
                   src="./assets/train-service-icon/disability.png"
                   class="train-service-icon"
-                  v-if="filterTrainTime.TrainInfo.WheelChairFlag"
+                  v-if="filterTrainTimetable.TrainInfo.WheelChairFlag"
                 >
                 <img
                   src="./assets/train-service-icon/suitcase.png"
                   class="train-service-icon"
-                  v-if="filterTrainTime.TrainInfo.PackageServiceFlag"
+                  v-if="filterTrainTimetable.TrainInfo.PackageServiceFlag"
                 >
                 <img
                   src="./assets/train-service-icon/lunch.png"
                   class="train-service-icon"
-                  v-if="filterTrainTime.TrainInfo.DiningFlag"
+                  v-if="filterTrainTimetable.TrainInfo.DiningFlag"
                 >
                 <img
                   src="./assets/train-service-icon/breast-feeding.png"
                   class="train-service-icon"
-                  v-if="filterTrainTime.TrainInfo.BreastFeedFlag"
+                  v-if="filterTrainTimetable.TrainInfo.BreastFeedFlag"
                 >
                 <img
                   src="./assets/train-service-icon/bicycle.png"
                   class="train-service-icon"
-                  v-if="filterTrainTime.TrainInfo.BikeFlag"
+                  v-if="filterTrainTimetable.TrainInfo.BikeFlag"
                 >
                 <img
                   src="./assets/train-service-icon/car.png"
                   class="train-service-icon"
-                  v-if="filterTrainTime.TrainInfo.CarFlag"
+                  v-if="filterTrainTimetable.TrainInfo.CarFlag"
                 >
                 <img
                   src="./assets/train-service-icon/train.png"
                   class="train-service-icon"
-                  v-if="filterTrainTime.TrainInfo.ExtraTrainFlag"
+                  v-if="filterTrainTimetable.TrainInfo.ExtraTrainFlag"
                 >
               </b-col>
             </b-row>
@@ -249,7 +254,6 @@ export default {
       filterTraStartStations: [],
       filterTraEndStations: [],
       dailyTrainTimetable: {},
-      filterDailyTrainTimetable: {},
       isShowStartMainLine: false,
       isShowStartStation: false,
       isShowEndMainLine: false,
@@ -270,6 +274,7 @@ export default {
         time: new Date().toLocaleTimeString('en-GB'),
       },
       trainTypeFilterBtns: [],
+      filterTrainTypesRegExp: '',
     }
   },
   components: {
@@ -278,6 +283,13 @@ export default {
   mounted() {
     this.gettTraStation();
     this.getTrainTypeFilterBtns();
+  },
+  computed: {
+    filterTrainTimetables() {
+      return this.dailyTrainTimetable.TrainTimetables.filter(trainTimetable =>
+        trainTimetable.TrainInfo.TrainTypeCode.match(new RegExp(this.filterTrainTypesRegExp))
+      );
+    }
   },
   methods: {
     gettTraStation() {
@@ -298,6 +310,7 @@ export default {
         this.trainTypeFilterBtns.push({
           name: TrainTypes[trainType].name,
           value: TrainTypes[trainType].value,
+          actived: TrainTypes[trainType].value === TrainTypes.ALL.value ? true : false,
         });
       }
     },
@@ -347,7 +360,6 @@ export default {
         };
 
         this.dailyTrainTimetable = {};
-        this.filterDailyTrainTimetable = {};
       }
     },
     selectStartMainLine(mainLine) {
@@ -439,18 +451,19 @@ export default {
             url: `https://ptx.transportdata.tw/MOTC/v3/Rail/TRA/DailyTrainTimetable/OD/Inclusive/${this.selected.start.stationId}/to/${this.selected.end.stationId}/${this.selected.date}?$format=JSON`,
             headers: this.$getAuthorizationHeader(),
           }).then((res) => {
-            this.dailyTrainTimetable = res.data;
-            Object.assign(this.filterDailyTrainTimetable, this.dailyTrainTimetable);
+            Object.assign(this.dailyTrainTimetable, res.data);
 
             // 依駛離日期由小到大排序
-            this.filterDailyTrainTimetable.TrainTimetables.sort((a, b) => {
+            this.dailyTrainTimetable.TrainTimetables.sort((a, b) => {
               return a.StopTimes[0].DepartureTime.localeCompare(b.StopTimes[0].DepartureTime);
             });
 
             // 只顯示大於查詢條件【出發日期 HH:mm】的結果
-            this.filterDailyTrainTimetable.TrainTimetables = this.filterDailyTrainTimetable.TrainTimetables.filter((trainTimeTable) => {
+            this.dailyTrainTimetable.TrainTimetables = this.dailyTrainTimetable.TrainTimetables.filter((trainTimeTable) => {
               return trainTimeTable.StopTimes[0].DepartureTime > this.selected.time.slice(0, -3);
             });
+
+            console.log('query', this.dailyTrainTimetable.TrainTimetables);
 
             this.isLoading = false;
           });
@@ -487,6 +500,50 @@ export default {
       }
 
       return tripLineMap[tripLine];
+    },
+    filterTrainType(value) {
+      this.filterTrainTypesRegExp = '';
+
+      // 1. 控制按鈕 actived 狀態
+
+      if (value === TrainTypes.ALL.value) {
+        // 除了全部按鈕，其它皆取消 actived
+        this.trainTypeFilterBtns.forEach(trainTypeFilterBtn => {
+          if (trainTypeFilterBtn.value === TrainTypes.ALL.value) {
+            trainTypeFilterBtn.actived = true;
+          } else {
+            trainTypeFilterBtn.actived = false;
+          }
+        });
+      } else {
+        // 取消全部按鈕的 actived，並將該按鈕 actived 設為相反
+        this.trainTypeFilterBtns.forEach(trainTypeFilterBtn => {
+          if (trainTypeFilterBtn.value === TrainTypes.ALL.value) {
+            trainTypeFilterBtn.actived = false;
+          }
+          if (trainTypeFilterBtn.value === value) {
+            trainTypeFilterBtn.actived = !trainTypeFilterBtn.actived;
+          }
+        });
+      }
+
+      // 2. 製作篩選車種的正規表達式
+
+      this.filterTrainTypesRegExp = '^';
+      this.trainTypeFilterBtns.forEach(trainTypeFilterBtn => {
+        if (trainTypeFilterBtn.actived === true) {
+          this.filterTrainTypesRegExp = this.filterTrainTypesRegExp + trainTypeFilterBtn.value + '|'
+        }
+      });
+
+      if (this.filterTrainTypesRegExp === '^all|') {
+        this.filterTrainTypesRegExp = '';
+      } else if (this.filterTrainTypesRegExp === '^') {
+        this.filterTrainTypesRegExp = '';
+        this.trainTypeFilterBtns[0].actived = true;
+      } else {
+        this.filterTrainTypesRegExp = this.filterTrainTypesRegExp.substring(0, this.filterTrainTypesRegExp.length - 1) + '$';
+      }
     },
   },
 }
