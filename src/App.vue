@@ -6,12 +6,14 @@
     ></loading>
     <!-- 導覽列 -->
     <div class="mb-2">
-      <h4
+      <h5
         id="web-title"
+        class="mb-4"
         @click="toggleSelectArea('reset')"
-      >台鐵時刻表</h4>
-      <b-container class="mt-3 bv-example-row">
+      >台鐵時刻表</h5>
+      <b-container class="bv-example-row">
         <b-row class="justify-content-md-center">
+          <!-- 出發車站 -->
           <b-col
             cols="6"
             md="4"
@@ -25,9 +27,9 @@
             >
               出發車站<br>
               {{ selected.start.stationName }}
-              {{ selected.start.stationId }}
             </b-button>
           </b-col>
+          <!-- 抵達車站 -->
           <b-col
             cols="6"
             md="4"
@@ -41,9 +43,9 @@
             >
               抵達車站<br>
               {{ selected.end.stationName }}
-              {{ selected.end.stationId }}
             </b-button>
           </b-col>
+          <!-- 出發日期 -->
           <b-col
             cols="12"
             md="4"
@@ -64,7 +66,10 @@
       </b-container>
     </div>
     <!-- 參數調整區域 -->
-    <b-container class="mb-2 bv-example-row">
+    <b-container
+      class="mb-2 bv-example-row"
+      id="param-adjustment-area"
+    >
       <b-row v-if="isShowStartMainLine">
         <b-col
           cols="6"
@@ -75,7 +80,7 @@
           :key="$index"
         >
           <b-button
-            variant="info"
+            variant="secondary"
             class="w100"
             @click="selectStartMainLine(mainLine)"
           >{{ mainLine }}</b-button>
@@ -91,11 +96,15 @@
           :key="$index"
         >
           <b-button
-            variant="info"
+            variant="secondary"
             :value="filterTraStartStation.StationID"
             class="w100"
+            :class="{ 'high-level-station' : filterTraStartStation.StationClass === '0' || filterTraStartStation.StationClass === '1' }"
             @click="selectStartStation(filterTraStartStation.StationID, filterTraStartStation.StationName.Zh_tw)"
-          > {{ filterTraStartStation.StationName.Zh_tw }}</b-button>
+          >
+            {{ filterTraStartStation.StationClass === '0' || filterTraStartStation.StationClass === '1' ? '＊' : '' }}
+            {{ filterTraStartStation.StationName.Zh_tw }}
+          </b-button>
         </b-col>
       </b-row>
       <b-row v-if="isShowEndMainLine">
@@ -108,7 +117,7 @@
           :key="$index"
         >
           <b-button
-            variant="primary"
+            variant="secondary"
             class="w100"
             @click="selectEndMainLine(mainLine)"
           >{{ mainLine }}</b-button>
@@ -124,11 +133,15 @@
           :key="$index"
         >
           <b-button
-            variant="info"
+            variant="secondary"
             :value="filterTraEndStation.StationID"
             class="w100"
+            :class="{ 'high-level-station' : filterTraEndStation.StationClass === '0' || filterTraEndStation.StationClass === '1' }"
             @click="selectEndStation(filterTraEndStation.StationID, filterTraEndStation.StationName.Zh_tw)"
-          > {{ filterTraEndStation.StationName.Zh_tw }}</b-button>
+          >
+            {{ filterTraEndStation.StationClass === '0' || filterTraEndStation.StationClass === '1' ? '＊' : '' }}
+            {{ filterTraEndStation.StationName.Zh_tw }}
+          </b-button>
         </b-col>
       </b-row>
       <b-row v-if="isShowDatePicker">
@@ -182,9 +195,15 @@
           <div class="train-time-col bv-example-row-flex-cols p-2">
             <b-row align-v="center">
               <b-col cols="3">
-                {{ filterTrainTimetable.TrainInfo.TrainNo }} {{ transformTripLineToName(filterTrainTimetable.TrainInfo.TripLine) }}<br>
-                <b-badge :variant="getTrainTypeVariant(filterTrainTimetable.TrainInfo.TrainTypeCode)">{{ transformTrainTypeCodeToName(filterTrainTimetable.TrainInfo.TrainTypeCode) }}</b-badge><br>
-                {{ filterTrainTimetable.TrainInfo.StartingStationName.Zh_tw }} - {{ filterTrainTimetable.TrainInfo.EndingStationName.Zh_tw }}
+                <div class="train-time-left-side">
+                  {{ filterTrainTimetable.TrainInfo.TrainNo }} {{ transformTripLineToName(filterTrainTimetable.TrainInfo.TripLine) }}
+                </div>
+                <div class="mb-1">
+                  <b-badge :variant="getTrainTypeVariant(filterTrainTimetable.TrainInfo.TrainTypeCode)">{{ transformTrainTypeCodeToName(filterTrainTimetable.TrainInfo.TrainTypeCode) }}</b-badge>
+                </div>
+                <div class="train-time-left-side">
+                  {{ filterTrainTimetable.TrainInfo.StartingStationName.Zh_tw }} - {{ filterTrainTimetable.TrainInfo.EndingStationName.Zh_tw }}
+                </div>
               </b-col>
               <b-col cols="6">
                 {{ filterTrainTimetable.StopTimes[0].DepartureTime }} - {{ filterTrainTimetable.StopTimes[filterTrainTimetable.StopTimes.length - 1].ArrivalTime }}<br>
@@ -198,6 +217,8 @@
                   <img
                     :src="gettrainServiceImgSrc(trainService.imgName)"
                     class="train-service-icon"
+                    v-b-tooltip.hover
+                    :title="trainService.description"
                     v-if="filterTrainTimetable.TrainInfo[trainService.flagName]"
                   >
                 </span>
@@ -229,30 +250,37 @@ export default {
         {
           imgName: 'disability',
           flagName: 'WheelChairFlag',
+          description: '身障旅客專用座位車',
         },
         {
           imgName: 'suitcase',
           flagName: 'PackageServiceFlag',
+          description: '行李服務',
         },
         {
           imgName: 'lunch',
           flagName: 'DiningFlag',
+          description: '訂便當服務',
         },
         {
           imgName: 'breast-feeding',
           flagName: 'BreastFeedFlag',
+          description: '哺(集)乳室車廂',
         },
         {
           imgName: 'bicycle',
           flagName: 'BikeFlag',
+          description: '人車同行',
         },
         {
           imgName: 'car',
           flagName: 'CarFlag',
+          description: '小汽車上火車',
         },
         {
           imgName: 'train',
           flagName: 'ExtraTrainFlag',
+          description: '為加班車',
         },
       ],
       isLoading: false,
@@ -266,15 +294,25 @@ export default {
       isShowEndStation: false,
       isShowDatePicker: false,
       selected: {
+        // start: {
+        //   mainLine: null,
+        //   stationId: null,
+        //   stationName: null,
+        // },
+        // end: {
+        //   mainLine: null,
+        //   stationId: null,
+        //   stationName: null,
+        // },
         start: {
           mainLine: null,
-          stationId: null,
-          stationName: null,
+          stationId: '1000',
+          stationName: '臺北',
         },
         end: {
           mainLine: null,
-          stationId: null,
-          stationName: null,
+          stationId: '1210',
+          stationName: '新竹',
         },
         date: this.getDateString(),
         time: new Date().toLocaleTimeString('en-GB'),
@@ -561,7 +599,9 @@ export default {
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue For Number", "Chinese Quote", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -582,6 +622,9 @@ export default {
   height: 60px;
 }
 
+.high-level-station {
+}
+
 .train-time-col {
   border: 1px solid #343a40;
   border-radius: 0.25rem;
@@ -589,5 +632,15 @@ export default {
 
 .train-service-icon {
   width: 20px;
+}
+
+@media screen and (max-width: 768px) {
+  #param-adjustment-area .btn-secondary:hover {
+    background-color: #6c757d !important;
+  }
+
+  .train-time-left-side {
+    font-size: 75%;
+  }
 }
 </style>
