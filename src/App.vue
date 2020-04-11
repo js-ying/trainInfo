@@ -172,18 +172,25 @@
       class="mb-3 bv-example-row"
       v-if="dailyTrainTimetable.TrainTimetables"
     >
-      <!-- 車種篩選按鈕群組 -->
-      <b-button-group
-        size="sm"
-        class="mb-3"
-      >
-        <b-button
-          v-for="trainTypeFilterBtn in trainTypeFilterBtns"
-          :key="trainTypeFilterBtn.value"
-          :class="{ active : trainTypeFilterBtn.actived }"
-          @click="filterTrainType(trainTypeFilterBtn.value)"
-        >{{ trainTypeFilterBtn.name }}</b-button>
-      </b-button-group>
+      <div class="d-flex justify-content-between">
+        <!-- 車種篩選按鈕群組 -->
+        <b-button-group
+          size="sm"
+          class="mb-3"
+          id="train-Type-filter-btns"
+        >
+          <b-button
+            v-for="trainTypeFilterBtn in trainTypeFilterBtns"
+            :key="trainTypeFilterBtn.value"
+            :class="{ active : trainTypeFilterBtn.actived }"
+            @click="filterTrainType(trainTypeFilterBtn.value)"
+          >{{ trainTypeFilterBtn.name }}</b-button>
+        </b-button-group>
+        <!-- 查詢結果頁數 -->
+        <div id="result-number">
+          {{ filterTrainTimetables.length + ' 筆 / ' + dailyTrainTimetable.TrainTimetables.length + ' 筆'}}
+        </div>
+      </div>
       <!-- 列車資訊 -->
       <b-row>
         <b-col
@@ -202,7 +209,7 @@
                   <b-badge :variant="getTrainTypeVariant(filterTrainTimetable.TrainInfo.TrainTypeCode)">{{ transformTrainTypeCodeToName(filterTrainTimetable.TrainInfo.TrainTypeCode) }}</b-badge>
                 </div>
                 <div class="train-time-left-side">
-                  {{ filterTrainTimetable.TrainInfo.StartingStationName.Zh_tw }} - {{ filterTrainTimetable.TrainInfo.EndingStationName.Zh_tw }}
+                  {{ filterTrainTimetable.TrainInfo.StartingStationName.Zh_tw }}-{{ filterTrainTimetable.TrainInfo.EndingStationName.Zh_tw }}
                 </div>
               </b-col>
               <b-col cols="6">
@@ -317,7 +324,23 @@ export default {
         date: this.getDateString(),
         time: new Date().toLocaleTimeString('en-GB'),
       },
-      trainTypeFilterBtns: [],
+      trainTypeFilterBtns: [
+        {
+          actived: true,
+          name: '全部',
+          value: 'all',
+        },
+        {
+          actived: false,
+          name: '對號列車',
+          value: 'express',
+        },
+        {
+          actived: false,
+          name: '非對號列車',
+          value: 'non-express',
+        },
+      ],
       filterTrainTypesRegExp: '',
     }
   },
@@ -326,7 +349,6 @@ export default {
   },
   mounted() {
     this.gettTraStation();
-    this.getTrainTypeFilterBtns();
   },
   computed: {
     filterTrainTimetables() {
@@ -348,15 +370,6 @@ export default {
       // });
 
       this.traStations = traStations;
-    },
-    getTrainTypeFilterBtns() {
-      for (const trainType in TrainTypes) {
-        this.trainTypeFilterBtns.push({
-          name: TrainTypes[trainType].name,
-          value: TrainTypes[trainType].value,
-          actived: TrainTypes[trainType].value === TrainTypes.ALL.value ? true : false,
-        });
-      }
     },
     gettrainServiceImgSrc(name) {
       let images = require.context('./assets/train-service-icon', false, /\.png$/);
@@ -492,6 +505,7 @@ export default {
           this.isShowEndMainLine = false;
           this.isShowEndStation = false;
           this.isShowDatePicker = false;
+          this.dailyTrainTimetable = {};
           this.isLoading = true;
 
           this.$ajax({
@@ -553,45 +567,23 @@ export default {
       this.filterTrainTypesRegExp = '';
 
       // 1. 控制按鈕 actived 狀態
-
-      if (value === TrainTypes.ALL.value) {
-        // 除了全部按鈕，其它皆取消 actived
-        this.trainTypeFilterBtns.forEach(trainTypeFilterBtn => {
-          if (trainTypeFilterBtn.value === TrainTypes.ALL.value) {
-            trainTypeFilterBtn.actived = true;
-          } else {
-            trainTypeFilterBtn.actived = false;
-          }
-        });
-      } else {
-        // 取消全部按鈕的 actived，並將該按鈕 actived 設為相反
-        this.trainTypeFilterBtns.forEach(trainTypeFilterBtn => {
-          if (trainTypeFilterBtn.value === TrainTypes.ALL.value) {
-            trainTypeFilterBtn.actived = false;
-          }
-          if (trainTypeFilterBtn.value === value) {
-            trainTypeFilterBtn.actived = !trainTypeFilterBtn.actived;
-          }
-        });
-      }
-
-      // 2. 製作篩選車種的正規表達式
-
-      this.filterTrainTypesRegExp = '^';
       this.trainTypeFilterBtns.forEach(trainTypeFilterBtn => {
-        if (trainTypeFilterBtn.actived === true) {
-          this.filterTrainTypesRegExp = this.filterTrainTypesRegExp + trainTypeFilterBtn.value + '|'
+        if (trainTypeFilterBtn.value === value) {
+          trainTypeFilterBtn.actived = true;
+        } else {
+          trainTypeFilterBtn.actived = false;
         }
       });
 
-      if (this.filterTrainTypesRegExp === '^all|') {
+      // 2. 製作篩選車種的正規表達式
+      if (value === 'all') {
         this.filterTrainTypesRegExp = '';
-      } else if (this.filterTrainTypesRegExp === '^') {
-        this.filterTrainTypesRegExp = '';
-        this.trainTypeFilterBtns[0].actived = true;
+      } else if (value === 'express') {
+        this.filterTrainTypesRegExp = `^${TrainTypes.TAROKO.value}$|^${TrainTypes.PUYUMA.value}$|^${TrainTypes.TZE_CHIANG.value}$|^${TrainTypes.CHU_KUANG.value}$|^${TrainTypes.FU_HSING.value}$`;
       } else {
-        this.filterTrainTypesRegExp = this.filterTrainTypesRegExp.substring(0, this.filterTrainTypesRegExp.length - 1) + '$';
+        this.filterTrainTypesRegExp = `^${TrainTypes.LOCAL.value}$|^${TrainTypes.ORDINARY.value}$|^${TrainTypes.FAST_LOCAL.value}$`;
       }
+
     },
   },
 }
@@ -620,6 +612,11 @@ export default {
 .menu {
   width: 100%;
   height: 60px;
+}
+
+#result-number {
+  font-size: 85%;
+  padding-top: 5px;
 }
 
 .high-level-station {
