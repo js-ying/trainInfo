@@ -147,7 +147,7 @@
         </b-col>
       </b-row>
     </b-container>
-    <!-- 按鈕 -->
+    <!-- 查詢按鈕 -->
     <div class="mb-4">
       <b-button
         variant="dark"
@@ -159,6 +159,7 @@
       class="mb-3 bv-example-row"
       v-if="dailyTrainTimetable.TrainTimetables"
     >
+      <!-- 車種篩選按鈕群組 -->
       <b-button-group
         size="sm"
         class="mb-3"
@@ -169,8 +170,8 @@
           :class="{ active : trainTypeFilterBtn.actived }"
           @click="filterTrainType(trainTypeFilterBtn.value)"
         >{{ trainTypeFilterBtn.name }}</b-button>
-        {{ this.filterTrainTypesRegExp }}
       </b-button-group>
+      <!-- 列車資訊 -->
       <b-row>
         <b-col
           cols="12"
@@ -190,41 +191,16 @@
                 <!-- {{ caculateTimeRange(filterTrainTimetable.StopTimes[0].DepartureTime, filterTrainTimetable.StopTimes[filterTrainTimetable.StopTimes.length - 1].ArrivalTime) }} -->
               </b-col>
               <b-col cols="3">
-                <img
-                  src="./assets/train-service-icon/disability.png"
-                  class="train-service-icon"
-                  v-if="filterTrainTimetable.TrainInfo.WheelChairFlag"
+                <span
+                  v-for="(trainService, $index) in trainServices"
+                  :key="$index"
                 >
-                <img
-                  src="./assets/train-service-icon/suitcase.png"
-                  class="train-service-icon"
-                  v-if="filterTrainTimetable.TrainInfo.PackageServiceFlag"
-                >
-                <img
-                  src="./assets/train-service-icon/lunch.png"
-                  class="train-service-icon"
-                  v-if="filterTrainTimetable.TrainInfo.DiningFlag"
-                >
-                <img
-                  src="./assets/train-service-icon/breast-feeding.png"
-                  class="train-service-icon"
-                  v-if="filterTrainTimetable.TrainInfo.BreastFeedFlag"
-                >
-                <img
-                  src="./assets/train-service-icon/bicycle.png"
-                  class="train-service-icon"
-                  v-if="filterTrainTimetable.TrainInfo.BikeFlag"
-                >
-                <img
-                  src="./assets/train-service-icon/car.png"
-                  class="train-service-icon"
-                  v-if="filterTrainTimetable.TrainInfo.CarFlag"
-                >
-                <img
-                  src="./assets/train-service-icon/train.png"
-                  class="train-service-icon"
-                  v-if="filterTrainTimetable.TrainInfo.ExtraTrainFlag"
-                >
+                  <img
+                    :src="gettrainServiceImgSrc(trainService.imgName)"
+                    class="train-service-icon"
+                    v-if="filterTrainTimetable.TrainInfo[trainService.flagName]"
+                  >
+                </span>
               </b-col>
             </b-row>
             <!-- {{ filterTrainTime }} -->
@@ -249,6 +225,36 @@ export default {
   data() {
     return {
       mainLines: ['基隆市', '新北市', '臺北市', '桃園市', '新竹縣', '新竹市', '苗栗縣', '臺中市', '彰化縣', '南投縣', '雲林縣', '嘉義縣', '嘉義市', '臺南市', '高雄市', '屏東縣', '臺東縣', '花蓮縣', '宜蘭縣'],
+      trainServices: [
+        {
+          imgName: 'disability',
+          flagName: 'WheelChairFlag',
+        },
+        {
+          imgName: 'suitcase',
+          flagName: 'PackageServiceFlag',
+        },
+        {
+          imgName: 'lunch',
+          flagName: 'DiningFlag',
+        },
+        {
+          imgName: 'breast-feeding',
+          flagName: 'BreastFeedFlag',
+        },
+        {
+          imgName: 'bicycle',
+          flagName: 'BikeFlag',
+        },
+        {
+          imgName: 'car',
+          flagName: 'CarFlag',
+        },
+        {
+          imgName: 'train',
+          flagName: 'ExtraTrainFlag',
+        },
+      ],
       isLoading: false,
       traStations: [],
       filterTraStartStations: [],
@@ -313,6 +319,10 @@ export default {
           actived: TrainTypes[trainType].value === TrainTypes.ALL.value ? true : false,
         });
       }
+    },
+    gettrainServiceImgSrc(name) {
+      let images = require.context('./assets/train-service-icon', false, /\.png$/);
+      return images('./' + name + ".png")
     },
     getDateString() {
       let date = new Date(); // Or the date you'd like converted.
