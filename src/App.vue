@@ -535,11 +535,14 @@ export default {
           errMsg = '【抵達車站】'
         }
 
-        this.$swal({
-          text: '請選擇' + errMsg + '。',
-          icon: 'error',
-          confirmButtonText: '關閉'
-        });
+        this.$bvModal.msgBoxOk('請選擇' + errMsg + '。', {
+          title: '錯誤',
+          okTitle: "關閉",
+          okVariant: 'primary',
+          headerClass: 'border-bottom-0',
+          footerClass: 'border-top-0',
+          centered: true,
+        })
 
       } else {
         complete();
