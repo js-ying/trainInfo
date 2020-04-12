@@ -214,7 +214,7 @@
               </b-col>
               <b-col cols="6">
                 {{ filterTrainTimetable.StopTimes[0].DepartureTime }} - {{ filterTrainTimetable.StopTimes[filterTrainTimetable.StopTimes.length - 1].ArrivalTime }}
-                <div class="train-time-diff">{{ caculateTimeDiff(filterTrainTimetable.StopTimes[0].DepartureTime, filterTrainTimetable.StopTimes[filterTrainTimetable.StopTimes.length - 1].ArrivalTime) }}</div>
+                <div class="train-time-diff">{{ getTimeDiff(filterTrainTimetable.StopTimes[0].DepartureTime, filterTrainTimetable.StopTimes[filterTrainTimetable.StopTimes.length - 1].ArrivalTime) }}</div>
               </b-col>
               <b-col cols="3">
                 <span
@@ -548,7 +548,7 @@ export default {
 
       return trainTypeMap[trainTypeCode];
     },
-    caculateTimeDiff(startTime, endTime) {
+    getTimeDiff(startTime, endTime) {
       let endDateTime = this.selected.date;
       if (endTime < startTime) {
         let date = new Date(this.selected.date);
@@ -556,8 +556,8 @@ export default {
         endDateTime = new Date(endDateTime.getTime() - (endDateTime.getTimezoneOffset() * 60000)).toISOString().substring(0, 10);
       }
 
-      let date1 = new Date(this.selected.date + ' ' + startTime); // 開始時間
-      let date2 = new Date(endDateTime + ' ' + endTime); // 結束時間
+      let date1 = new Date(this.selected.date + 'T' + startTime); // 開始時間
+      let date2 = new Date(endDateTime + 'T' + endTime); // 結束時間
       let date3 = date2.getTime() - date1.getTime(); // 時間差的毫秒數
 
       //計算出相差天數
@@ -575,7 +575,7 @@ export default {
       // let leave3 = leave2 % (60 * 1000); // 計算分鐘數後剩餘的毫秒數
       // let seconds = Math.round(leave3 / 1000);
 
-      return hours + ' 小時 ' + minutes + ' 分';
+      return hours + ' 時 ' + minutes + ' 分';
     },
     transformTripLineToName(tripLine) {
       const tripLineMap = {};
@@ -652,6 +652,7 @@ export default {
 
 .train-time-diff {
   font-size: 85%;
+  color: #545b62;
 }
 
 .train-service-icon {
