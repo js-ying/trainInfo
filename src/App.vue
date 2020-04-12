@@ -237,7 +237,7 @@
                   :key="$index"
                 >
                   <img
-                    :src="gettrainServiceImgSrc(trainService.imgName)"
+                    :src="getImagesSrc(trainService.imgName)"
                     class="train-service-icon"
                     v-b-tooltip.hover
                     :title="trainService.description"
@@ -302,7 +302,7 @@
     <!-- 關於台鐵時刻表 modal -->
     <b-modal
       v-model="isShowAboutMeDetail"
-      title="關於台鐵時刻表"
+      title="關於台鐵時刻查詢"
       :hideHeaderClose="true"
       okTitle="關閉"
       ok-only
@@ -318,6 +318,24 @@
       <p>
         別問我為什麼要做大家都做過的東西，因為我就想。
       </p>
+      <div id="about-update-time">
+        <b-icon
+          icon="link45deg"
+          variant="secondary"
+          class="mr-2"
+        ></b-icon>素材來源：<a
+          :href="iconSource.link"
+          target="_blank"
+          v-for="(iconSource, $index) in iconSources"
+          :key="$index"
+        >
+          <img
+            :src="getImagesSrc(iconSource.imgSrc)"
+            width="15px"
+            class="mr-1"
+          >
+        </a>
+      </div>
       <div id="about-update-time">
         <b-icon
           icon="exclamation-circle-fill"
@@ -436,6 +454,28 @@ export default {
       isShowTrainTimeDetail: false,
       clickedTrainTimeDetail: null,
       isShowAboutMeDetail: false,
+      iconSources: [
+        {
+          link: 'https://www.flaticon.com/free-icon/train_712163?term=train&page=1&position=50',
+          author: 'DinosoftLabs',
+          imgSrc: 'logo',
+        },
+        {
+          link: 'https://www.flaticon.com/free-icon/disability_414221?term=disabled&page=1&position=26',
+          author: 'Freepik',
+          imgSrc: 'disability',
+        },
+        {
+          link: 'https://www.flaticon.com/free-icon/breastfeeding_1320921?term=breastfeeding&page=1&position=49',
+          author: 'Freepik',
+          imgSrc: 'breast-feeding',
+        },
+        {
+          link: 'https://www.flaticon.com/free-icon/bike_2636494?term=bike&page=1&position=63',
+          author: 'Freepik',
+          imgSrc: 'bicycle',
+        }
+      ],
     }
   },
   components: {
@@ -473,8 +513,8 @@ export default {
         this.selected.end = JSON.parse(this.myStorage.selectedEnd);
       }
     },
-    gettrainServiceImgSrc(name) {
-      let images = require.context('./assets/train-service-icon', false, /\.png$/);
+    getImagesSrc(name) {
+      let images = require.context('./assets/images', false, /\.png$/);
       return images('./' + name + ".png")
     },
     getDateString() {
@@ -589,11 +629,13 @@ export default {
       const selectedDate = new Date(date);
       // 如果選擇的日期是過去
       if (new Date(selectedDate.toDateString()) < new Date(new Date().toDateString())) {
-        this.$swal({
-          title: '參數錯誤',
-          text: '出發日期不能小於今天。',
-          icon: 'error',
-          confirmButtonText: '關閉'
+        this.$bvModal.msgBoxOk('出發日期不能小於今天。', {
+          title: '錯誤',
+          okTitle: "關閉",
+          okVariant: 'primary',
+          headerClass: 'border-bottom-0',
+          footerClass: 'border-top-0',
+          centered: true,
         });
       } else {
         complete();
@@ -788,6 +830,9 @@ export default {
 
 .train-service-icon {
   width: 20px;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
+    -webkit-box-shadow 0.15s ease-in-out;
 }
 
 #about-update-time {
