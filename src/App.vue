@@ -163,6 +163,11 @@
     <!-- 查詢按鈕 -->
     <div class="mb-4">
       <b-button
+        class="mr-3"
+        variant="outline-secondary"
+        @click="swapSeletedStation()"
+      >起迄站互換</b-button>
+      <b-button
         variant="dark"
         @click="query()"
       >查詢</b-button>
@@ -312,12 +317,12 @@ export default {
         //   stationName: null,
         // },
         start: {
-          mainLine: null,
+          mainLine: '臺北市',
           stationId: '1000',
           stationName: '臺北',
         },
         end: {
-          mainLine: null,
+          mainLine: '新竹市',
           stationId: '1210',
           stationName: '新竹',
         },
@@ -470,7 +475,6 @@ export default {
         }
 
         this.$swal({
-
           text: '請選擇' + errMsg + '。',
           icon: 'error',
           confirmButtonText: '關閉'
@@ -493,6 +497,15 @@ export default {
         });
       } else {
         complete();
+      }
+    },
+    swapSeletedStation() {
+      if (!Object.values(this.selected.start).includes(null) && !Object.values(this.selected.end).includes(null)) {
+        let start = {}, end = {};
+        Object.assign(start, this.selected.start);
+        Object.assign(end, this.selected.end);
+        Object.assign(this.selected.start, end);
+        Object.assign(this.selected.end, start);
       }
     },
     query() {
