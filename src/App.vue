@@ -10,7 +10,7 @@
         id="web-title"
         class="mb-4"
         @click="toggleSelectArea('reset')"
-      >台鐵時刻表</h5>
+      >台鐵時刻查詢</h5>
       <b-container class="bv-example-row">
         <b-row class="justify-content-md-center">
           <!-- 出發車站 -->
