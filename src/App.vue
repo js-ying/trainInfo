@@ -64,6 +64,13 @@
           </b-col>
         </b-row>
       </b-container>
+      <b-icon
+        icon="house-door-fill"
+        variant="light"
+        class="rounded-circle bg-secondary p-2"
+        id="about-me"
+        @click="isShowAboutMeDetail = !isShowAboutMeDetail"
+      ></b-icon>
     </div>
     <!-- 參數調整區域 -->
     <b-container
@@ -244,6 +251,7 @@
         </b-col>
       </b-row>
     </b-container>
+    <!-- 列車時刻詳細資料 modal -->
     <b-modal
       v-model="isShowTrainTimeDetail"
       title="列車資訊"
@@ -290,6 +298,33 @@
           <b-col cols="4">{{ stopTime.DepartureTime }}</b-col>
         </b-row>
       </template>
+    </b-modal>
+    <!-- 關於台鐵時刻表 modal -->
+    <b-modal
+      v-model="isShowAboutMeDetail"
+      title="關於台鐵時刻表"
+      :hideHeaderClose="true"
+      okTitle="關閉"
+      ok-only
+      :centered="true"
+    >
+      <p>
+        作者：JS Ying<br />
+        個人網站：<a
+          href="https://jsy.tw"
+          target="_blanl"
+        >https://jsy.tw</a>
+      </p>
+      <p>
+        別問我為什麼要做大家都做過的東西，因為我就想。
+      </p>
+      <div id="about-update-time">
+        <b-icon
+          icon="exclamation-circle-fill"
+          variant="secondary"
+          class="mr-2"
+        ></b-icon>發行日：2020/04，最後更新：2020/04
+      </div>
     </b-modal>
   </div>
 </template>
@@ -400,6 +435,7 @@ export default {
       filterTrainTypesRegExp: '',
       isShowTrainTimeDetail: false,
       clickedTrainTimeDetail: null,
+      isShowAboutMeDetail: false,
     }
   },
   components: {
@@ -542,7 +578,7 @@ export default {
           headerClass: 'border-bottom-0',
           footerClass: 'border-top-0',
           centered: true,
-        })
+        });
 
       } else {
         complete();
@@ -600,8 +636,6 @@ export default {
             this.dailyTrainTimetable.TrainTimetables = this.dailyTrainTimetable.TrainTimetables.filter((trainTimeTable) => {
               return trainTimeTable.StopTimes[0].DepartureTime > this.selected.time.slice(0, -3);
             });
-
-            console.log('query', this.dailyTrainTimetable.TrainTimetables);
 
             this.isLoading = false;
           });
@@ -693,7 +727,7 @@ export default {
     showTrainTimeDetail(trainTime) {
       this.isShowTrainTimeDetail = true;
       this.clickedTrainTimeDetail = trainTime;
-    }
+    },
   },
 }
 </script>
@@ -718,6 +752,15 @@ export default {
   font-size: 100%;
 }
 
+#about-me {
+  position: fixed;
+  z-index: 10;
+  right: 20px;
+  bottom: 20px;
+  font-size: 2em;
+  cursor: pointer;
+}
+
 #web-title {
   cursor: pointer;
 }
@@ -730,9 +773,6 @@ export default {
 #result-number {
   font-size: 85%;
   padding-top: 5px;
-}
-
-.high-level-station {
 }
 
 .train-time-col {
@@ -748,6 +788,11 @@ export default {
 
 .train-service-icon {
   width: 20px;
+}
+
+#about-update-time {
+  font-size: 0.85em;
+  color: #6c757d;
 }
 
 @media screen and (max-width: 768px) {
