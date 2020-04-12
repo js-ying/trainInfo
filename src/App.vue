@@ -204,7 +204,10 @@
           v-for="(filterTrainTimetable, $index) in filterTrainTimetables"
           :key="$index"
         >
-          <div class="train-time-col bv-example-row-flex-cols p-2">
+          <div
+            class="train-time-col bv-example-row-flex-cols p-2"
+            @click="showTrainTimeDetail(filterTrainTimetable)"
+          >
             <b-row align-v="center">
               <b-col cols="3">
                 <div class="train-time-left-side">
@@ -241,6 +244,53 @@
         </b-col>
       </b-row>
     </b-container>
+    <b-modal
+      v-model="isShowTrainTimeDetail"
+      title="列車資訊"
+      :hideHeaderClose="true"
+      okTitle="關閉"
+      ok-only
+      :centered="true"
+    >
+      <b-row
+        align-v="center"
+        class="text-center mb-3"
+      >
+        <b-col cols="4">
+          <b-badge
+            pill
+            variant="primary"
+            class="t100"
+          >站名</b-badge>
+        </b-col>
+        <b-col cols="4">
+          <b-badge
+            pill
+            variant="primary"
+            class="t100"
+          >到站時間</b-badge>
+        </b-col>
+        <b-col cols="4">
+          <b-badge
+            pill
+            variant="primary"
+            class="t100"
+          >離站時間</b-badge>
+        </b-col>
+      </b-row>
+      <template v-if="clickedTrainTimeDetail && clickedTrainTimeDetail.StopTimes">
+        <b-row
+          align-v="center"
+          class="text-center mb-2"
+          v-for="(stopTime, $index) in clickedTrainTimeDetail.StopTimes"
+          :key="$index"
+        >
+          <b-col cols="4">{{ stopTime.StationName.Zh_tw }}</b-col>
+          <b-col cols="4">{{ stopTime.ArrivalTime }}</b-col>
+          <b-col cols="4">{{ stopTime.DepartureTime }}</b-col>
+        </b-row>
+      </template>
+    </b-modal>
   </div>
 </template>
 
@@ -257,6 +307,7 @@ export default {
   name: 'App',
   data() {
     return {
+      myStorage: null,
       mainLines: ['基隆市', '新北市', '臺北市', '桃園市', '新竹縣', '新竹市', '苗栗縣', '臺中市', '彰化縣', '南投縣', '雲林縣', '嘉義縣', '嘉義市', '臺南市', '高雄市', '屏東縣', '臺東縣', '花蓮縣', '宜蘭縣'],
       trainServices: [
         {
@@ -306,26 +357,26 @@ export default {
       isShowEndStation: false,
       isShowDatePicker: false,
       selected: {
-        // start: {
-        //   mainLine: null,
-        //   stationId: null,
-        //   stationName: null,
-        // },
-        // end: {
-        //   mainLine: null,
-        //   stationId: null,
-        //   stationName: null,
-        // },
         start: {
-          mainLine: '臺北市',
-          stationId: '1000',
-          stationName: '臺北',
+          mainLine: null,
+          stationId: null,
+          stationName: null,
         },
         end: {
-          mainLine: '新竹市',
-          stationId: '1210',
-          stationName: '新竹',
+          mainLine: null,
+          stationId: null,
+          stationName: null,
         },
+        // start: {
+        //   mainLine: '臺北市',
+        //   stationId: '1000',
+        //   stationName: '臺北',
+        // },
+        // end: {
+        //   mainLine: '新竹市',
+        //   stationId: '1210',
+        //   stationName: '新竹',
+        // },
         date: this.getDateString(),
         time: new Date().toLocaleTimeString('en-GB'),
       },
@@ -347,6 +398,8 @@ export default {
         },
       ],
       filterTrainTypesRegExp: '',
+      isShowTrainTimeDetail: false,
+      clickedTrainTimeDetail: null,
     }
   },
   components: {
@@ -354,6 +407,8 @@ export default {
   },
   mounted() {
     this.gettTraStation();
+    this.myStorage = window.localStorage;
+    this.setLocalStorage();
   },
   computed: {
     filterTrainTimetables() {
@@ -375,6 +430,12 @@ export default {
       // });
 
       this.traStations = traStations;
+    },
+    setLocalStorage() {
+      if (this.myStorage.selectedStart && this.myStorage.selectedEnd) {
+        this.selected.start = JSON.parse(this.myStorage.selectedStart);
+        this.selected.end = JSON.parse(this.myStorage.selectedEnd);
+      }
     },
     gettrainServiceImgSrc(name) {
       let images = require.context('./assets/train-service-icon', false, /\.png$/);
@@ -518,6 +579,7 @@ export default {
           this.isShowDatePicker = false;
           this.dailyTrainTimetable = {};
           this.isLoading = true;
+          this.saveLocalStorage();
 
           this.$ajax({
             method: 'get',
@@ -542,6 +604,10 @@ export default {
           });
         });
       });
+    },
+    saveLocalStorage() {
+      this.myStorage.setItem('selectedStart', JSON.stringify(this.selected.start));
+      this.myStorage.setItem('selectedEnd', JSON.stringify(this.selected.end));
     },
     getTrainTypeVariant(trainTypeCode) {
       const trainTypeVariantMap = {};
@@ -621,6 +687,10 @@ export default {
       }
 
     },
+    showTrainTimeDetail(trainTime) {
+      this.isShowTrainTimeDetail = true;
+      this.clickedTrainTimeDetail = trainTime;
+    }
   },
 }
 </script>
@@ -639,6 +709,10 @@ export default {
 
 .w100 {
   width: 100%;
+}
+
+.t100 {
+  font-size: 100%;
 }
 
 #web-title {
@@ -661,6 +735,7 @@ export default {
 .train-time-col {
   border: 1px solid #343a40;
   border-radius: 0.25rem;
+  cursor: pointer;
 }
 
 .train-time-diff {
