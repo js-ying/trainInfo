@@ -470,7 +470,7 @@ export default {
         }
 
         this.$swal({
-          title: '必填未填',
+
           text: '請選擇' + errMsg + '。',
           icon: 'error',
           confirmButtonText: '關閉'
