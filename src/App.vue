@@ -213,8 +213,8 @@
                 </div>
               </b-col>
               <b-col cols="6">
-                {{ filterTrainTimetable.StopTimes[0].DepartureTime }} - {{ filterTrainTimetable.StopTimes[filterTrainTimetable.StopTimes.length - 1].ArrivalTime }}<br>
-                <!-- {{ caculateTimeRange(filterTrainTimetable.StopTimes[0].DepartureTime, filterTrainTimetable.StopTimes[filterTrainTimetable.StopTimes.length - 1].ArrivalTime) }} -->
+                {{ filterTrainTimetable.StopTimes[0].DepartureTime }} - {{ filterTrainTimetable.StopTimes[filterTrainTimetable.StopTimes.length - 1].ArrivalTime }}
+                <div class="train-time-diff">{{ caculateTimeDiff(filterTrainTimetable.StopTimes[0].DepartureTime, filterTrainTimetable.StopTimes[filterTrainTimetable.StopTimes.length - 1].ArrivalTime) }}</div>
               </b-col>
               <b-col cols="3">
                 <span
@@ -548,10 +548,35 @@ export default {
 
       return trainTypeMap[trainTypeCode];
     },
-    // caculateTimeRange(startTime, endTime) {
-    //   console.log(startTime, endTime);
-    //   return '';
-    // },
+    caculateTimeDiff(startTime, endTime) {
+      let endDateTime = this.selected.date;
+      if (endTime < startTime) {
+        let date = new Date(this.selected.date);
+        endDateTime = new Date(date.setDate(date.getDate() + 1));
+        endDateTime = new Date(endDateTime.getTime() - (endDateTime.getTimezoneOffset() * 60000)).toISOString().substring(0, 10);
+      }
+
+      let date1 = new Date(this.selected.date + ' ' + startTime); // 開始時間
+      let date2 = new Date(endDateTime + ' ' + endTime); // 結束時間
+      let date3 = date2.getTime() - date1.getTime(); // 時間差的毫秒數
+
+      //計算出相差天數
+      // let days = Math.floor(date3 / (24 * 3600 * 1000))
+
+      //計算出小時數
+      let leave1 = date3 % (24 * 3600 * 1000); // 計算天數後剩餘的毫秒數
+      let hours = Math.floor(leave1 / (3600 * 1000));
+
+      //計算相差分鐘數
+      let leave2 = leave1 % (3600 * 1000); // 計算小時數後剩餘的毫秒數
+      let minutes = Math.floor(leave2 / (60 * 1000));
+
+      //計算相差秒數
+      // let leave3 = leave2 % (60 * 1000); // 計算分鐘數後剩餘的毫秒數
+      // let seconds = Math.round(leave3 / 1000);
+
+      return hours + ' 小時 ' + minutes + ' 分';
+    },
     transformTripLineToName(tripLine) {
       const tripLineMap = {};
 
@@ -623,6 +648,10 @@ export default {
 .train-time-col {
   border: 1px solid #343a40;
   border-radius: 0.25rem;
+}
+
+.train-time-diff {
+  font-size: 85%;
 }
 
 .train-service-icon {
