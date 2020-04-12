@@ -435,7 +435,6 @@ export default {
     },
     selectStartStation(stationId, stationName) {
       this.isShowStartStation = false;
-      this.isShowEndMainLine = true;
 
       this.selected.start.stationId = stationId;
       this.selected.start.stationName = stationName;
@@ -452,7 +451,6 @@ export default {
     },
     selectEndStation(stationId, stationName) {
       this.isShowEndStation = false;
-      this.isShowDatePicker = true;
 
       this.selected.end.stationId = stationId;
       this.selected.end.stationName = stationName;
