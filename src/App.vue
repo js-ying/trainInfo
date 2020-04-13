@@ -318,6 +318,12 @@
       <p>
         別問我為什麼要做大家都做過的東西，因為我就想。
       </p>
+      <p>
+        手機使用者可以把這個網頁變成 APP 放在桌面上唷。<a
+          href="https://jsy.tw/blog/1370/"
+          target="_blank"
+        >查看更多</a>
+      </p>
       <div id="about-update-time">
         <b-icon
           icon="link45deg"
@@ -341,7 +347,7 @@
           icon="exclamation-circle-fill"
           variant="secondary"
           class="mr-2"
-        ></b-icon>發行日：2020/04，最後更新：2020/04
+        ></b-icon>發行日：2020/04/13，最後更新：2020/04/13
       </div>
     </b-modal>
   </div>
@@ -456,8 +462,8 @@ export default {
       isShowAboutMeDetail: false,
       iconSources: [
         {
-          link: 'https://www.flaticon.com/free-icon/train_712163?term=train&page=1&position=50',
-          author: 'DinosoftLabs',
+          link: 'https://www.flaticon.com/free-icon/train_565410?term=train&page=1&position=9',
+          author: 'Google',
           imgSrc: 'logo',
         },
         {
