@@ -1,4 +1,4 @@
-const traStations = [{
+const TraStations = [{
   "StationUID": "TRA-0900",
   "StationID": "0900",
   "StationName": {
@@ -3615,4 +3615,4 @@ const traStations = [{
   "StationURL": "http://tip.railway.gov.tw/tra-tip-web/tip/tip00H/tipH41/viewStaInfo/7390"
 }];
 
-export default traStations;
+export default TraStations;

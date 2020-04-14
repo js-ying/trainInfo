@@ -1,12 +1,8 @@
-import jsSHA from 'jssha'
+import jsSHA from 'jssha';
 
-const plugin = {};
+export default {
 
-plugin.install = (Vue) => {
-  // 添加實例方法
-  const vue = Vue;
-
-  vue.prototype.$getAuthorizationHeader = () => {
+  getAuthorizationHeader() {
     let AppID = '3b124a10ae70407a94afe8f1a07dcd10';
     let AppKey = 'haEfCNQB6REiBCWwago238-MFAI';
 
@@ -20,9 +16,12 @@ plugin.install = (Vue) => {
     return {
       'Authorization': Authorization,
       'X-Date': GMTString /*,'Accept-Encoding': 'gzip'*/
-    }; //如果要將 js 運行在伺服器，可額外加入 'Accept-Encoding': 'gzip'，要求壓縮以減少網路傳輸資料量
-  }
+    }; // 如果要將 js 運行在伺服器，可額外加入 'Accept-Encoding': 'gzip'，要求壓縮以減少網路傳輸資料量
+  },
 
-};
+  getNowYYYYMMDD() {
+    let date = new Date(); // Or the date you'd like converted.
+    return new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().substring(0, 10);
+  },
 
-export default plugin;
+}

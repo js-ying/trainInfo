@@ -64,13 +64,6 @@
           </b-col>
         </b-row>
       </b-container>
-      <b-icon
-        icon="house-door-fill"
-        variant="light"
-        class="rounded-circle bg-secondary p-2"
-        id="about-me"
-        @click="isShowAboutMeDetail = !isShowAboutMeDetail"
-      ></b-icon>
     </div>
     <!-- 參數調整區域 -->
     <b-container
@@ -237,7 +230,7 @@
                   :key="$index"
                 >
                   <img
-                    :src="getImagesSrc(trainService.imgName)"
+                    :src="require('./assets/images/' + trainService.imgName + '.png')"
                     class="train-service-icon"
                     v-b-tooltip.hover
                     :title="trainService.description"
@@ -299,57 +292,19 @@
         </b-row>
       </template>
     </b-modal>
+    <!-- 關於台鐵時刻表 icon -->
+    <b-icon
+      icon="house-door-fill"
+      variant="light"
+      class="rounded-circle bg-secondary p-2"
+      id="about-me"
+      @click="isShowAboutMeModal = true"
+    ></b-icon>
     <!-- 關於台鐵時刻表 modal -->
-    <b-modal
-      v-model="isShowAboutMeDetail"
-      title="關於台鐵時刻查詢"
-      :hideHeaderClose="true"
-      okTitle="關閉"
-      ok-only
-      :centered="true"
-    >
-      <p>
-        作者：JS Ying<br />
-        個人網站：<a
-          href="https://jsy.tw"
-          target="_blanl"
-        >https://jsy.tw</a>
-      </p>
-      <p>
-        別問我為什麼要做大家都做過的東西，因為我就想。
-      </p>
-      <p>
-        手機使用者可以把這個網頁變成 APP 放在桌面上唷。<a
-          href="https://jsy.tw/blog/1370/"
-          target="_blank"
-        >查看更多</a>
-      </p>
-      <div id="about-update-time">
-        <b-icon
-          icon="link45deg"
-          variant="secondary"
-          class="mr-2"
-        ></b-icon>素材來源：<a
-          :href="iconSource.link"
-          target="_blank"
-          v-for="(iconSource, $index) in iconSources"
-          :key="$index"
-        >
-          <img
-            :src="getImagesSrc(iconSource.imgSrc)"
-            width="15px"
-            class="mr-1"
-          >
-        </a>
-      </div>
-      <div id="about-update-time">
-        <b-icon
-          icon="exclamation-circle-fill"
-          variant="secondary"
-          class="mr-2"
-        ></b-icon>發行日：2020/04/13，最後更新：2020/04/13
-      </div>
-    </b-modal>
+    <about-me-modal
+      :callShow="isShowAboutMeModal"
+      @callHide="isShowAboutMeModal = false"
+    ></about-me-modal>
   </div>
 </template>
 
@@ -359,11 +314,17 @@ import 'vue-loading-overlay/dist/vue-loading.css';
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
-import traStations from './assets/traStations';
+import TraStations from './assets/traStations';
 import { TrainTypes, TripLines } from './assets/constants';
+
+import AboutMeModal from './modal/AboutMeModal';
 
 export default {
   name: 'App',
+  components: {
+    Loading,
+    AboutMeModal,
+  },
   data() {
     return {
       myStorage: null,
@@ -426,17 +387,7 @@ export default {
           stationId: null,
           stationName: null,
         },
-        // start: {
-        //   mainLine: '臺北市',
-        //   stationId: '1000',
-        //   stationName: '臺北',
-        // },
-        // end: {
-        //   mainLine: '新竹市',
-        //   stationId: '1210',
-        //   stationName: '新竹',
-        // },
-        date: this.getDateString(),
+        date: this.$commonService.getNowYYYYMMDD(),
         time: new Date().toLocaleTimeString('en-GB'),
       },
       trainTypeFilterBtns: [
@@ -459,33 +410,8 @@ export default {
       filterTrainTypesRegExp: '',
       isShowTrainTimeDetail: false,
       clickedTrainTimeDetail: null,
-      isShowAboutMeDetail: false,
-      iconSources: [
-        {
-          link: 'https://www.flaticon.com/free-icon/train_565410?term=train&page=1&position=9',
-          author: 'Google',
-          imgSrc: 'logo',
-        },
-        {
-          link: 'https://www.flaticon.com/free-icon/disability_414221?term=disabled&page=1&position=26',
-          author: 'Freepik',
-          imgSrc: 'disability',
-        },
-        {
-          link: 'https://www.flaticon.com/free-icon/breastfeeding_1320921?term=breastfeeding&page=1&position=49',
-          author: 'Freepik',
-          imgSrc: 'breast-feeding',
-        },
-        {
-          link: 'https://www.flaticon.com/free-icon/bike_2636494?term=bike&page=1&position=63',
-          author: 'Freepik',
-          imgSrc: 'bicycle',
-        }
-      ],
+      isShowAboutMeModal: false,
     }
-  },
-  components: {
-    Loading,
   },
   mounted() {
     this.gettTraStation();
@@ -511,21 +437,13 @@ export default {
       //   this.isLoading = false;
       // });
 
-      this.traStations = traStations;
+      this.traStations = TraStations;
     },
     setLocalStorage() {
       if (this.myStorage.selectedStart && this.myStorage.selectedEnd) {
         this.selected.start = JSON.parse(this.myStorage.selectedStart);
         this.selected.end = JSON.parse(this.myStorage.selectedEnd);
       }
-    },
-    getImagesSrc(name) {
-      let images = require.context('./assets/images', false, /\.png$/);
-      return images('./' + name + ".png")
-    },
-    getDateString() {
-      let date = new Date(); // Or the date you'd like converted.
-      return new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().substring(0, 10);
     },
     toggleSelectArea(area) {
       if (area === 'startMainLine') {
@@ -564,7 +482,7 @@ export default {
             stationId: null,
             stationName: null,
           },
-          date: this.getDateString(),
+          date: this.$commonService.getNowYYYYMMDD(),
           time: new Date().toLocaleTimeString('en-GB'),
         };
 
@@ -671,7 +589,7 @@ export default {
           this.$ajax({
             method: 'get',
             url: `https://ptx.transportdata.tw/MOTC/v3/Rail/TRA/DailyTrainTimetable/OD/Inclusive/${this.selected.start.stationId}/to/${this.selected.end.stationId}/${this.selected.date}?$format=JSON`,
-            headers: this.$getAuthorizationHeader(),
+            headers: this.$commonService.getAuthorizationHeader(),
           }).then((res) => {
             Object.assign(this.dailyTrainTimetable, res.data);
 
@@ -839,11 +757,6 @@ export default {
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
     border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
     -webkit-box-shadow 0.15s ease-in-out;
-}
-
-#about-update-time {
-  font-size: 0.85em;
-  color: #6c757d;
 }
 
 @media screen and (max-width: 768px) {
