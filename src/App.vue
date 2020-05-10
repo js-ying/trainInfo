@@ -221,6 +221,7 @@
                     class="train-service-icon"
                     v-b-tooltip.hover
                     :title="trainService.description"
+                    :disabled="isTooltipShow()"
                     v-if="filterTrainTimetable.TrainInfo[trainService.flagName]"
                   >
                 </span>
@@ -408,7 +409,7 @@ export default {
       return this.dailyTrainTimetable.TrainTimetables.filter(trainTimetable =>
         trainTimetable.TrainInfo.TrainTypeCode.match(new RegExp(this.filterTrainTypesRegExp))
       );
-    }
+    },
   },
   methods: {
     gettTraStation() {
@@ -678,6 +679,12 @@ export default {
     showTrainTimeDetail(trainTime) {
       this.isShowTrainTimeDetail = true;
       this.clickedTrainTimeDetail = trainTime;
+    },
+    isTooltipShow() {
+      if (window.innerWidth < 768) {
+        return true;
+      }
+      return false;
     },
   },
 }
