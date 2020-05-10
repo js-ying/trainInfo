@@ -2,15 +2,16 @@
   <div id="app">
     <loading
       :active.sync="isLoading"
-      :is-full-page="true"
-    ></loading>
+      :is-full-page="true">
+    </loading>
     <!-- 導覽列 -->
     <div class="mb-2">
       <h5
         id="web-title"
         class="mb-4"
-        @click="toggleSelectArea('reset')"
-      >台鐵時刻查詢</h5>
+        @click="toggleSelectArea('reset')">
+        台鐵時刻查詢
+      </h5>
       <b-container class="bv-example-row">
         <b-row class="justify-content-md-center">
           <!-- 出發車站 -->
@@ -18,13 +19,11 @@
             cols="6"
             md="4"
             class="mb-3"
-            @click="toggleSelectArea('startMainLine')"
-          >
+            @click="toggleSelectArea('startMainLine')">
             <b-button
               variant="outline-dark"
               class="menu"
-              :class="{ active : isShowStartMainLine || isShowStartStation }"
-            >
+              :class="{ active : isShowStartMainLine || isShowStartStation }">
               出發車站<br>
               {{ selected.start.stationName }}
             </b-button>
@@ -34,13 +33,11 @@
             cols="6"
             md="4"
             class="mb-3"
-            @click="toggleSelectArea('endMainLine')"
-          >
+            @click="toggleSelectArea('endMainLine')">
             <b-button
               variant="outline-dark"
               class="menu"
-              :class="{ active : isShowEndMainLine || isShowEndStation }"
-            >
+              :class="{ active : isShowEndMainLine || isShowEndStation }">
               抵達車站<br>
               {{ selected.end.stationName }}
             </b-button>
@@ -50,13 +47,11 @@
             cols="12"
             md="4"
             class="mb-3"
-            @click="toggleSelectArea('datePicker')"
-          >
+            @click="toggleSelectArea('datePicker')">
             <b-button
               variant="outline-dark"
               class="menu"
-              :class="{ active : isShowDatePicker }"
-            >
+              :class="{ active : isShowDatePicker }">
               出發日期<br>
               {{ selected.date }}
               {{ selected.time.slice(0, -3) }}
@@ -68,8 +63,7 @@
     <!-- 參數調整區域 -->
     <b-container
       class="mb-2 bv-example-row"
-      id="param-adjustment-area"
-    >
+      id="param-adjustment-area">
       <b-row v-if="isShowStartMainLine">
         <b-col
           cols="6"
@@ -77,13 +71,13 @@
           lg="3"
           class="mb-3"
           v-for="(mainLine, $index) in mainLines"
-          :key="$index"
-        >
+          :key="$index">
           <b-button
             variant="secondary"
             class="w100"
-            @click="selectStartMainLine(mainLine)"
-          >{{ mainLine }}</b-button>
+            @click="selectStartMainLine(mainLine)">
+            {{ mainLine }}
+          </b-button>
         </b-col>
       </b-row>
       <b-row v-if="isShowStartStation">
@@ -93,15 +87,13 @@
           lg="3"
           class="mb-3"
           v-for="(filterTraStartStation, $index) in filterTraStartStations"
-          :key="$index"
-        >
+          :key="$index">
           <b-button
             variant="secondary"
             :value="filterTraStartStation.StationID"
             class="w100"
             :class="{ 'high-level-station' : filterTraStartStation.StationClass === '0' || filterTraStartStation.StationClass === '1' }"
-            @click="selectStartStation(filterTraStartStation.StationID, filterTraStartStation.StationName.Zh_tw)"
-          >
+            @click="selectStartStation(filterTraStartStation.StationID, filterTraStartStation.StationName.Zh_tw)">
             {{ filterTraStartStation.StationClass === '0' || filterTraStartStation.StationClass === '1' ? '＊' : '' }}
             {{ filterTraStartStation.StationName.Zh_tw }}
           </b-button>
@@ -114,8 +106,7 @@
           lg="3"
           class="mb-3"
           v-for="(mainLine, $index) in mainLines"
-          :key="$index"
-        >
+          :key="$index">
           <b-button
             variant="secondary"
             class="w100"
@@ -130,15 +121,13 @@
           lg="3"
           class="mb-3"
           v-for="(filterTraEndStation, $index) in filterTraEndStations"
-          :key="$index"
-        >
+          :key="$index">
           <b-button
             variant="secondary"
             :value="filterTraEndStation.StationID"
             class="w100"
             :class="{ 'high-level-station' : filterTraEndStation.StationClass === '0' || filterTraEndStation.StationClass === '1' }"
-            @click="selectEndStation(filterTraEndStation.StationID, filterTraEndStation.StationName.Zh_tw)"
-          >
+            @click="selectEndStation(filterTraEndStation.StationID, filterTraEndStation.StationName.Zh_tw)">
             {{ filterTraEndStation.StationClass === '0' || filterTraEndStation.StationClass === '1' ? '＊' : '' }}
             {{ filterTraEndStation.StationName.Zh_tw }}
           </b-button>
@@ -147,16 +136,15 @@
       <b-row v-if="isShowDatePicker">
         <b-col
           cols="12"
-          class="mb-3"
-        >
+          class="mb-3">
           <b-form-datepicker
             v-model="selected.date"
-            class="mb-2"
-          ></b-form-datepicker>
+            class="mb-2">
+          </b-form-datepicker>
           <b-form-timepicker
             v-model="selected.time"
-            locale="en"
-          ></b-form-timepicker>
+            locale="en">
+          </b-form-timepicker>
         </b-col>
       </b-row>
     </b-container>
@@ -165,31 +153,32 @@
       <b-button
         class="mr-3"
         variant="outline-secondary"
-        @click="swapSeletedStation()"
-      >起迄站互換</b-button>
+        @click="swapSeletedStation()">
+        起迄站互換
+      </b-button>
       <b-button
         variant="dark"
-        @click="query()"
-      >查詢</b-button>
+        @click="query()">
+        查詢
+      </b-button>
     </div>
     <!-- 查詢結果 -->
     <b-container
       class="mb-3 bv-example-row"
-      v-if="dailyTrainTimetable.TrainTimetables"
-    >
+      v-if="dailyTrainTimetable.TrainTimetables">
       <div class="d-flex justify-content-between">
         <!-- 車種篩選按鈕群組 -->
         <b-button-group
           size="sm"
           class="mb-3"
-          id="train-Type-filter-btns"
-        >
+          id="train-Type-filter-btns">
           <b-button
             v-for="trainTypeFilterBtn in trainTypeFilterBtns"
             :key="trainTypeFilterBtn.value"
             :class="{ active : trainTypeFilterBtn.actived }"
-            @click="filterTrainType(trainTypeFilterBtn.value)"
-          >{{ trainTypeFilterBtn.name }}</b-button>
+            @click="filterTrainType(trainTypeFilterBtn.value)">
+            {{ trainTypeFilterBtn.name }}
+          </b-button>
         </b-button-group>
         <!-- 查詢結果頁數 -->
         <div id="result-number">
@@ -202,12 +191,10 @@
           cols="12"
           class="mb-3"
           v-for="(filterTrainTimetable, $index) in filterTrainTimetables"
-          :key="$index"
-        >
+          :key="$index">
           <div
             class="train-time-col bv-example-row-flex-cols p-2"
-            @click="showTrainTimeDetail(filterTrainTimetable)"
-          >
+            @click="showTrainTimeDetail(filterTrainTimetable)">
             <b-row align-v="center">
               <b-col cols="3">
                 <div class="train-time-left-side">
@@ -251,32 +238,31 @@
       :hideHeaderClose="true"
       okTitle="關閉"
       ok-only
-      :centered="true"
-    >
+      :centered="true">
       <b-row
         align-v="center"
-        class="text-center mb-3"
-      >
+        class="text-center mb-3">
         <b-col cols="4">
           <b-badge
             pill
             variant="primary"
-            class="t100"
-          >站名</b-badge>
+            class="t100">站名</b-badge>
         </b-col>
         <b-col cols="4">
           <b-badge
             pill
             variant="primary"
-            class="t100"
-          >到站時間</b-badge>
+            class="t100">
+            到站時間
+          </b-badge>
         </b-col>
         <b-col cols="4">
           <b-badge
             pill
             variant="primary"
-            class="t100"
-          >離站時間</b-badge>
+            class="t100">
+            離站時間
+          </b-badge>
         </b-col>
       </b-row>
       <template v-if="clickedTrainTimeDetail && clickedTrainTimeDetail.StopTimes">
@@ -284,8 +270,7 @@
           align-v="center"
           class="text-center mb-2"
           v-for="(stopTime, $index) in clickedTrainTimeDetail.StopTimes"
-          :key="$index"
-        >
+          :key="$index">
           <b-col cols="4">{{ stopTime.StationName.Zh_tw }}</b-col>
           <b-col cols="4">{{ stopTime.ArrivalTime }}</b-col>
           <b-col cols="4">{{ stopTime.DepartureTime }}</b-col>
@@ -298,13 +283,13 @@
       variant="light"
       class="rounded-circle bg-secondary p-2"
       id="about-me"
-      @click="isShowAboutMeModal = true"
-    ></b-icon>
+      @click="isShowAboutMeModal = true">
+    </b-icon>
     <!-- 關於台鐵時刻表 modal -->
     <about-me-modal
       :callShow="isShowAboutMeModal"
-      @callHide="isShowAboutMeModal = false"
-    ></about-me-modal>
+      @callHide="isShowAboutMeModal = false">
+    </about-me-modal>
   </div>
 </template>
 
