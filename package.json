@@ -14,7 +14,8 @@
     "core-js": "^3.6.4",
     "jssha": "^2.4.0",
     "vue": "^2.6.11",
-    "vue-loading-overlay": "^3.3.2"
+    "vue-loading-overlay": "^3.3.2",
+    "vue-router": "^3.3.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.2.0",

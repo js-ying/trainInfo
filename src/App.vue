@@ -1,9 +1,5 @@
 <template>
   <div id="app">
-    <loading
-      :active.sync="isLoading"
-      :is-full-page="true">
-    </loading>
     <!-- 導覽列 -->
     <div class="mb-2">
       <h5
@@ -162,76 +158,7 @@
         查詢
       </b-button>
     </div>
-    <!-- 查詢結果 -->
-    <b-container
-      class="mb-3 bv-example-row"
-      v-if="dailyTrainTimetable.TrainTimetables">
-      <div class="d-flex justify-content-between">
-        <!-- 車種篩選按鈕群組 -->
-        <b-button-group
-          size="sm"
-          class="mb-3"
-          id="train-Type-filter-btns">
-          <b-button
-            v-for="trainTypeFilterBtn in trainTypeFilterBtns"
-            :key="trainTypeFilterBtn.value"
-            :class="{ active : trainTypeFilterBtn.actived }"
-            @click="filterTrainType(trainTypeFilterBtn.value)">
-            {{ trainTypeFilterBtn.name }}
-          </b-button>
-        </b-button-group>
-        <!-- 查詢結果頁數 -->
-        <div id="result-number">
-          {{ filterTrainTimetables.length + ' 筆 / ' + dailyTrainTimetable.TrainTimetables.length + ' 筆'}}
-        </div>
-      </div>
-      <!-- 列車資訊 -->
-      <b-row>
-        <b-col
-          cols="12"
-          class="mb-3"
-          v-for="(filterTrainTimetable, $index) in filterTrainTimetables"
-          :key="$index">
-          <div
-            class="train-time-col bv-example-row-flex-cols p-2"
-            @click="showTrainTimeDetail(filterTrainTimetable)">
-            <b-row align-v="center">
-              <b-col cols="3">
-                <div class="train-time-left-side">
-                  {{ filterTrainTimetable.TrainInfo.TrainNo }} {{ transformTripLineToName(filterTrainTimetable.TrainInfo.TripLine) }}
-                </div>
-                <div class="mb-1">
-                  <b-badge :variant="getTrainTypeVariant(filterTrainTimetable.TrainInfo.TrainTypeCode)">{{ transformTrainTypeCodeToName(filterTrainTimetable.TrainInfo.TrainTypeCode) }}</b-badge>
-                </div>
-                <div class="train-time-left-side">
-                  {{ filterTrainTimetable.TrainInfo.StartingStationName.Zh_tw }}-{{ filterTrainTimetable.TrainInfo.EndingStationName.Zh_tw }}
-                </div>
-              </b-col>
-              <b-col cols="6">
-                {{ filterTrainTimetable.StopTimes[0].DepartureTime }} - {{ filterTrainTimetable.StopTimes[filterTrainTimetable.StopTimes.length - 1].ArrivalTime }}
-                <div class="train-time-diff">{{ getTimeDiff(filterTrainTimetable.StopTimes[0].DepartureTime, filterTrainTimetable.StopTimes[filterTrainTimetable.StopTimes.length - 1].ArrivalTime) }}</div>
-              </b-col>
-              <b-col cols="3">
-                <span
-                  v-for="(trainService, $index) in trainServices"
-                  :key="$index"
-                >
-                  <img
-                    :src="require('./assets/images/' + trainService.imgName + '.png')"
-                    class="train-service-icon"
-                    v-b-tooltip.hover
-                    :title="trainService.description"
-                    :disabled="isTooltipShow()"
-                    v-if="filterTrainTimetable.TrainInfo[trainService.flagName]"
-                  >
-                </span>
-              </b-col>
-            </b-row>
-            <!-- {{ filterTrainTime }} -->
-          </div>
-        </b-col>
-      </b-row>
-    </b-container>
+    <router-view></router-view>
     <!-- 列車時刻詳細資料 modal -->
     <b-modal
       v-model="isShowTrainTimeDetail"
@@ -295,68 +222,26 @@
 </template>
 
 <script>
-import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import TraStations from './assets/traStations';
-import { TrainTypes, TripLines } from './assets/constants';
 
 import AboutMeModal from './modal/AboutMeModal';
 
 export default {
   name: 'App',
   components: {
-    Loading,
     AboutMeModal,
   },
   data() {
     return {
       myStorage: null,
       mainLines: ['基隆市', '新北市', '臺北市', '桃園市', '新竹縣', '新竹市', '苗栗縣', '臺中市', '彰化縣', '南投縣', '雲林縣', '嘉義縣', '嘉義市', '臺南市', '高雄市', '屏東縣', '臺東縣', '花蓮縣', '宜蘭縣'],
-      trainServices: [
-        {
-          imgName: 'disability',
-          flagName: 'WheelChairFlag',
-          description: '身障旅客專用座位車',
-        },
-        {
-          imgName: 'suitcase',
-          flagName: 'PackageServiceFlag',
-          description: '行李服務',
-        },
-        {
-          imgName: 'lunch',
-          flagName: 'DiningFlag',
-          description: '訂便當服務',
-        },
-        {
-          imgName: 'breast-feeding',
-          flagName: 'BreastFeedFlag',
-          description: '哺(集)乳室車廂',
-        },
-        {
-          imgName: 'bicycle',
-          flagName: 'BikeFlag',
-          description: '人車同行',
-        },
-        {
-          imgName: 'car',
-          flagName: 'CarFlag',
-          description: '小汽車上火車',
-        },
-        {
-          imgName: 'train',
-          flagName: 'ExtraTrainFlag',
-          description: '為加班車',
-        },
-      ],
-      isLoading: false,
       traStations: [],
       filterTraStartStations: [],
       filterTraEndStations: [],
-      dailyTrainTimetable: {},
       isShowStartMainLine: false,
       isShowStartStation: false,
       isShowEndMainLine: false,
@@ -376,24 +261,6 @@ export default {
         date: this.$commonService.getNowYYYYMMDD(),
         time: new Date().toLocaleTimeString('en-GB'),
       },
-      trainTypeFilterBtns: [
-        {
-          actived: true,
-          name: '全部',
-          value: 'all',
-        },
-        {
-          actived: false,
-          name: '對號列車',
-          value: 'express',
-        },
-        {
-          actived: false,
-          name: '非對號列車',
-          value: 'non-express',
-        },
-      ],
-      filterTrainTypesRegExp: '',
       isShowTrainTimeDetail: false,
       clickedTrainTimeDetail: null,
       isShowAboutMeModal: false,
@@ -403,13 +270,6 @@ export default {
     this.gettTraStation();
     this.myStorage = window.localStorage;
     this.setLocalStorage();
-  },
-  computed: {
-    filterTrainTimetables() {
-      return this.dailyTrainTimetable.TrainTimetables.filter(trainTimetable =>
-        trainTimetable.TrainInfo.TrainTypeCode.match(new RegExp(this.filterTrainTypesRegExp))
-      );
-    },
   },
   methods: {
     gettTraStation() {
@@ -473,6 +333,11 @@ export default {
         };
 
         this.dailyTrainTimetable = {};
+
+        this.$router.push({
+          name: 'Home',
+          
+        }).catch(() => {});
       }
     },
     selectStartMainLine(mainLine) {
@@ -568,29 +433,18 @@ export default {
           this.isShowEndMainLine = false;
           this.isShowEndStation = false;
           this.isShowDatePicker = false;
-          this.dailyTrainTimetable = {};
-          this.isLoading = true;
+
           this.saveLocalStorage();
 
-          this.$ajax({
-            method: 'get',
-            url: `https://ptx.transportdata.tw/MOTC/v3/Rail/TRA/DailyTrainTimetable/OD/Inclusive/${this.selected.start.stationId}/to/${this.selected.end.stationId}/${this.selected.date}?$format=JSON`,
-            headers: this.$commonService.getAuthorizationHeader(),
-          }).then((res) => {
-            Object.assign(this.dailyTrainTimetable, res.data);
-
-            // 依駛離日期由小到大排序
-            this.dailyTrainTimetable.TrainTimetables.sort((a, b) => {
-              return a.StopTimes[0].DepartureTime.localeCompare(b.StopTimes[0].DepartureTime);
-            });
-
-            // 只顯示大於查詢條件【出發日期 HH:mm】的結果
-            this.dailyTrainTimetable.TrainTimetables = this.dailyTrainTimetable.TrainTimetables.filter((trainTimeTable) => {
-              return trainTimeTable.StopTimes[0].DepartureTime > this.selected.time.slice(0, -3);
-            });
-
-            this.isLoading = false;
-          });
+          this.$router.push({
+            name: 'Search',
+            query: {
+              s: this.selected.start.stationName,
+              e: this.selected.end.stationName,
+              d: this.selected.date,
+              t: this.simplifyTime(this.selected.time),
+            }
+          }).catch(() => {});
         });
       });
     },
@@ -598,94 +452,9 @@ export default {
       this.myStorage.setItem('selectedStart', JSON.stringify(this.selected.start));
       this.myStorage.setItem('selectedEnd', JSON.stringify(this.selected.end));
     },
-    getTrainTypeVariant(trainTypeCode) {
-      const trainTypeVariantMap = {};
-
-      for (const trainType in TrainTypes) {
-        trainTypeVariantMap[TrainTypes[trainType].value] = TrainTypes[trainType].labelColorClass;
-      }
-
-      return trainTypeVariantMap[trainTypeCode];
-    },
-    transformTrainTypeCodeToName(trainTypeCode) {
-      const trainTypeMap = {};
-
-      for (const trainType in TrainTypes) {
-        trainTypeMap[TrainTypes[trainType].value] = TrainTypes[trainType].name
-      }
-
-      return trainTypeMap[trainTypeCode];
-    },
-    getTimeDiff(startTime, endTime) {
-      let endDateTime = this.selected.date;
-      if (endTime < startTime) {
-        let date = new Date(this.selected.date);
-        endDateTime = new Date(date.setDate(date.getDate() + 1));
-        endDateTime = new Date(endDateTime.getTime() - (endDateTime.getTimezoneOffset() * 60000)).toISOString().substring(0, 10);
-      }
-
-      let date1 = new Date(this.selected.date + 'T' + startTime); // 開始時間
-      let date2 = new Date(endDateTime + 'T' + endTime); // 結束時間
-      let date3 = date2.getTime() - date1.getTime(); // 時間差的毫秒數
-
-      //計算出相差天數
-      // let days = Math.floor(date3 / (24 * 3600 * 1000))
-
-      //計算出小時數
-      let leave1 = date3 % (24 * 3600 * 1000); // 計算天數後剩餘的毫秒數
-      let hours = Math.floor(leave1 / (3600 * 1000));
-
-      //計算相差分鐘數
-      let leave2 = leave1 % (3600 * 1000); // 計算小時數後剩餘的毫秒數
-      let minutes = Math.floor(leave2 / (60 * 1000));
-
-      //計算相差秒數
-      // let leave3 = leave2 % (60 * 1000); // 計算分鐘數後剩餘的毫秒數
-      // let seconds = Math.round(leave3 / 1000);
-
-      return hours + ' 時 ' + minutes + ' 分';
-    },
-    transformTripLineToName(tripLine) {
-      const tripLineMap = {};
-
-      for (const tripLine in TripLines) {
-        tripLineMap[TripLines[tripLine].value] = TripLines[tripLine].name
-      }
-
-      return tripLineMap[tripLine];
-    },
-    filterTrainType(value) {
-      this.filterTrainTypesRegExp = '';
-
-      // 1. 控制按鈕 actived 狀態
-      this.trainTypeFilterBtns.forEach(trainTypeFilterBtn => {
-        if (trainTypeFilterBtn.value === value) {
-          trainTypeFilterBtn.actived = true;
-        } else {
-          trainTypeFilterBtn.actived = false;
-        }
-      });
-
-      // 2. 製作篩選車種的正規表達式
-      if (value === 'all') {
-        this.filterTrainTypesRegExp = '';
-      } else if (value === 'express') {
-        this.filterTrainTypesRegExp = `^${TrainTypes.TAROKO.value}$|^${TrainTypes.PUYUMA.value}$|^${TrainTypes.TZE_CHIANG.value}$|^${TrainTypes.CHU_KUANG.value}$|^${TrainTypes.FU_HSING.value}$`;
-      } else {
-        this.filterTrainTypesRegExp = `^${TrainTypes.LOCAL.value}$|^${TrainTypes.ORDINARY.value}$|^${TrainTypes.FAST_LOCAL.value}$`;
-      }
-
-    },
-    showTrainTimeDetail(trainTime) {
-      this.isShowTrainTimeDetail = true;
-      this.clickedTrainTimeDetail = trainTime;
-    },
-    isTooltipShow() {
-      if (window.innerWidth < 768) {
-        return true;
-      }
-      return false;
-    },
+    simplifyTime(time) {
+      return time.split(':')[0] + time.split(':')[1];
+    }
   },
 }
 </script>
@@ -728,36 +497,9 @@ export default {
   height: 60px;
 }
 
-#result-number {
-  font-size: 85%;
-  padding-top: 5px;
-}
-
-.train-time-col {
-  border: 1px solid #343a40;
-  border-radius: 0.25rem;
-  cursor: pointer;
-}
-
-.train-time-diff {
-  font-size: 85%;
-  color: #545b62;
-}
-
-.train-service-icon {
-  width: 20px;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
-    -webkit-box-shadow 0.15s ease-in-out;
-}
-
 @media screen and (max-width: 768px) {
   #param-adjustment-area .btn-secondary:hover {
     background-color: #6c757d !important;
-  }
-
-  .train-time-left-side {
-    font-size: 75%;
   }
 }
 </style>
