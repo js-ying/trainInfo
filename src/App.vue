@@ -14,26 +14,33 @@
           <b-col
             cols="6"
             md="4"
-            class="mb-3"
-            @click="toggleSelectArea('startMainLine')">
+            class="mb-3">
             <b-button
               variant="outline-dark"
               class="menu"
-              :class="{ active : isShowStartMainLine || isShowStartStation }">
+              :class="{ active : isShowStartMainLine || isShowStartStation }"
+              @click="toggleSelectArea('startMainLine')">
               出發車站<br>
               {{ selected.start.stationName }}
             </b-button>
+            <div id="reverse-train-station-button" @click="swapSeletedStation()">
+              <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-left-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M10.146 7.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L12.793 11l-2.647-2.646a.5.5 0 0 1 0-.708z"/>
+                <path fill-rule="evenodd" d="M2 11a.5.5 0 0 1 .5-.5H13a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 11zm3.854-9.354a.5.5 0 0 1 0 .708L3.207 5l2.647 2.646a.5.5 0 1 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708 0z"/>
+                <path fill-rule="evenodd" d="M2.5 5a.5.5 0 0 1 .5-.5h10.5a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+              </svg>
+            </div>
           </b-col>
           <!-- 抵達車站 -->
           <b-col
             cols="6"
             md="4"
-            class="mb-3"
-            @click="toggleSelectArea('endMainLine')">
+            class="mb-3">
             <b-button
               variant="outline-dark"
               class="menu"
-              :class="{ active : isShowEndMainLine || isShowEndStation }">
+              :class="{ active : isShowEndMainLine || isShowEndStation }"
+              @click="toggleSelectArea('endMainLine')">
               抵達車站<br>
               {{ selected.end.stationName }}
             </b-button>
@@ -42,12 +49,12 @@
           <b-col
             cols="12"
             md="4"
-            class="mb-3"
-            @click="toggleSelectArea('datePicker')">
+            class="mb-3">
             <b-button
               variant="outline-dark"
               class="menu"
-              :class="{ active : isShowDatePicker }">
+              :class="{ active : isShowDatePicker }"
+              @click="toggleSelectArea('datePicker')">
               出發日期<br>
               {{ selected.date }}
               {{ selected.time.slice(0, -3) }}
@@ -146,12 +153,12 @@
     </b-container>
     <!-- 查詢按鈕 -->
     <div class="mb-4">
-      <b-button
+      <!-- <b-button
         class="mr-3"
         variant="outline-secondary"
         @click="swapSeletedStation()">
         起迄站互換
-      </b-button>
+      </b-button> -->
       <b-button
         variant="dark"
         @click="query()">
@@ -445,6 +452,15 @@ export default {
 
 .t100 {
   font-size: 100%;
+}
+
+#reverse-train-station-button {
+  position: absolute;
+  z-index: 10;
+  right: -15px;
+  top: 15px;
+  width: 30px;
+  cursor: pointer;
 }
 
 #about-me {
