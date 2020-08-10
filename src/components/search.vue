@@ -39,7 +39,6 @@ export default {
     this.endStationId = this.$route.query.e;
     this.date = this.$route.query.d;
     this.time = this.getTime(this.$route.query.t);
-    console.log(this.time);
 
     this.search();
   },
@@ -51,7 +50,6 @@ export default {
       this.endStationId = to.query.e;
       this.date = to.query.d;
       this.time = this.getTime(to.query.t);
-      console.log(this.time);
       this.search();
       next();
     } else {

@@ -1,4 +1,5 @@
 import jsSHA from 'jssha';
+import { TrainTypes } from './assets/constants';
 
 export default {
 
@@ -22,6 +23,16 @@ export default {
   getNowYYYYMMDD() {
     let date = new Date(); // Or the date you'd like converted.
     return new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().substring(0, 10);
+  },
+
+  transformTrainTypeCodeToName(trainTypeCode) {
+    const trainTypeMap = {};
+
+    for (const trainType in TrainTypes) {
+      trainTypeMap[TrainTypes[trainType].value] = TrainTypes[trainType].name
+    }
+
+    return trainTypeMap[trainTypeCode];
   },
 
 }

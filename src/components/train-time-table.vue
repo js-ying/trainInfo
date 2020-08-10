@@ -42,7 +42,7 @@
                     {{ filterTrainTimetable.TrainInfo.TrainNo }} {{ transformTripLineToName(filterTrainTimetable.TrainInfo.TripLine) }}
                   </div>
                   <div class="mb-1">
-                    <b-badge :variant="getTrainTypeVariant(filterTrainTimetable.TrainInfo.TrainTypeCode)">{{ transformTrainTypeCodeToName(filterTrainTimetable.TrainInfo.TrainTypeCode) }}</b-badge>
+                    <b-badge :variant="getTrainTypeVariant(filterTrainTimetable.TrainInfo.TrainTypeCode)">{{ $commonService.transformTrainTypeCodeToName(filterTrainTimetable.TrainInfo.TrainTypeCode) }}</b-badge>
                   </div>
                   <div class="train-time-left-side">
                     {{ filterTrainTimetable.TrainInfo.StartingStationName.Zh_tw }}-{{ filterTrainTimetable.TrainInfo.EndingStationName.Zh_tw }}
@@ -90,7 +90,7 @@
 </template>
 
 <script>
-import { TrainTypes, TripLines } from '../assets/constants';
+import { TripLines, TrainTypes } from '../assets/constants';
 
 export default {
   name: 'TrainTimeTable',
@@ -183,15 +183,6 @@ export default {
       }
 
       return tripLineMap[tripLine];
-    },
-    transformTrainTypeCodeToName(trainTypeCode) {
-      const trainTypeMap = {};
-
-      for (const trainType in TrainTypes) {
-        trainTypeMap[TrainTypes[trainType].value] = TrainTypes[trainType].name
-      }
-
-      return trainTypeMap[trainTypeCode];
     },
     getTimeDiff(startTime, endTime) {
       let endDateTime = this.date;

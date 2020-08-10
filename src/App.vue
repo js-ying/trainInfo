@@ -158,53 +158,9 @@
         查詢
       </b-button>
     </div>
-    <router-view></router-view>
-    <!-- 列車時刻詳細資料 modal -->
-    <b-modal
-      v-model="isShowTrainTimeDetail"
-      title="列車資訊"
-      :hideHeaderClose="true"
-      okTitle="關閉"
-      ok-only
-      :centered="true">
-      <b-row
-        align-v="center"
-        class="text-center mb-3">
-        <b-col cols="4">
-          <b-badge
-            pill
-            variant="primary"
-            class="t100">站名</b-badge>
-        </b-col>
-        <b-col cols="4">
-          <b-badge
-            pill
-            variant="primary"
-            class="t100">
-            到站時間
-          </b-badge>
-        </b-col>
-        <b-col cols="4">
-          <b-badge
-            pill
-            variant="primary"
-            class="t100">
-            離站時間
-          </b-badge>
-        </b-col>
-      </b-row>
-      <template v-if="clickedTrainTimeDetail && clickedTrainTimeDetail.StopTimes">
-        <b-row
-          align-v="center"
-          class="text-center mb-2"
-          v-for="(stopTime, $index) in clickedTrainTimeDetail.StopTimes"
-          :key="$index">
-          <b-col cols="4">{{ stopTime.StationName.Zh_tw }}</b-col>
-          <b-col cols="4">{{ stopTime.ArrivalTime }}</b-col>
-          <b-col cols="4">{{ stopTime.DepartureTime }}</b-col>
-        </b-row>
-      </template>
-    </b-modal>
+    <keep-alive include="Search">
+      <router-view></router-view>
+    </keep-alive>
     <!-- 關於台鐵時刻表 icon -->
     <b-icon
       icon="house-door-fill"
