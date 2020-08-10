@@ -249,23 +249,35 @@ export default {
     },
     toggleSelectArea(area) {
       if (area === 'startMainLine') {
-        this.isShowStartMainLine = true;
-        this.isShowStartStation = false;
-        this.isShowEndMainLine = false;
-        this.isShowEndStation = false;
-        this.isShowDatePicker = false;
+        if (this.isShowStartMainLine) {
+          this.isShowStartMainLine = false;
+        } else {
+          this.isShowStartMainLine = true;
+          this.isShowStartStation = false;
+          this.isShowEndMainLine = false;
+          this.isShowEndStation = false;
+          this.isShowDatePicker = false;
+        }
       } else if (area === 'endMainLine') {
-        this.isShowStartMainLine = false;
-        this.isShowStartStation = false;
-        this.isShowEndMainLine = true;
-        this.isShowEndStation = false;
-        this.isShowDatePicker = false;
+        if (this.isShowEndMainLine) {
+          this.isShowEndMainLine = false;
+        } else {
+          this.isShowStartMainLine = false;
+          this.isShowStartStation = false;
+          this.isShowEndMainLine = true;
+          this.isShowEndStation = false;
+          this.isShowDatePicker = false;
+        }
       } else if (area === 'datePicker') {
-        this.isShowStartMainLine = false;
-        this.isShowStartStation = false;
-        this.isShowEndMainLine = false;
-        this.isShowEndStation = false;
-        this.isShowDatePicker = true;
+        if (this.isShowDatePicker) {
+          this.isShowDatePicker = false;
+        } else {
+          this.isShowStartMainLine = false;
+          this.isShowStartStation = false;
+          this.isShowEndMainLine = false;
+          this.isShowEndStation = false;
+          this.isShowDatePicker = true;
+        }
       } else if (area === 'reset') {
         this.isShowStartMainLine = false;
         this.isShowStartStation = false;
