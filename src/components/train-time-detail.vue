@@ -65,7 +65,7 @@
         </template>
       </div>
       <!-- 資訊遺失（refresh） -->
-      <div v-else>
+      <div v-if="dataLose">
         <b-row>
           <b-col
             cols="12"
@@ -90,14 +90,17 @@ export default {
   data() {
     return {
       clickedTrainTimeDetail: null,
+      dataLose: false,
     };
   },
   mounted() {
-    console.log('mounted:', this.$route.params);
     if (Object.getOwnPropertyNames(this.$route.params).length > 0) {
       this.clickedTrainTimeDetail = this.$route.params.trainTime;
-      window.scrollTo(0, 0);
+    } else {
+      this.dataLose = true;
     }
+
+    window.scrollTo(0, 0);
   },
   methods: {
     goBack() {
