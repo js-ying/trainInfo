@@ -463,6 +463,11 @@ export default {
   height: 40px;
   font-size: 1.3rem;
   cursor: pointer;
+  color: #6c757d;
+}
+
+#reverse-train-station-button:hover {
+  color: #494f54;
 }
 
 #about-me {
