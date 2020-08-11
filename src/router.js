@@ -1,8 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import Search from './components/search.vue'
+import Home from './components/home.vue'
+import SearchResult from './components/search-result.vue'
 import TrainTimeDetail from './components/train-time-detail.vue'
+import About from './components/about.vue'
 
 Vue.use(VueRouter);
 
@@ -11,16 +13,24 @@ const router = new VueRouter({
     {
       path: '/',
       name: 'Home',
+      component: Home,
+      children: [
+        {
+          path: 'search',
+          name: 'SearchResult',
+          component: SearchResult,
+        },
+        {
+          path: 'train-detail',
+          name: 'TrainTimeDetail',
+          component: TrainTimeDetail,
+        },
+      ],
     },
     {
-      path: '/search/',
-      name: 'Search',
-      component: Search,
-    },
-    {
-      path: '/trainTimeDetail',
-      name: 'TrainTimeDetail',
-      component: TrainTimeDetail,
+      path: '/about',
+      name: 'About',
+      component: About,
     }
   ]
 });

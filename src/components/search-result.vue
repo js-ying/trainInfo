@@ -1,5 +1,5 @@
 <template>
-  <div id="search">
+  <div id="search-result">
     <loading
       :active.sync="isLoading"
       :is-full-page="true">
@@ -18,7 +18,7 @@ import TraStations from '../assets/traStations.js';
 import TrainTimeTable from './train-time-table.vue';
 
 export default {
-  name: 'Search',
+  name: 'SearchResult',
   components: {
     Loading,
     TrainTimeTable,
