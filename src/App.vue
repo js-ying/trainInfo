@@ -14,7 +14,7 @@
           <b-col
             cols="6"
             md="4"
-            class="mb-3">
+            class="pr-4 mb-3">
             <b-button
               variant="outline-dark"
               class="menu"
@@ -35,7 +35,7 @@
           <b-col
             cols="6"
             md="4"
-            class="mb-3">
+            class="pl-4 mb-3">
             <b-button
               variant="outline-dark"
               class="menu"
@@ -457,9 +457,11 @@ export default {
 #reverse-train-station-button {
   position: absolute;
   z-index: 10;
-  right: -15px;
-  top: 15px;
-  width: 30px;
+  right: -20px;
+  top: 10px;
+  width: 40px;
+  height: 40px;
+  font-size: 1.3rem;
   cursor: pointer;
 }
 
