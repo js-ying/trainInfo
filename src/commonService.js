@@ -20,9 +20,19 @@ export default {
     }; // 如果要將 js 運行在伺服器，可額外加入 'Accept-Encoding': 'gzip'，要求壓縮以減少網路傳輸資料量
   },
 
+  getYesterDayYYYYMMDD() {
+    let date = new Date();
+    let yesterday = new Date(date.setDate(date.getDate() - 1));
+    return new Date(yesterday.getTime() - (yesterday.getTimezoneOffset() * 60000)).toISOString().substring(0, 10); // 'YYYY-mm-DD'.
+  },
+
   getNowYYYYMMDD() {
-    let date = new Date(); // Or the date you'd like converted.
-    return new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().substring(0, 10);
+    let date = new Date();
+    return new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().substring(0, 10); // 'YYYY-mm-DD'.
+  },
+
+  getNowTime() {
+    return new Date().toLocaleTimeString('en-GB'); // '00:00:00'
   },
 
   transformTrainTypeCodeToName(trainTypeCode) {

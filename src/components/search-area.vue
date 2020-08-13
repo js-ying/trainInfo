@@ -56,8 +56,8 @@
               :class="{ active : isShowDatePicker }"
               @click="toggleSelectArea('datePicker')">
               出發日期<br>
-              {{ selected.date }}
-              {{ selected.time.slice(0, -3) }}
+              {{ checkIfBrowserSupportDatetimePicker() ? this.selected.dateTime.split('T')[0] : selected.date }}
+              {{ checkIfBrowserSupportDatetimePicker() ? this.selected.dateTime.split('T')[1] : selected.time.slice(0, -3) }}
             </b-button>
           </b-col>
         </b-row>
@@ -140,14 +140,19 @@
         <b-col
           cols="12"
           class="mb-3">
-          <b-form-datepicker
-            v-model="selected.date"
-            class="mb-2">
-          </b-form-datepicker>
-          <b-form-timepicker
-            v-model="selected.time"
-            locale="en">
-          </b-form-timepicker>
+          <template v-if="checkIfBrowserSupportDatetimePicker()">
+            <input type="datetime-local" :min="this.$commonService.getNowYYYYMMDD() + 'T' + this.$commonService.getNowTime().slice(0, 5)" class="form-control" id="datetime-picker" :value="selected.dateTime" @input="updateDateTimeValue($event.target.value)" @change="updateDateTimeValue($event.target.value)">
+          </template>
+          <template v-else>
+            <b-form-datepicker
+              v-model="selected.date"
+              class="mb-2">
+            </b-form-datepicker>
+            <b-form-timepicker
+              v-model="selected.time"
+              locale="en">
+            </b-form-timepicker>
+          </template>
         </b-col>
       </b-row>
     </b-container>
@@ -202,7 +207,8 @@ export default {
           stationName: null,
         },
         date: this.$commonService.getNowYYYYMMDD(),
-        time: new Date().toLocaleTimeString('en-GB'),
+        time: this.$commonService.getNowTime(),
+        dateTime: this.$commonService.getNowYYYYMMDD() + 'T' + this.$commonService.getNowTime().slice(0, 5),
       },
     };
   },
@@ -285,7 +291,8 @@ export default {
             stationName: null,
           },
           date: this.$commonService.getNowYYYYMMDD(),
-          time: new Date().toLocaleTimeString('en-GB'),
+          time: this.$commonService.getNowTime(),
+          dateTime: this.$commonService.getNowYYYYMMDD() + 'T' + this.$commonService.getNowTime().slice(0, 5),
         };
 
         this.dailyTrainTimetable = {};
@@ -386,7 +393,7 @@ export default {
     },
     query() {
       this.checkRequired(() => {
-        this.checkDateNotInPast(this.selected.date, () => {
+        this.checkDateNotInPast(this.selected.dateTime.split('T')[0], () => {
           this.isShowStartMainLine = false;
           this.isShowStartStation = false;
           this.isShowEndMainLine = false;
@@ -400,13 +407,27 @@ export default {
             query: {
               s: this.selected.start.stationName,
               e: this.selected.end.stationName,
-              d: this.selected.date,
-              t: this.simplifyTime(this.selected.time),
+              d: this.selected.dateTime.split('T')[0],
+              t: this.simplifyTime(this.selected.dateTime.split('T')[1]),
             }
           }).catch(() => {});
         });
       });
     },
+    checkIfBrowserSupportDatetimePicker() {
+      let input = document.createElement('input');
+      let value = 'a';
+      input.setAttribute('type', 'datetime-local');
+      input.setAttribute('value', value);
+
+      let ifSupport = input.value !== value;
+
+      return ifSupport;
+    },
+    updateDateTimeValue(value) {
+      this.selected.dateTime = value;
+      this.$emit('input', value);
+    }
   }
 }
 </script>
@@ -431,6 +452,10 @@ export default {
 
 #reverse-train-station-button:hover {
   color: #494f54;
+}
+
+#datetime-picker {
+  
 }
 
 @media screen and (max-width: 768px) {
