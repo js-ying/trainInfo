@@ -183,8 +183,6 @@ export default {
           stationId: null,
           stationName: null,
         },
-        date: this.$commonService.getNowYYYYMMDD(),
-        time: this.$commonService.getNowTime(),
         dateTime: this.$commonService.getNowYYYYMMDD() + ' ' + this.$commonService.getNowTime().slice(0, 5),
       },
     };
@@ -260,9 +258,7 @@ export default {
             stationId: null,
             stationName: null,
           },
-          date: this.$commonService.getNowYYYYMMDD(),
-          time: this.$commonService.getNowTime(),
-          dateTime: this.$commonService.getNowYYYYMMDD() + 'T' + this.$commonService.getNowTime().slice(0, 5),
+          dateTime: this.$commonService.getNowYYYYMMDD() + ' ' + this.$commonService.getNowTime().slice(0, 5),
         };
 
         this.dailyTrainTimetable = {};
