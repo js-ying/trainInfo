@@ -49,16 +49,16 @@
           <b-col
             cols="12"
             md="4"
-            class="mb-3">
-            <b-button
-              variant="outline-dark"
-              class="menu"
-              :class="{ active : isShowDatePicker }"
-              @click="toggleSelectArea('datePicker')">
-              出發日期<br>
-              {{ checkIfBrowserSupportDatetimePicker() ? this.selected.dateTime.split('T')[0] : selected.date }}
-              {{ checkIfBrowserSupportDatetimePicker() ? this.selected.dateTime.split('T')[1] : selected.time.slice(0, -3) }}
-            </b-button>
+            class="mb-3"
+            @click="toggleSelectArea('datetimePicker')">
+            <date-pick v-model="selected.dateTime" :pickTime="true" :format="'YYYY-MM-DD HH:mm'" :isDateDisabled="isPastDate">
+              <template v-slot:default="{ toggle, inputValue }">
+                <button class="btn btn-outline-dark menu" @click="toggle">
+                  出發日期<br>
+                  {{ inputValue || 'Toggle calendar'  }}
+                </button>
+              </template>
+            </date-pick>
           </b-col>
         </b-row>
       </b-container>
@@ -136,34 +136,9 @@
           </b-button>
         </b-col>
       </b-row>
-      <b-row v-if="isShowDatePicker">
-        <b-col
-          cols="12"
-          class="mb-3">
-          <template v-if="checkIfBrowserSupportDatetimePicker()">
-            <input type="datetime-local" :min="this.$commonService.getNowYYYYMMDD() + 'T' + this.$commonService.getNowTime().slice(0, 5)" class="form-control" id="datetime-picker" :value="selected.dateTime" @input="updateDateTimeValue($event.target.value)" @change="updateDateTimeValue($event.target.value)">
-          </template>
-          <template v-else>
-            <b-form-datepicker
-              v-model="selected.date"
-              class="mb-2">
-            </b-form-datepicker>
-            <b-form-timepicker
-              v-model="selected.time"
-              locale="en">
-            </b-form-timepicker>
-          </template>
-        </b-col>
-      </b-row>
     </b-container>
     <!-- 查詢按鈕 -->
     <div class="mb-4">
-      <!-- <b-button
-        class="mr-3"
-        variant="outline-secondary"
-        @click="swapSeletedStation()">
-        起迄站互換
-      </b-button> -->
       <b-button
         variant="dark"
         @click="query()">
@@ -178,10 +153,13 @@
 
 <script>
 import TraStations from '../assets/traStations';
+import DatePick from 'vue-date-pick';
+import 'vue-date-pick/dist/vueDatePick.css';
 
 export default {
   name: 'SearchArea',
   components: {
+    DatePick,
   },
   data() {
     return {
@@ -194,7 +172,6 @@ export default {
       isShowStartStation: false,
       isShowEndMainLine: false,
       isShowEndStation: false,
-      isShowDatePicker: false,
       selected: {
         start: {
           mainLine: null,
@@ -208,7 +185,7 @@ export default {
         },
         date: this.$commonService.getNowYYYYMMDD(),
         time: this.$commonService.getNowTime(),
-        dateTime: this.$commonService.getNowYYYYMMDD() + 'T' + this.$commonService.getNowTime().slice(0, 5),
+        dateTime: this.$commonService.getNowYYYYMMDD() + ' ' + this.$commonService.getNowTime().slice(0, 5),
       },
     };
   },
@@ -250,7 +227,6 @@ export default {
           this.isShowStartStation = false;
           this.isShowEndMainLine = false;
           this.isShowEndStation = false;
-          this.isShowDatePicker = false;
         }
       } else if (area === 'endMainLine') {
         if (this.isShowEndMainLine) {
@@ -260,24 +236,18 @@ export default {
           this.isShowStartStation = false;
           this.isShowEndMainLine = true;
           this.isShowEndStation = false;
-          this.isShowDatePicker = false;
         }
-      } else if (area === 'datePicker') {
-        if (this.isShowDatePicker) {
-          this.isShowDatePicker = false;
-        } else {
-          this.isShowStartMainLine = false;
-          this.isShowStartStation = false;
-          this.isShowEndMainLine = false;
-          this.isShowEndStation = false;
-          this.isShowDatePicker = true;
-        }
+      } else if (area === 'datetimePicker') {
+        this.isShowStartMainLine = false;
+        this.isShowStartStation = false;
+        this.isShowEndMainLine = false;
+        this.isShowEndStation = false;
+
       } else if (area === 'reset') {
         this.isShowStartMainLine = false;
         this.isShowStartStation = false;
         this.isShowEndMainLine = false;
         this.isShowEndStation = false;
-        this.isShowDatePicker = false;
 
         this.selected = {
           start: {
@@ -344,6 +314,9 @@ export default {
         Object.assign(this.selected.end, start);
       }
     },
+    isPastDate(date) {
+      return date < this.$commonService.getYesterdayYYYYMMDD();
+    },
     checkRequired(complete) {
 
       if (!this.selected.start.stationId || !this.selected.end.stationId) {
@@ -393,12 +366,11 @@ export default {
     },
     query() {
       this.checkRequired(() => {
-        this.checkDateNotInPast(this.selected.dateTime.split('T')[0], () => {
+        this.checkDateNotInPast(this.selected.dateTime.split(' ')[0], () => {
           this.isShowStartMainLine = false;
           this.isShowStartStation = false;
           this.isShowEndMainLine = false;
           this.isShowEndStation = false;
-          this.isShowDatePicker = false;
 
           this.saveLocalStorage();
 
@@ -407,27 +379,13 @@ export default {
             query: {
               s: this.selected.start.stationName,
               e: this.selected.end.stationName,
-              d: this.selected.dateTime.split('T')[0],
-              t: this.simplifyTime(this.selected.dateTime.split('T')[1]),
+              d: this.selected.dateTime.split(' ')[0],
+              t: this.simplifyTime(this.selected.dateTime.split(' ')[1]),
             }
           }).catch(() => {});
         });
       });
     },
-    checkIfBrowserSupportDatetimePicker() {
-      let input = document.createElement('input');
-      let value = 'a';
-      input.setAttribute('type', 'datetime-local');
-      input.setAttribute('value', value);
-
-      let ifSupport = input.value !== value;
-
-      return ifSupport;
-    },
-    updateDateTimeValue(value) {
-      this.selected.dateTime = value;
-      this.$emit('input', value);
-    }
   }
 }
 </script>
@@ -454,8 +412,8 @@ export default {
   color: #494f54;
 }
 
-#datetime-picker {
-  
+.vdpComponent.vdpWithInput {
+  display: inherit;
 }
 
 @media screen and (max-width: 768px) {

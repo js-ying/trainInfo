@@ -20,15 +20,21 @@ export default {
     }; // 如果要將 js 運行在伺服器，可額外加入 'Accept-Encoding': 'gzip'，要求壓縮以減少網路傳輸資料量
   },
 
-  getYesterDayYYYYMMDD() {
-    let date = new Date();
-    let yesterday = new Date(date.setDate(date.getDate() - 1));
-    return new Date(yesterday.getTime() - (yesterday.getTimezoneOffset() * 60000)).toISOString().substring(0, 10); // 'YYYY-mm-DD'.
+  getYesterdayYYYYMMDD() {
+    const today = new Date()
+    const yesterday = new Date(today)
+    return yesterday.setDate(yesterday.getDate() - 1);
   },
 
   getNowYYYYMMDD() {
     let date = new Date();
     return new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().substring(0, 10); // 'YYYY-mm-DD'.
+  },
+
+  getTomorrowYYYYMMDD() {
+    const today = new Date()
+    const tomorrow = new Date(today)
+    return tomorrow.setDate(tomorrow.getDate() + 1);
   },
 
   getNowTime() {
