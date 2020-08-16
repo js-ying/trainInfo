@@ -145,7 +145,7 @@
         查詢
       </b-button>
     </div>
-    <keep-alive include="Search">
+    <keep-alive include="SearchResult">
       <router-view></router-view>
     </keep-alive>
   </div>
