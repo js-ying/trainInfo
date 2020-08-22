@@ -18,11 +18,12 @@
             <b-button
               variant="outline-dark"
               class="menu"
-              :class="{ active : isShowStartMainLine || isShowStartStation }"
+              :class="{ active : isShowStartMainLine || isShowStartStation, 'error-border': errorShow.startStation.show }"
               @click="toggleSelectArea('startMainLine')">
               出發車站<br>
               {{ selected.start.stationName }}
             </b-button>
+            <error-msg :msg="errorShow.startStation.msg" v-if="errorShow.startStation.show"></error-msg>
             <div id="reverse-train-station-button" @click="swapSeletedStation()">
               <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-left-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" d="M10.146 7.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L12.793 11l-2.647-2.646a.5.5 0 0 1 0-.708z"/>
@@ -39,11 +40,12 @@
             <b-button
               variant="outline-dark"
               class="menu"
-              :class="{ active : isShowEndMainLine || isShowEndStation }"
+              :class="{ active : isShowEndMainLine || isShowEndStation, 'error-border': errorShow.endStation.show  }"
               @click="toggleSelectArea('endMainLine')">
               抵達車站<br>
               {{ selected.end.stationName }}
             </b-button>
+            <error-msg :msg="errorShow.endStation.msg" v-if="errorShow.endStation.show"></error-msg>
           </b-col>
           <!-- 出發日期 -->
           <b-col
@@ -53,12 +55,13 @@
             @click="toggleSelectArea('datetimePicker')">
             <date-pick v-model="selected.dateTime" :pickTime="true" :format="'YYYY-MM-DD HH:mm'" :isDateDisabled="isPastDate">
               <template v-slot:default="{ toggle, inputValue }">
-                <button class="btn btn-outline-dark menu" @click="toggle">
+                <button class="btn btn-outline-dark menu" :class="{ 'error-border': errorShow.dateTime.show  }" @click="toggle">
                   出發日期<br>
                   {{ inputValue || 'Toggle calendar'  }}
                 </button>
               </template>
             </date-pick>
+            <error-msg :msg="errorShow.endStation.msg" v-if="errorShow.dateTime.show"></error-msg>
           </b-col>
         </b-row>
       </b-container>
@@ -155,11 +158,12 @@
 import TraStations from '../assets/traStations';
 import DatePick from 'vue-date-pick';
 import 'vue-date-pick/dist/vueDatePick.css';
+import ErrorMsg from './common/error-msg.vue';
 
 export default {
   name: 'SearchArea',
   components: {
-    DatePick,
+    DatePick, ErrorMsg,
   },
   data() {
     return {
@@ -185,6 +189,20 @@ export default {
         },
         dateTime: this.$commonService.getNowYYYYMMDD() + ' ' + this.$commonService.getNowTime().slice(0, 5),
       },
+      errorShow: {
+        startStation: {
+          show: false,
+          msg: '請選擇出發車站',
+        },
+        endStation: {
+          show: false,
+          msg: '請選擇抵達車站',
+        },
+        dateTime: {
+          show: false,
+          msg: '出發日期不能小於今天',
+        },
+      }
     };
   },
   mounted() {
@@ -284,6 +302,8 @@ export default {
 
       this.selected.start.stationId = stationId;
       this.selected.start.stationName = stationName;
+
+      this.errorShow.startStation.show = false;
     },
     selectEndMainLine(mainLine) {
       this.isShowEndMainLine = false;
@@ -300,6 +320,8 @@ export default {
 
       this.selected.end.stationId = stationId;
       this.selected.end.stationName = stationName;
+
+      this.errorShow.endStation.show = false;
     },
     swapSeletedStation() {
       if (!Object.values(this.selected.start).includes(null) && !Object.values(this.selected.end).includes(null)) {
@@ -311,30 +333,24 @@ export default {
       }
     },
     isPastDate(date) {
-      return date < this.$commonService.getYesterdayYYYYMMDD();
+      return date < this.$commonService.getYesterdayYYYYMMDD() || date > this.$commonService.getTwoMonthsLaterYYYYMMDD();
     },
     checkRequired(complete) {
 
+      this.errorShow.startStation.show = false;
+      this.errorShow.endStation.show = false;
+
       if (!this.selected.start.stationId || !this.selected.end.stationId) {
 
-        let errMsg = '';
-
         if (!this.selected.start.stationId && !this.selected.end.stationId) {
-          errMsg = '【出發車站】與【抵達車站】'
-        } else if (!this.selected.start.stationId) {
-          errMsg = '【出發車站】'
-        } else if (!this.selected.end.stationId) {
-          errMsg = '【抵達車站】'
-        }
+          this.errorShow.startStation.show = true;
+          this.errorShow.endStation.show = true;
 
-        this.$bvModal.msgBoxOk('請選擇' + errMsg + '。', {
-          title: '錯誤',
-          okTitle: "關閉",
-          okVariant: 'primary',
-          headerClass: 'border-bottom-0',
-          footerClass: 'border-top-0',
-          centered: true,
-        });
+        } else if (!this.selected.start.stationId) {
+          this.errorShow.startStation.show = true;
+        } else if (!this.selected.end.stationId) {
+          this.errorShow.endStation.show = true;
+        }
 
       } else {
         complete();
@@ -342,17 +358,12 @@ export default {
 
     },
     checkDateNotInPast(date, complete) {
+      this.errorShow.dateTime.show = false;
+
       const selectedDate = new Date(date);
       // 如果選擇的日期是過去
       if (new Date(selectedDate.toDateString()) < new Date(new Date().toDateString())) {
-        this.$bvModal.msgBoxOk('出發日期不能小於今天。', {
-          title: '錯誤',
-          okTitle: "關閉",
-          okVariant: 'primary',
-          headerClass: 'border-bottom-0',
-          footerClass: 'border-top-0',
-          centered: true,
-        });
+        this.errorShow.dateTime.show = true;
       } else {
         complete();
       }
@@ -390,6 +401,10 @@ export default {
 .menu {
   width: 100%;
   height: 60px;
+}
+
+.error-border {
+  border-color: #dc3545;
 }
 
 #reverse-train-station-button {

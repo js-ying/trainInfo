@@ -37,6 +37,13 @@ export default {
     return tomorrow.setDate(tomorrow.getDate() + 1);
   },
 
+  getTwoMonthsLaterYYYYMMDD() {
+    const today = new Date();
+    let twoMonthsLater = new Date(today.setMonth(today.getMonth() + 2));
+    twoMonthsLater.setDate(twoMonthsLater.getDate() - 2);
+    return twoMonthsLater;
+  },
+
   getNowTime() {
     return new Date().toLocaleTimeString('en-GB'); // '00:00:00'
   },
