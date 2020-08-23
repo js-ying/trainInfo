@@ -422,8 +422,6 @@ export default {
           this.saveLocalStorage();
           this.saveHistoryLocalStorage();
 
-          console.log('query');
-
           this.notReset = true;
 
           this.$router.push({

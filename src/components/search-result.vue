@@ -34,7 +34,6 @@ export default {
     };
   },
   mounted() {
-    console.log('mounted', this.$route.query);
     this.startStationId = this.$route.query.s;
     this.endStationId = this.$route.query.e;
     this.date = this.$route.query.d;
@@ -46,7 +45,6 @@ export default {
     // react to route changes...
     // don't forget to call next()
     if (to.query) {
-      console.log('beforeRouteUpdate', to.query);
       this.startStationId = to.query.s;
       this.endStationId = to.query.e;
       this.date = to.query.d;
@@ -54,7 +52,6 @@ export default {
       this.search();
       next();
     } else {
-      console.log('no query');
       next({ name: 'Home', });
     }
   },
@@ -96,8 +93,6 @@ export default {
   //   // } else {
   //   //   from.meta.keepAlive = false;
   //   // }
-
-  //   // console.log(to.meta.keepAlive);
     
   //   next(); 
   // }

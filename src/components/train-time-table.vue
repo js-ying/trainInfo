@@ -156,7 +156,6 @@ export default {
     };
   },
   mounted() {
-    console.log('trainTimeTable mounted');
   },
   computed: {
     filterTrainTimetables() {
@@ -242,7 +241,6 @@ export default {
 
     },
     showTrainTimeDetail(trainTime) {
-      console.log(trainTime);
       this.$router.push({
         name: 'TrainTimeDetail',
         params: {
