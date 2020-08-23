@@ -236,6 +236,45 @@ export default {
       this.myStorage.setItem('selectedStart', JSON.stringify(this.selected.start));
       this.myStorage.setItem('selectedEnd', JSON.stringify(this.selected.end));
     },
+    saveHistoryLocalStorage() {
+      let historySelectedList = [];
+      if (this.myStorage.historySelectedList) {
+        historySelectedList = JSON.parse(this.myStorage.historySelectedList);
+
+        if (historySelectedList.length > 5) {
+          historySelectedList.shift();
+          // historySelectedList = [];
+        }
+      }
+      const nowSelected = [this.selected.start, this.selected.end];
+
+      let isDuplicate = false;
+      let duplicateIndex;
+      if (historySelectedList.length > 0) {
+        historySelectedList.forEach((historySelected, index) => {
+          if (JSON.stringify(historySelected) === JSON.stringify(nowSelected)) {
+            isDuplicate = true;
+            duplicateIndex = index;
+          }
+        })
+      }
+
+      if (isDuplicate) {
+        historySelectedList.splice(duplicateIndex, 1);
+      }
+
+      historySelectedList.push(nowSelected);
+      this.myStorage.setItem('historySelectedList', JSON.stringify(historySelectedList));
+    },
+
+    /**
+     * toggle from SearchHistory.
+     */
+    setHistoryToSelected(historySelected) {
+      this.selected.start = JSON.parse(JSON.stringify(historySelected[0]));
+      this.selected.end = JSON.parse(JSON.stringify(historySelected[1]));
+    },
+
     toggleSelectArea(area) {
       if (area === 'startMainLine') {
         if (this.isShowStartMainLine) {
@@ -284,7 +323,7 @@ export default {
         this.notReset = false;
 
         this.$router.push({
-          name: 'Home',
+          path: '/',
         }).catch(() => {});
       }
     },
@@ -381,6 +420,7 @@ export default {
           this.isShowEndStation = false;
 
           this.saveLocalStorage();
+          this.saveHistoryLocalStorage();
 
           console.log('query');
 

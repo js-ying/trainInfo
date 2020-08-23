@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import Home from './components/home.vue'
+import SearchHistory from './components/search-history.vue'
 import SearchResult from './components/search-result.vue'
 import TrainTimeDetail from './components/train-time-detail.vue'
 import About from './components/about.vue'
@@ -15,6 +16,11 @@ const router = new VueRouter({
       name: 'Home',
       component: Home,
       children: [
+        {
+          path: '/',
+          name: 'SearchHistory',
+          component: SearchHistory,
+        },
         {
           path: 'search',
           name: 'SearchResult',
