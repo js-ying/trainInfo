@@ -22,9 +22,18 @@
                 target="_blanl"
               >https://jsy.tw</a>
             </p>
+
+            <p class="mt-4">
+              台鐵時刻查詢 Ver2<br /><br />
+              <u>版本更新資訊</u><br />
+              1. 更新 日期選擇方式<br />
+              2. 新增 首頁歷史查詢記錄功能<br />
+              3. 移除 所有彈跳視窗<br />
+              4. 更新 起迄站互換功能位置<br />
+            </p>
+            
             <p class="pt-4">
-              別問我為什麼要做大家都做過的東西，因為我就想。<br />
-              手機使用者可以把這個網頁變成 APP 放在桌面上唷。<a
+              手機使用者可以把這個網頁變成 APP 放在桌面上。<a
                 href="https://jsy.tw/blog/1370/"
                 target="_blank"
               >查看更多</a>
@@ -124,6 +133,6 @@ export default {
 .footer {
   font-size: 0.85em;
   color: #6c757d;
-  margin-top: 3rem;
+  margin-top: 2.5rem;
 }
 </style>
