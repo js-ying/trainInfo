@@ -148,9 +148,10 @@
         查詢
       </b-button>
     </div>
-    <keep-alive include="SearchResult">
+    <keep-alive include="SearchResult" v-if="notReset">
       <router-view></router-view>
     </keep-alive>
+    <router-view v-else></router-view>
   </div>
 </template>
 
@@ -202,7 +203,8 @@ export default {
           show: false,
           msg: '出發日期不能小於今天',
         },
-      }
+      },
+      notReset: true, // 是否「非點選 title 重置回到 Home」
     };
   },
   mounted() {
@@ -277,13 +279,12 @@ export default {
             stationName: null,
           },
           dateTime: this.$commonService.getNowYYYYMMDD() + ' ' + this.$commonService.getNowTime().slice(0, 5),
-        };
-
-        this.dailyTrainTimetable = {};
+        },
+        
+        this.notReset = false;
 
         this.$router.push({
           name: 'Home',
-          
         }).catch(() => {});
       }
     },
@@ -381,6 +382,10 @@ export default {
 
           this.saveLocalStorage();
 
+          console.log('query');
+
+          this.notReset = true;
+
           this.$router.push({
             name: 'SearchResult',
             query: {
@@ -393,7 +398,7 @@ export default {
         });
       });
     },
-  }
+  },
 }
 </script>
 

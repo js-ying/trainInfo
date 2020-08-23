@@ -46,6 +46,7 @@ export default {
     // react to route changes...
     // don't forget to call next()
     if (to.query) {
+      console.log('beforeRouteUpdate', to.query);
       this.startStationId = to.query.s;
       this.endStationId = to.query.e;
       this.date = to.query.d;
@@ -53,6 +54,7 @@ export default {
       this.search();
       next();
     } else {
+      console.log('no query');
       next({ name: 'Home', });
     }
   },
@@ -87,6 +89,17 @@ export default {
     getTime(time) {
       return time.substr(0, 2) + ':' + time.substr(2, 4);
     }
-  }
+  },
+  // beforeRouteLeave(to, from, next) {
+  //   // if (to.name === 'TrainTimeDetail') {
+  //   //   from.meta.keepAlive = true;
+  //   // } else {
+  //   //   from.meta.keepAlive = false;
+  //   // }
+
+  //   // console.log(to.meta.keepAlive);
+    
+  //   next(); 
+  // }
 }
 </script>
