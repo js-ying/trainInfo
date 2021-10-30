@@ -58,4 +58,26 @@ export default {
     return trainTypeMap[trainTypeCode];
   },
 
+
+  // 新 date-picker
+  processDate(data) {
+    const offset = data.getTimezoneOffset();
+    const date = new Date(data.getTime() - offset * 60 * 1000);
+    return date.toISOString().split("T")[0];
+  },
+  processTime(data) {
+    return data
+      .toTimeString()
+      .split(" ")[0]
+      .slice(0, 5);
+  },
+  getNowDate() {
+    const date = new Date();
+    return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+      .toISOString()
+      .substring(0, 10); // 'YYYY-mm-DD'.
+  },
+  getMaxDate() {
+    return this.getTwoMonthsLaterYYYYMMDD().toISOString().substring(0, 10); // 'YYYY-mm-DD'
+  }
 }

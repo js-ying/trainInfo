@@ -3,74 +3,96 @@
     <template v-if="$route.name !== 'TrainTimeDetail'">
       <!-- 導覽列 -->
       <div class="mb-2">
-        <h5
-          id="web-title"
-          class="mb-4"
-          @click="toggleSelectArea('reset')">
+        <h5 id="web-title" class="mb-4" @click="toggleSelectArea('reset')">
           台鐵時刻查詢
         </h5>
         <b-container class="bv-example-row">
           <b-row class="justify-content-md-center">
             <!-- 出發車站 -->
-            <b-col
-              cols="6"
-              md="4"
-              class="pr-4 mb-3">
+            <b-col cols="6" md="4" class="pr-4 mb-3">
               <b-button
                 variant="outline-dark"
                 class="menu"
-                :class="{ active : isShowStartMainLine || isShowStartStation, 'error-border': errorShow.startStation.show }"
-                @click="toggleSelectArea('startMainLine')">
-                出發車站<br>
+                :class="{
+                  active: isShowStartMainLine || isShowStartStation,
+                  'error-border': errorShow.startStation.show,
+                }"
+                @click="toggleSelectArea('startMainLine')"
+              >
+                出發車站<br />
                 {{ selected.start.stationName }}
               </b-button>
-              <error-msg :msg="errorShow.startStation.msg" v-if="errorShow.startStation.show"></error-msg>
-              <div id="reverse-train-station-button" @click="swapSeletedStation()">
-                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-left-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" d="M10.146 7.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L12.793 11l-2.647-2.646a.5.5 0 0 1 0-.708z"/>
-                  <path fill-rule="evenodd" d="M2 11a.5.5 0 0 1 .5-.5H13a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 11zm3.854-9.354a.5.5 0 0 1 0 .708L3.207 5l2.647 2.646a.5.5 0 1 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708 0z"/>
-                  <path fill-rule="evenodd" d="M2.5 5a.5.5 0 0 1 .5-.5h10.5a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+              <error-msg
+                :msg="errorShow.startStation.msg"
+                v-if="errorShow.startStation.show"
+              ></error-msg>
+              <div
+                id="reverse-train-station-button"
+                @click="swapSeletedStation()"
+              >
+                <svg
+                  width="1em"
+                  height="1em"
+                  viewBox="0 0 16 16"
+                  class="bi bi-arrow-left-right"
+                  fill="currentColor"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10.146 7.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L12.793 11l-2.647-2.646a.5.5 0 0 1 0-.708z"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    d="M2 11a.5.5 0 0 1 .5-.5H13a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 11zm3.854-9.354a.5.5 0 0 1 0 .708L3.207 5l2.647 2.646a.5.5 0 1 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708 0z"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    d="M2.5 5a.5.5 0 0 1 .5-.5h10.5a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"
+                  />
                 </svg>
               </div>
             </b-col>
             <!-- 抵達車站 -->
-            <b-col
-              cols="6"
-              md="4"
-              class="pl-4 mb-3">
+            <b-col cols="6" md="4" class="pl-4 mb-3">
               <b-button
                 variant="outline-dark"
                 class="menu"
-                :class="{ active : isShowEndMainLine || isShowEndStation, 'error-border': errorShow.endStation.show  }"
-                @click="toggleSelectArea('endMainLine')">
-                抵達車站<br>
+                :class="{
+                  active: isShowEndMainLine || isShowEndStation,
+                  'error-border': errorShow.endStation.show,
+                }"
+                @click="toggleSelectArea('endMainLine')"
+              >
+                抵達車站<br />
                 {{ selected.end.stationName }}
               </b-button>
-              <error-msg :msg="errorShow.endStation.msg" v-if="errorShow.endStation.show"></error-msg>
+              <error-msg
+                :msg="errorShow.endStation.msg"
+                v-if="errorShow.endStation.show"
+              ></error-msg>
             </b-col>
             <!-- 出發日期 -->
-            <b-col
-              cols="12"
-              md="4"
-              class="mb-3"
-              @click="toggleSelectArea('datetimePicker')">
-              <date-pick v-model="selected.dateTime" :pickTime="true" :format="'YYYY-MM-DD HH:mm'" :isDateDisabled="isPastDate">
-                <template v-slot:default="{ toggle, inputValue }">
-                  <button class="btn btn-outline-dark menu" :class="{ 'error-border': errorShow.dateTime.show  }" @click="toggle">
-                    出發日期<br>
-                    {{ inputValue || 'Toggle calendar'  }}
-                  </button>
-                </template>
-              </date-pick>
-              <error-msg :msg="errorShow.endStation.msg" v-if="errorShow.dateTime.show"></error-msg>
+            <b-col cols="12" md="4" class="mb-3">
+              <button
+                class="btn btn-outline-dark menu"
+                :class="{ 'error-border': errorShow.datetime.show }"
+                @click="toggleSelectArea('datetimePicker')"
+              >
+                出發日期<br />
+                {{ $commonService.processDate(selected.datetime) }}
+                {{ $commonService.processTime(selected.datetime) }}
+              </button>
+              <error-msg
+                :msg="errorShow.datetime.msg"
+                v-if="errorShow.datetime.show"
+              ></error-msg>
             </b-col>
           </b-row>
         </b-container>
       </div>
       <!-- 參數調整區域 -->
-      <b-container
-        class="mb-2 bv-example-row"
-        id="param-adjustment-area">
+      <b-container class="mb-2 bv-example-row" id="param-adjustment-area">
         <b-row v-if="isShowStartMainLine">
           <b-col
             cols="6"
@@ -78,11 +100,13 @@
             lg="3"
             class="mb-3"
             v-for="(mainLine, $index) in mainLines"
-            :key="$index">
+            :key="$index"
+          >
             <b-button
               variant="secondary"
               class="w100"
-              @click="selectStartMainLine(mainLine)">
+              @click="selectStartMainLine(mainLine)"
+            >
               {{ mainLine }}
             </b-button>
           </b-col>
@@ -94,14 +118,30 @@
             lg="3"
             class="mb-3"
             v-for="(filterTraStartStation, $index) in filterTraStartStations"
-            :key="$index">
+            :key="$index"
+          >
             <b-button
               variant="secondary"
               :value="filterTraStartStation.StationID"
               class="w100"
-              :class="{ 'high-level-station' : filterTraStartStation.StationClass === '0' || filterTraStartStation.StationClass === '1' }"
-              @click="selectStartStation(filterTraStartStation.StationID, filterTraStartStation.StationName.Zh_tw)">
-              {{ filterTraStartStation.StationClass === '0' || filterTraStartStation.StationClass === '1' ? '＊' : '' }}
+              :class="{
+                'high-level-station':
+                  filterTraStartStation.StationClass === '0' ||
+                  filterTraStartStation.StationClass === '1',
+              }"
+              @click="
+                selectStartStation(
+                  filterTraStartStation.StationID,
+                  filterTraStartStation.StationName.Zh_tw
+                )
+              "
+            >
+              {{
+                filterTraStartStation.StationClass === "0" ||
+                filterTraStartStation.StationClass === "1"
+                  ? "＊"
+                  : ""
+              }}
               {{ filterTraStartStation.StationName.Zh_tw }}
             </b-button>
           </b-col>
@@ -113,12 +153,14 @@
             lg="3"
             class="mb-3"
             v-for="(mainLine, $index) in mainLines"
-            :key="$index">
+            :key="$index"
+          >
             <b-button
               variant="secondary"
               class="w100"
               @click="selectEndMainLine(mainLine)"
-            >{{ mainLine }}</b-button>
+              >{{ mainLine }}</b-button
+            >
           </b-col>
         </b-row>
         <b-row v-if="isShowEndStation">
@@ -128,29 +170,50 @@
             lg="3"
             class="mb-3"
             v-for="(filterTraEndStation, $index) in filterTraEndStations"
-            :key="$index">
+            :key="$index"
+          >
             <b-button
               variant="secondary"
               :value="filterTraEndStation.StationID"
               class="w100"
-              :class="{ 'high-level-station' : filterTraEndStation.StationClass === '0' || filterTraEndStation.StationClass === '1' }"
-              @click="selectEndStation(filterTraEndStation.StationID, filterTraEndStation.StationName.Zh_tw)">
-              {{ filterTraEndStation.StationClass === '0' || filterTraEndStation.StationClass === '1' ? '＊' : '' }}
+              :class="{
+                'high-level-station':
+                  filterTraEndStation.StationClass === '0' ||
+                  filterTraEndStation.StationClass === '1',
+              }"
+              @click="
+                selectEndStation(
+                  filterTraEndStation.StationID,
+                  filterTraEndStation.StationName.Zh_tw
+                )
+              "
+            >
+              {{
+                filterTraEndStation.StationClass === "0" ||
+                filterTraEndStation.StationClass === "1"
+                  ? "＊"
+                  : ""
+              }}
               {{ filterTraEndStation.StationName.Zh_tw }}
             </b-button>
           </b-col>
         </b-row>
+        <b-row class="justify-content-md-center mb-4" v-if="isShowDatetime">
+          <date-picker
+            mode="datetime"
+            color="blue"
+            :min-date="$commonService.getNowDate()"
+            :max-date="$commonService.getMaxDate()"
+            v-model="selected.datetime"
+          ></date-picker>
+        </b-row>
       </b-container>
       <!-- 查詢按鈕 -->
       <div class="mb-4">
-        <b-button
-          variant="dark"
-          @click="query()">
-          查詢
-        </b-button>
+        <b-button variant="dark" @click="query()"> 查詢 </b-button>
       </div>
     </template>
-    <keep-alive include="SearchResult" v-if="notReset">
+    <keep-alive v-if="notReset">
       <router-view></router-view>
     </keep-alive>
     <router-view v-else></router-view>
@@ -158,20 +221,40 @@
 </template>
 
 <script>
-import TraStations from '../assets/traStations';
-import DatePick from 'vue-date-pick';
-import 'vue-date-pick/dist/vueDatePick.css';
-import ErrorMsg from './common/error-msg.vue';
+import { DatePicker } from "v-calendar";
+import TraStations from "../assets/traStations";
+import ErrorMsg from "./common/error-msg.vue";
 
 export default {
-  name: 'SearchArea',
+  name: "SearchArea",
   components: {
-    DatePick, ErrorMsg,
+    DatePicker,
+    ErrorMsg,
   },
   data() {
     return {
       myStorage: null,
-      mainLines: ['基隆市', '新北市', '臺北市', '桃園市', '新竹縣', '新竹市', '苗栗縣', '臺中市', '彰化縣', '南投縣', '雲林縣', '嘉義縣', '嘉義市', '臺南市', '高雄市', '屏東縣', '臺東縣', '花蓮縣', '宜蘭縣'],
+      mainLines: [
+        "基隆市",
+        "新北市",
+        "臺北市",
+        "桃園市",
+        "新竹縣",
+        "新竹市",
+        "苗栗縣",
+        "臺中市",
+        "彰化縣",
+        "南投縣",
+        "雲林縣",
+        "嘉義縣",
+        "嘉義市",
+        "臺南市",
+        "高雄市",
+        "屏東縣",
+        "臺東縣",
+        "花蓮縣",
+        "宜蘭縣",
+      ],
       traStations: [],
       filterTraStartStations: [],
       filterTraEndStations: [],
@@ -179,6 +262,7 @@ export default {
       isShowStartStation: false,
       isShowEndMainLine: false,
       isShowEndStation: false,
+      isShowDatetime: false,
       selected: {
         start: {
           mainLine: null,
@@ -190,20 +274,20 @@ export default {
           stationId: null,
           stationName: null,
         },
-        dateTime: this.$commonService.getNowYYYYMMDD() + ' ' + this.$commonService.getNowTime().slice(0, 5),
+        datetime: new Date(),
       },
       errorShow: {
         startStation: {
           show: false,
-          msg: '請選擇出發車站',
+          msg: "請選擇出發車站",
         },
         endStation: {
           show: false,
-          msg: '請選擇抵達車站',
+          msg: "請選擇抵達車站",
         },
-        dateTime: {
+        datetime: {
           show: false,
-          msg: '出發日期不能小於今天',
+          msg: "出發日期不能小於今天",
         },
       },
       notReset: true, // 是否「非點選 title 重置回到 Home」
@@ -235,8 +319,11 @@ export default {
       }
     },
     saveLocalStorage() {
-      this.myStorage.setItem('selectedStart', JSON.stringify(this.selected.start));
-      this.myStorage.setItem('selectedEnd', JSON.stringify(this.selected.end));
+      this.myStorage.setItem(
+        "selectedStart",
+        JSON.stringify(this.selected.start)
+      );
+      this.myStorage.setItem("selectedEnd", JSON.stringify(this.selected.end));
     },
     saveHistoryLocalStorage() {
       let historySelectedList = [];
@@ -258,7 +345,7 @@ export default {
             isDuplicate = true;
             duplicateIndex = index;
           }
-        })
+        });
       }
 
       if (isDuplicate) {
@@ -266,7 +353,10 @@ export default {
       }
 
       historySelectedList.push(nowSelected);
-      this.myStorage.setItem('historySelectedList', JSON.stringify(historySelectedList));
+      this.myStorage.setItem(
+        "historySelectedList",
+        JSON.stringify(historySelectedList)
+      );
     },
 
     /**
@@ -278,7 +368,7 @@ export default {
     },
 
     toggleSelectArea(area) {
-      if (area === 'startMainLine') {
+      if (area === "startMainLine") {
         if (this.isShowStartMainLine) {
           this.isShowStartMainLine = false;
         } else {
@@ -286,8 +376,9 @@ export default {
           this.isShowStartStation = false;
           this.isShowEndMainLine = false;
           this.isShowEndStation = false;
+          this.isShowDatetime = false;
         }
-      } else if (area === 'endMainLine') {
+      } else if (area === "endMainLine") {
         if (this.isShowEndMainLine) {
           this.isShowEndMainLine = false;
         } else {
@@ -295,18 +386,24 @@ export default {
           this.isShowStartStation = false;
           this.isShowEndMainLine = true;
           this.isShowEndStation = false;
+          this.isShowDatetime = false;
         }
-      } else if (area === 'datetimePicker') {
+      } else if (area === "datetimePicker") {
+        if (this.isShowDatetime) {
+          this.isShowDatetime = false;
+        } else {
+          this.isShowStartMainLine = false;
+          this.isShowStartStation = false;
+          this.isShowEndMainLine = false;
+          this.isShowEndStation = false;
+          this.isShowDatetime = true;
+        }
+      } else if (area === "reset") {
         this.isShowStartMainLine = false;
         this.isShowStartStation = false;
         this.isShowEndMainLine = false;
         this.isShowEndStation = false;
-
-      } else if (area === 'reset') {
-        this.isShowStartMainLine = false;
-        this.isShowStartStation = false;
-        this.isShowEndMainLine = false;
-        this.isShowEndStation = false;
+        this.isShowDatetime = false;
 
         this.selected = {
           start: {
@@ -319,14 +416,15 @@ export default {
             stationId: null,
             stationName: null,
           },
-          dateTime: this.$commonService.getNowYYYYMMDD() + ' ' + this.$commonService.getNowTime().slice(0, 5),
-        },
-        
+          datetime: new Date(),
+        };
         this.notReset = false;
 
-        this.$router.push({
-          path: '/',
-        }).catch(() => {});
+        this.$router
+          .push({
+            path: "/",
+          })
+          .catch(() => {});
       }
     },
     selectStartMainLine(mainLine) {
@@ -335,7 +433,11 @@ export default {
 
       this.selected.start.mainLine = mainLine;
 
-      const filterTraStations = this.traStations.filter(traStation => traStation.StationAddress.replace(/[0-9]/g, '').substr(0, 3) === mainLine);
+      const filterTraStations = this.traStations.filter(
+        (traStation) =>
+          traStation.StationAddress.replace(/[0-9]/g, "").substr(0, 3) ===
+          mainLine
+      );
       this.filterTraStartStations = [];
       Object.assign(this.filterTraStartStations, filterTraStations);
     },
@@ -353,7 +455,11 @@ export default {
 
       this.selected.end.mainLine = mainLine;
 
-      const filterTraStations = this.traStations.filter(traStation => traStation.StationAddress.replace(/[0-9]/g, '').substr(0, 3) === mainLine);
+      const filterTraStations = this.traStations.filter(
+        (traStation) =>
+          traStation.StationAddress.replace(/[0-9]/g, "").substr(0, 3) ===
+          mainLine
+      );
       this.filterTraEndStations = [];
       Object.assign(this.filterTraEndStations, filterTraStations);
     },
@@ -366,8 +472,12 @@ export default {
       this.errorShow.endStation.show = false;
     },
     swapSeletedStation() {
-      if (!Object.values(this.selected.start).includes(null) && !Object.values(this.selected.end).includes(null)) {
-        let start = {}, end = {};
+      if (
+        !Object.values(this.selected.start).includes(null) &&
+        !Object.values(this.selected.end).includes(null)
+      ) {
+        let start = {},
+          end = {};
         Object.assign(start, this.selected.start);
         Object.assign(end, this.selected.end);
         Object.assign(this.selected.start, end);
@@ -375,71 +485,77 @@ export default {
       }
     },
     isPastDate(date) {
-      return date < this.$commonService.getYesterdayYYYYMMDD() || date > this.$commonService.getTwoMonthsLaterYYYYMMDD();
+      return (
+        date < this.$commonService.getYesterdayYYYYMMDD() ||
+        date > this.$commonService.getTwoMonthsLaterYYYYMMDD()
+      );
     },
     checkRequired(complete) {
-
       this.errorShow.startStation.show = false;
       this.errorShow.endStation.show = false;
 
       if (!this.selected.start.stationId || !this.selected.end.stationId) {
-
         if (!this.selected.start.stationId && !this.selected.end.stationId) {
           this.errorShow.startStation.show = true;
           this.errorShow.endStation.show = true;
-
         } else if (!this.selected.start.stationId) {
           this.errorShow.startStation.show = true;
         } else if (!this.selected.end.stationId) {
           this.errorShow.endStation.show = true;
         }
-
       } else {
         complete();
       }
-
     },
     checkDateNotInPast(date, complete) {
-      this.errorShow.dateTime.show = false;
+      this.errorShow.datetime.show = false;
 
       const selectedDate = new Date(date);
       // 如果選擇的日期是過去
-      if (new Date(selectedDate.toDateString()) < new Date(new Date().toDateString())) {
-        this.errorShow.dateTime.show = true;
+      if (
+        new Date(selectedDate.toDateString()) <
+        new Date(new Date().toDateString())
+      ) {
+        this.errorShow.datetime.show = true;
       } else {
         complete();
       }
     },
     simplifyTime(time) {
-      return time.split(':')[0] + time.split(':')[1];
+      return time.split(":")[0] + time.split(":")[1];
     },
     query() {
       this.checkRequired(() => {
-        this.checkDateNotInPast(this.selected.dateTime.split(' ')[0], () => {
-          this.isShowStartMainLine = false;
-          this.isShowStartStation = false;
-          this.isShowEndMainLine = false;
-          this.isShowEndStation = false;
+        this.checkDateNotInPast(
+          this.$commonService.processDate(this.selected.datetime),
+          () => {
+            this.isShowStartMainLine = false;
+            this.isShowStartStation = false;
+            this.isShowEndMainLine = false;
+            this.isShowEndStation = false;
 
-          this.saveLocalStorage();
-          this.saveHistoryLocalStorage();
+            this.saveLocalStorage();
+            this.saveHistoryLocalStorage();
 
-          this.notReset = true;
+            this.notReset = true;
 
-          this.$router.push({
-            name: 'SearchResult',
-            query: {
-              s: this.selected.start.stationName,
-              e: this.selected.end.stationName,
-              d: this.selected.dateTime.split(' ')[0],
-              t: this.simplifyTime(this.selected.dateTime.split(' ')[1]),
-            }
-          }).catch(() => {});
-        });
+            this.$router
+              .push({
+                name: "SearchResult",
+                query: {
+                  s: this.selected.start.stationName,
+                  e: this.selected.end.stationName,
+                  d: this.$commonService.processDate(this.selected.datetime),
+                  t: this.$commonService.processTime(this.selected.datetime),
+                },
+              })
+              .catch(() => {});
+          }
+        );
       });
     },
   },
-}
+};
 </script>
 
 <style scoped>

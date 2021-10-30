@@ -13,6 +13,7 @@
     "bootstrap-vue": "^2.9.0",
     "core-js": "^3.6.4",
     "jssha": "^2.4.0",
+    "v-calendar": "^2.3.4",
     "vue": "^2.6.11",
     "vue-date-pick": "^1.4.1",
     "vue-loading-overlay": "^3.3.2",
