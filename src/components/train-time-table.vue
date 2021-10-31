@@ -34,7 +34,7 @@
             :key="$index">
             <div
               class="train-time-col bv-example-row-flex-cols p-2"
-              :class="{ 'train-is-pass' : isPass(filterTrainTimetable) }"
+              :class="{ 'train-is-pass' : isTrainPass(filterTrainTimetable) }"
               @click="showTrainTimeDetail(filterTrainTimetable)">
               <b-row align-v="center">
                 <b-col cols="3">
@@ -173,7 +173,7 @@ export default {
     },
   },
   methods: {
-    isPass(trainTime) {
+    isTrainPass(trainTime) {
       // 若查詢日期與當下日期相同
       if (this.date === this.$commonService.processDate(new Date())) {
         const trainDatetime = new Date(`${this.date} ${trainTime.StopTimes[0].DepartureTime}`);
