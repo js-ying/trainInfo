@@ -8,7 +8,7 @@
               @click="goHome()">
               台鐵時刻查詢
               <br />
-              <small>Ver.2</small>
+              <small>Ver.3</small>
             </h5>
           </b-col>
           <b-col
@@ -25,8 +25,15 @@
             </p>
 
             <p class="mt-4">
-              <u>Ver.2 版本更新資訊</u><br />
+              <u>Ver.3 版本更新資訊 (2021-11)</u><br />
               1. 更新 日期選擇方式<br />
+              2. 新增 列車誤點資訊<br />
+              3. 新增 當日過期火車特效
+            </p>
+
+            <p class="mt-4">
+              <u>Ver.2 版本更新資訊 (2020-08)</u><br />
+              1. 更新 出發日期選擇方式<br />
               2. 新增 首頁歷史查詢記錄功能<br />
               3. 移除 所有彈跳視窗<br />
               4. 更新 起迄站互換功能位置<br />
@@ -63,7 +70,7 @@
                   icon="exclamation-circle-fill"
                   variant="secondary"
                   class="mr-2"
-                ></b-icon>發行日：2020-04-13，最後更新：2020-08
+                ></b-icon>發行日：2020-04-13，最後更新：2021-11
               </div>
             </div>
 
