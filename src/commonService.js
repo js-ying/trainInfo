@@ -79,5 +79,12 @@ export default {
   },
   getMaxDate() {
     return this.getTwoMonthsLaterYYYYMMDD().toISOString().substring(0, 10); // 'YYYY-mm-DD'
+  },
+
+  // delayInfo
+  getDateTimeDiff(aDate, bDate) {
+    const diff = Math.abs(aDate - bDate);
+    const minutes = Math.floor((diff/1000)/60);
+    return minutes;
   }
 }
