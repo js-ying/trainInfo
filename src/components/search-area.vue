@@ -533,6 +533,7 @@ export default {
             this.isShowStartStation = false;
             this.isShowEndMainLine = false;
             this.isShowEndStation = false;
+            this.isShowDatetime = false;
 
             this.saveLocalStorage();
             this.saveHistoryLocalStorage();

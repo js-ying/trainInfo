@@ -49,6 +49,14 @@
                   </div>
                 </b-col>
                 <b-col cols="6">
+                  <template v-if="filterTrainTimetable.delayInfo && filterTrainTimetable.delayInfo.length > 0">
+                    <div style="color: #198754;" v-if="filterTrainTimetable.delayInfo[0].DelayTime === 0">
+                      準點
+                    </div>
+                    <div style="color: #dc3545;" v-if="filterTrainTimetable.delayInfo[0].DelayTime > 0">
+                      延誤 {{ filterTrainTimetable.delayInfo[0].DelayTime }} 分鐘
+                    </div>
+                  </template>                  
                   {{ filterTrainTimetable.StopTimes[0].DepartureTime }} - {{ filterTrainTimetable.StopTimes[filterTrainTimetable.StopTimes.length - 1].ArrivalTime }}
                   <div class="train-time-diff">{{ getTimeDiff(filterTrainTimetable.StopTimes[0].DepartureTime, filterTrainTimetable.StopTimes[filterTrainTimetable.StopTimes.length - 1].ArrivalTime) }}</div>
                 </b-col>
