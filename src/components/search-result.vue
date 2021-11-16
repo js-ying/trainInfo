@@ -91,7 +91,7 @@ export default {
       if (this.date === this.$commonService.processDate(new Date())) {
         // 從 trainTimeTable 中篩選出與當下時間相差一小時內的列車物件
         const inOneHourTrainList = trainTimetable.filter(trainTime => {
-          const trainDatetime = new Date(`${this.date} ${trainTime.StopTimes[0].DepartureTime}`);
+          const trainDatetime = new Date(`${this.date.replace(/-/g, "/")} ${trainTime.StopTimes[0].DepartureTime}`);
           const nowDatetime = new Date();
           if (trainDatetime > nowDatetime) {
             return this.$commonService.getDateTimeDiff(trainDatetime, nowDatetime) <= 60;

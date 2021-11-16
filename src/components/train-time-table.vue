@@ -176,7 +176,7 @@ export default {
     isTrainPass(trainTime) {
       // 若查詢日期與當下日期相同
       if (this.date === this.$commonService.processDate(new Date())) {
-        const trainDatetime = new Date(`${this.date} ${trainTime.StopTimes[0].DepartureTime}`);
+        const trainDatetime = new Date(`${this.date.replace(/-/g, "/")} ${trainTime.StopTimes[0].DepartureTime}`);
         const nowDatetime = new Date();
         // 若火車時間小於當下時間則代表火車已過時
         if (trainDatetime < nowDatetime) {
