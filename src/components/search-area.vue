@@ -198,7 +198,7 @@
             </b-button>
           </b-col>
         </b-row>
-        <b-row class="justify-content-md-center mb-4" v-if="isShowDatetime">
+        <b-row class="justify-content-center mb-4" v-if="isShowDatetime">
           <date-picker
             mode="datetime"
             color="blue"
