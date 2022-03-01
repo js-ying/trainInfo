@@ -1,4 +1,4 @@
-# 台鐵時刻表
+# 台鐵時刻查詢
 查詢火車時刻，簡單又快速。
 
 Demo: [https://traintime.jsy.tw](https://traintime.jsy.tw)
