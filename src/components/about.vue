@@ -6,7 +6,7 @@
           <h5 id="web-title" @click="goHome()">
             台鐵時刻查詢
             <br />
-            <small>Ver.3</small>
+            <small>Ver.4</small>
           </h5>
         </b-col>
         <b-col cols="12" md="6" class="mt-4 text-left">
