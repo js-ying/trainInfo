@@ -312,6 +312,7 @@ export default {
     this.gettTraStation();
     this.myStorage = window.localStorage;
     this.setLocalStorage();
+    this.setUrlStation();
   },
   methods: {
     gettTraStation() {
@@ -579,6 +580,15 @@ export default {
       Object.assign(end, this.selected.end);
       Object.assign(this.selected.start, end);
       Object.assign(this.selected.end, start);
+    },
+    setUrlStation() {
+      if (this.$route.query.s) {
+        this.selected.start.stationName = this.$route.query.s;
+      }
+
+      if (this.$route.query.e) {
+        this.selected.end.stationName = this.$route.query.e;
+      }
     },
     isPastDate(date) {
       return (
