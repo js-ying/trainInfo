@@ -93,6 +93,20 @@
       </div>
       <!-- 參數調整區域 -->
       <b-container class="mb-2 bv-example-row" id="param-adjustment-area">
+        <b-form-input
+          v-model="queryInput"
+          @update="filterStations()"
+          :placeholder="queryInputPlaceHoder"
+          class="mb-3"
+          @keyup.enter="setStation()"
+          ref="queryInputRef"
+          v-show="
+            isShowStartMainLine ||
+            isShowStartStation ||
+            isShowEndMainLine ||
+            isShowEndStation
+          "
+        ></b-form-input>
         <b-row v-if="isShowStartMainLine">
           <b-col
             cols="6"
@@ -229,7 +243,7 @@ export default {
   name: "SearchArea",
   components: {
     DatePicker,
-    ErrorMsg,
+    ErrorMsg
   },
   data() {
     return {
@@ -253,7 +267,7 @@ export default {
         "屏東縣",
         "臺東縣",
         "花蓮縣",
-        "宜蘭縣",
+        "宜蘭縣"
       ],
       traStations: [],
       filterTraStartStations: [],
@@ -263,34 +277,35 @@ export default {
       isShowEndMainLine: false,
       isShowEndStation: false,
       isShowDatetime: false,
+      queryInput: "",
       selected: {
         start: {
           mainLine: null,
           stationId: null,
-          stationName: null,
+          stationName: null
         },
         end: {
           mainLine: null,
           stationId: null,
-          stationName: null,
+          stationName: null
         },
-        datetime: new Date(),
+        datetime: new Date()
       },
       errorShow: {
         startStation: {
           show: false,
-          msg: "請選擇出發車站",
+          msg: "請選擇出發車站"
         },
         endStation: {
           show: false,
-          msg: "請選擇抵達車站",
+          msg: "請選擇抵達車站"
         },
         datetime: {
           show: false,
-          msg: "出發日期不能小於今天",
-        },
+          msg: "出發日期不能小於今天"
+        }
       },
-      notReset: true, // 是否「非點選 title 重置回到 Home」
+      notReset: true // 是否「非點選 title 重置回到 Home」
     };
   },
   mounted() {
@@ -368,7 +383,13 @@ export default {
     },
 
     toggleSelectArea(area) {
+      this.queryInput = "";
+
       if (area === "startMainLine") {
+        setTimeout(() => {
+          this.$refs.queryInputRef.focus();
+        }, 0);
+
         if (this.isShowStartMainLine) {
           this.isShowStartMainLine = false;
         } else {
@@ -379,6 +400,10 @@ export default {
           this.isShowDatetime = false;
         }
       } else if (area === "endMainLine") {
+        setTimeout(() => {
+          this.$refs.queryInputRef.focus();
+        }, 0);
+
         if (this.isShowEndMainLine) {
           this.isShowEndMainLine = false;
         } else {
@@ -409,20 +434,20 @@ export default {
           start: {
             mainLine: null,
             stationId: null,
-            stationName: null,
+            stationName: null
           },
           end: {
             mainLine: null,
             stationId: null,
-            stationName: null,
+            stationName: null
           },
-          datetime: new Date(),
+          datetime: new Date()
         };
         this.notReset = false;
 
         this.$router
           .push({
-            path: "/",
+            path: "/"
           })
           .catch(() => {});
       }
@@ -434,7 +459,7 @@ export default {
       this.selected.start.mainLine = mainLine;
 
       const filterTraStations = this.traStations.filter(
-        (traStation) =>
+        traStation =>
           traStation.StationAddress.replace(/[0-9]/g, "").substr(0, 3) ===
           mainLine
       );
@@ -456,7 +481,7 @@ export default {
       this.selected.end.mainLine = mainLine;
 
       const filterTraStations = this.traStations.filter(
-        (traStation) =>
+        traStation =>
           traStation.StationAddress.replace(/[0-9]/g, "").substr(0, 3) ===
           mainLine
       );
@@ -471,18 +496,89 @@ export default {
 
       this.errorShow.endStation.show = false;
     },
-    swapSeletedStation() {
-      if (
-        !Object.values(this.selected.start).includes(null) &&
-        !Object.values(this.selected.end).includes(null)
-      ) {
-        let start = {},
-          end = {};
-        Object.assign(start, this.selected.start);
-        Object.assign(end, this.selected.end);
-        Object.assign(this.selected.start, end);
-        Object.assign(this.selected.end, start);
+    filterStations() {
+      this.selected.start.mainLine = null;
+      this.selected.end.mainLine = null;
+
+      if (this.queryInput) {
+        if (this.isShowStartMainLine || this.isShowStartStation) {
+          this.isShowStartMainLine = false;
+          this.isShowStartStation = true;
+
+          const filterTraStations = this.traStations.filter(
+            traStation =>
+              traStation.StationName.Zh_tw.includes(this.queryInput) ||
+              traStation.StationName.Zh_tw.replace("臺", "台").includes(
+                this.queryInput
+              )
+          );
+          this.filterTraStartStations = [];
+          Object.assign(this.filterTraStartStations, filterTraStations);
+        } else if (this.isShowEndMainLine || this.isShowEndStation) {
+          this.isShowEndMainLine = false;
+          this.isShowEndStation = true;
+
+          const filterTraStations = this.traStations.filter(
+            traStation =>
+              traStation.StationName.Zh_tw.includes(this.queryInput) ||
+              traStation.StationName.Zh_tw.replace("臺", "台").includes(
+                this.queryInput
+              )
+          );
+          this.filterTraEndStations = [];
+          Object.assign(this.filterTraEndStations, filterTraStations);
+        }
+      } else {
+        if (this.isShowStartMainLine || this.isShowStartStation) {
+          this.isShowStartMainLine = true;
+          this.isShowStartStation = false;
+        } else if (this.isShowEndMainLine || this.isShowEndStation) {
+          this.isShowEndMainLine = true;
+          this.isShowEndStation = false;
+        }
+        this.filterTraStartStations = this.traStations;
+        this.filterTraEndStations = this.traStations;
       }
+    },
+    setStation() {
+      if (!this.queryInput) return;
+      let selectedStation = null;
+      let filterTraStations =
+        this.isShowStartMainLine || this.isShowStartStation
+          ? this.filterTraStartStations
+          : this.filterTraEndStations;
+      let selectStation =
+        this.isShowStartMainLine || this.isShowStartStation
+          ? this.selectStartStation
+          : this.selectEndStation;
+
+      if (filterTraStations.length <= 2) {
+        if (filterTraStations.length === 2) {
+          const highstation = filterTraStations.find(station =>
+            ["0", "1"].includes(station.StationClass)
+          );
+          if (highstation) {
+            selectedStation = highstation;
+          }
+        } else if (filterTraStations.length === 1) {
+          selectedStation = filterTraStations[0];
+        }
+
+        if (selectedStation) {
+          selectStation(
+            selectedStation.StationID,
+            selectedStation.StationName.Zh_tw
+          );
+        }
+      }
+    },
+    swapSeletedStation() {
+      let start = {},
+        end = {};
+      Object.assign(start, this.selected.start);
+      Object.assign(end, this.selected.end);
+      Object.assign(this.selected.start, end);
+      Object.assign(this.selected.end, start);
     },
     isPastDate(date) {
       return (
@@ -547,15 +643,26 @@ export default {
                   s: this.selected.start.stationName,
                   e: this.selected.end.stationName,
                   d: this.$commonService.processDate(this.selected.datetime),
-                  t: this.$commonService.processTime(this.selected.datetime),
-                },
+                  t: this.$commonService.processTime(this.selected.datetime)
+                }
               })
               .catch(() => {});
           }
         );
       });
-    },
+    }
   },
+  computed: {
+    queryInputPlaceHoder() {
+      if (this.isShowStartMainLine || this.isShowStartStation) {
+        return "出發車站（e.g. 新竹）";
+      } else if (this.isShowEndMainLine || this.isShowEndStation) {
+        return "抵達車站（e.g. 台北）";
+      }
+
+      return "";
+    }
+  }
 };
 </script>
 
