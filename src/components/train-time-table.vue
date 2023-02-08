@@ -1,27 +1,27 @@
 <template>
   <div id="train-time-table">
     <!-- 查詢結果 -->
-    <b-container
-      class="mb-3 bv-example-row"
-      v-if="dailyTrainTimetable"
-    >
+    <b-container class="mb-3 bv-example-row" v-if="dailyTrainTimetable">
       <div class="d-flex justify-content-between">
         <!-- 車種篩選按鈕群組 -->
-        <b-button-group
-          size="sm"
-          class="mb-3"
-          id="train-Type-filter-btns">
+        <b-button-group size="sm" class="mb-3" id="train-Type-filter-btns">
           <b-button
             v-for="trainTypeFilterBtn in trainTypeFilterBtns"
             :key="trainTypeFilterBtn.value"
-            :class="{ active : trainTypeFilterBtn.actived }"
-            @click="filterTrainType(trainTypeFilterBtn.value)">
+            :class="{ active: trainTypeFilterBtn.actived }"
+            @click="filterTrainType(trainTypeFilterBtn.value)"
+          >
             {{ trainTypeFilterBtn.name }}
           </b-button>
         </b-button-group>
         <!-- 查詢結果頁數 -->
         <div id="result-number">
-          {{ filterTrainTimetables.length + ' 筆 / ' + dailyTrainTimetable.TrainTimetables.length + ' 筆'}}
+          {{
+            filterTrainTimetables.length +
+            " 筆 / " +
+            dailyTrainTimetable.TrainTimetables.length +
+            " 筆"
+          }}
         </div>
       </div>
       <!-- 列車資訊 -->
@@ -31,34 +31,82 @@
             cols="12"
             class="mb-3"
             v-for="(filterTrainTimetable, $index) in filterTrainTimetables"
-            :key="$index">
+            :key="$index"
+          >
             <div
               class="train-time-col bv-example-row-flex-cols p-2"
-              :class="{ 'train-is-pass' : isTrainPass(filterTrainTimetable) }"
-              @click="showTrainTimeDetail(filterTrainTimetable)">
+              :class="{ 'train-is-pass': isTrainPass(filterTrainTimetable) }"
+              @click="showTrainTimeDetail(filterTrainTimetable)"
+            >
               <b-row align-v="center">
                 <b-col cols="3">
                   <div class="train-time-left-side">
-                    {{ filterTrainTimetable.TrainInfo.TrainNo }} {{ transformTripLineToName(filterTrainTimetable.TrainInfo.TripLine) }}
+                    {{ filterTrainTimetable.TrainInfo.TrainNo }}
+                    {{
+                      transformTripLineToName(
+                        filterTrainTimetable.TrainInfo.TripLine
+                      )
+                    }}
                   </div>
                   <div class="mb-1">
-                    <b-badge :variant="getTrainTypeVariant(filterTrainTimetable.TrainInfo.TrainTypeCode)">{{ $commonService.transformTrainTypeCodeToName(filterTrainTimetable.TrainInfo.TrainTypeCode) }}</b-badge>
+                    <b-badge
+                      :variant="
+                        getTrainTypeVariant(
+                          filterTrainTimetable.TrainInfo.TrainTypeCode
+                        )
+                      "
+                      >{{
+                        $commonService.transformTrainTypeCodeToName(
+                          filterTrainTimetable.TrainInfo.TrainTypeCode
+                        )
+                      }}</b-badge
+                    >
                   </div>
                   <div class="train-time-left-side">
-                    {{ filterTrainTimetable.TrainInfo.StartingStationName.Zh_tw }}-{{ filterTrainTimetable.TrainInfo.EndingStationName.Zh_tw }}
+                    {{
+                      filterTrainTimetable.TrainInfo.StartingStationName.Zh_tw
+                    }}-{{
+                      filterTrainTimetable.TrainInfo.EndingStationName.Zh_tw
+                    }}
                   </div>
                 </b-col>
                 <b-col cols="6">
-                  <template v-if="filterTrainTimetable.delayInfo && filterTrainTimetable.delayInfo.length > 0">
-                    <div style="color: #198754;" v-if="filterTrainTimetable.delayInfo[0].DelayTime === 0">
+                  <template
+                    v-if="
+                      filterTrainTimetable.delayInfo &&
+                      filterTrainTimetable.delayInfo.length > 0
+                    "
+                  >
+                    <div
+                      style="color: #198754"
+                      v-if="filterTrainTimetable.delayInfo[0].DelayTime === 0"
+                    >
                       準點
                     </div>
-                    <div style="color: #dc3545;" v-if="filterTrainTimetable.delayInfo[0].DelayTime > 0">
-                      延誤 {{ filterTrainTimetable.delayInfo[0].DelayTime }} 分鐘
+                    <div
+                      style="color: #dc3545"
+                      v-if="filterTrainTimetable.delayInfo[0].DelayTime > 0"
+                    >
+                      延誤
+                      {{ filterTrainTimetable.delayInfo[0].DelayTime }} 分鐘
                     </div>
-                  </template>                  
-                  {{ filterTrainTimetable.StopTimes[0].DepartureTime }} - {{ filterTrainTimetable.StopTimes[filterTrainTimetable.StopTimes.length - 1].ArrivalTime }}
-                  <div class="train-time-diff">{{ getTimeDiff(filterTrainTimetable.StopTimes[0].DepartureTime, filterTrainTimetable.StopTimes[filterTrainTimetable.StopTimes.length - 1].ArrivalTime) }}</div>
+                  </template>
+                  {{ filterTrainTimetable.StopTimes[0].DepartureTime }} -
+                  {{
+                    filterTrainTimetable.StopTimes[
+                      filterTrainTimetable.StopTimes.length - 1
+                    ].ArrivalTime
+                  }}
+                  <div class="train-time-diff">
+                    {{
+                      getTimeDiff(
+                        filterTrainTimetable.StopTimes[0].DepartureTime,
+                        filterTrainTimetable.StopTimes[
+                          filterTrainTimetable.StopTimes.length - 1
+                        ].ArrivalTime
+                      )
+                    }}
+                  </div>
                 </b-col>
                 <b-col cols="3">
                   <span
@@ -66,13 +114,19 @@
                     :key="$index"
                   >
                     <img
-                      :src="require('../assets/images/' + trainService.imgName + '.png')"
+                      :src="
+                        require('../assets/images/' +
+                          trainService.imgName +
+                          '.png')
+                      "
                       class="train-service-icon"
                       v-b-tooltip.hover
                       :title="trainService.description"
                       :disabled="isTooltipShow()"
-                      v-if="filterTrainTimetable.TrainInfo[trainService.flagName]"
-                    >
+                      v-if="
+                        filterTrainTimetable.TrainInfo[trainService.flagName]
+                      "
+                    />
                   </span>
                 </b-col>
               </b-row>
@@ -83,12 +137,13 @@
       <!-- 查無火車 -->
       <div v-else>
         <b-row>
-          <b-col
-            cols="12"
-            class="mb-3"
-          >
-            <b-alert variant="warning" show>
-              沒有找到火車！請檢查您所選的起迄車站是否正確，或是時間設定太晚。
+          <b-col cols="12" class="mb-3">
+            <b-alert variant="warning" class="text-left" show>
+              沒有找到台鐵車次！有以下兩種可能：
+              <ol class="mt-2 mb-0">
+                <li>出發時間設定太晚，已無班次。</li>
+                <li>起迄車站設定錯誤。</li>
+              </ol>
             </b-alert>
           </b-col>
         </b-row>
@@ -98,85 +153,90 @@
 </template>
 
 <script>
-import { TripLines, TrainTypes } from '../assets/constants';
+import { TripLines, TrainTypes } from "../assets/constants";
 
 export default {
-  name: 'TrainTimeTable',
-  props: ['dailyTrainTimetable', 'date'],
+  name: "TrainTimeTable",
+  props: ["dailyTrainTimetable", "date"],
   components: {},
   data() {
     return {
       trainTypeFilterBtns: [
         {
           actived: true,
-          name: '全部',
-          value: 'all',
+          name: "全部",
+          value: "all"
         },
         {
           actived: false,
-          name: '對號列車',
-          value: 'express',
+          name: "對號列車",
+          value: "express"
         },
         {
           actived: false,
-          name: '非對號列車',
-          value: 'non-express',
-        },
+          name: "非對號列車",
+          value: "non-express"
+        }
       ],
-      filterTrainTypesRegExp: '',
+      filterTrainTypesRegExp: "",
       trainServices: [
         {
-          imgName: 'disability',
-          flagName: 'WheelChairFlag',
-          description: '身障旅客專用座位車',
+          imgName: "disability",
+          flagName: "WheelChairFlag",
+          description: "身障旅客專用座位車"
         },
         {
-          imgName: 'suitcase',
-          flagName: 'PackageServiceFlag',
-          description: '行李服務',
+          imgName: "suitcase",
+          flagName: "PackageServiceFlag",
+          description: "行李服務"
         },
         {
-          imgName: 'lunch',
-          flagName: 'DiningFlag',
-          description: '訂便當服務',
+          imgName: "lunch",
+          flagName: "DiningFlag",
+          description: "訂便當服務"
         },
         {
-          imgName: 'breast-feeding',
-          flagName: 'BreastFeedFlag',
-          description: '哺(集)乳室車廂',
+          imgName: "breast-feeding",
+          flagName: "BreastFeedFlag",
+          description: "哺(集)乳室車廂"
         },
         {
-          imgName: 'bicycle',
-          flagName: 'BikeFlag',
-          description: '人車同行',
+          imgName: "bicycle",
+          flagName: "BikeFlag",
+          description: "人車同行"
         },
         {
-          imgName: 'car',
-          flagName: 'CarFlag',
-          description: '小汽車上火車',
+          imgName: "car",
+          flagName: "CarFlag",
+          description: "小汽車上火車"
         },
         {
-          imgName: 'train',
-          flagName: 'ExtraTrainFlag',
-          description: '為加班車',
-        },
-      ],
+          imgName: "train",
+          flagName: "ExtraTrainFlag",
+          description: "為加班車"
+        }
+      ]
     };
   },
-  mounted() {
-  },
+  mounted() {},
   computed: {
     filterTrainTimetables() {
       return this.dailyTrainTimetable.TrainTimetables.filter(trainTimetable =>
-        trainTimetable.TrainInfo.TrainTypeCode.match(new RegExp(this.filterTrainTypesRegExp))
+        trainTimetable.TrainInfo.TrainTypeCode.match(
+          new RegExp(this.filterTrainTypesRegExp)
+        )
       );
-    },
+    }
   },
   methods: {
     isTrainPass(trainTime) {
       // 若查詢日期與當下日期相同
       if (this.date === this.$commonService.processDate(new Date())) {
-        const trainDatetime = new Date(`${this.date.replace(/-/g, "/")} ${trainTime.StopTimes[0].DepartureTime}`);
+        const trainDatetime = new Date(
+          `${this.date.replace(/-/g, "/")} ${
+            trainTime.StopTimes[0].DepartureTime
+          }`
+        );
         const nowDatetime = new Date();
         // 若火車時間小於當下時間則代表火車已過時
         if (trainDatetime < nowDatetime) {
@@ -190,7 +250,8 @@ export default {
       const trainTypeVariantMap = {};
 
       for (const trainType in TrainTypes) {
-        trainTypeVariantMap[TrainTypes[trainType].value] = TrainTypes[trainType].labelColorClass;
+        trainTypeVariantMap[TrainTypes[trainType].value] =
+          TrainTypes[trainType].labelColorClass;
       }
 
       return trainTypeVariantMap[trainTypeCode];
@@ -199,7 +260,7 @@ export default {
       const tripLineMap = {};
 
       for (const tripLine in TripLines) {
-        tripLineMap[TripLines[tripLine].value] = TripLines[tripLine].name
+        tripLineMap[TripLines[tripLine].value] = TripLines[tripLine].name;
       }
 
       return tripLineMap[tripLine];
@@ -209,11 +270,15 @@ export default {
       if (endTime < startTime) {
         let date = new Date(this.date);
         endDateTime = new Date(date.setDate(date.getDate() + 1));
-        endDateTime = new Date(endDateTime.getTime() - (endDateTime.getTimezoneOffset() * 60000)).toISOString().substring(0, 10);
+        endDateTime = new Date(
+          endDateTime.getTime() - endDateTime.getTimezoneOffset() * 60000
+        )
+          .toISOString()
+          .substring(0, 10);
       }
 
-      let date1 = new Date(this.date + 'T' + startTime); // 開始時間
-      let date2 = new Date(endDateTime + 'T' + endTime); // 結束時間
+      let date1 = new Date(this.date + "T" + startTime); // 開始時間
+      let date2 = new Date(endDateTime + "T" + endTime); // 結束時間
       let date3 = date2.getTime() - date1.getTime(); // 時間差的毫秒數
 
       //計算出相差天數
@@ -231,7 +296,7 @@ export default {
       // let leave3 = leave2 % (60 * 1000); // 計算分鐘數後剩餘的毫秒數
       // let seconds = Math.round(leave3 / 1000);
 
-      return hours + ' 時 ' + minutes + ' 分';
+      return hours + " 時 " + minutes + " 分";
     },
     isTooltipShow() {
       if (window.innerWidth < 768) {
@@ -240,7 +305,7 @@ export default {
       return false;
     },
     filterTrainType(value) {
-      this.filterTrainTypesRegExp = '';
+      this.filterTrainTypesRegExp = "";
 
       // 1. 控制按鈕 actived 狀態
       this.trainTypeFilterBtns.forEach(trainTypeFilterBtn => {
@@ -252,25 +317,26 @@ export default {
       });
 
       // 2. 製作篩選車種的正規表達式
-      if (value === 'all') {
-        this.filterTrainTypesRegExp = '';
-      } else if (value === 'express') {
+      if (value === "all") {
+        this.filterTrainTypesRegExp = "";
+      } else if (value === "express") {
         this.filterTrainTypesRegExp = `^${TrainTypes.TAROKO.value}$|^${TrainTypes.PUYUMA.value}$|^${TrainTypes.TZE_CHIANG.value}$|^${TrainTypes.CHU_KUANG.value}$|^${TrainTypes.FU_HSING.value}$`;
       } else {
         this.filterTrainTypesRegExp = `^${TrainTypes.LOCAL.value}$|^${TrainTypes.ORDINARY.value}$|^${TrainTypes.FAST_LOCAL.value}$`;
       }
-
     },
     showTrainTimeDetail(trainTime) {
-      this.$router.push({
-        name: 'TrainTimeDetail',
-        params: {
-          trainTime: trainTime,
-        },
-      }).catch(() => {});
+      this.$router
+        .push({
+          name: "TrainTimeDetail",
+          params: {
+            trainTime: trainTime
+          }
+        })
+        .catch(() => {});
     }
-  },
-}
+  }
+};
 </script>
 
 <style scoped>
