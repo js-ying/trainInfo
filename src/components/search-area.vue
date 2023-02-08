@@ -227,7 +227,7 @@
         <b-button variant="dark" @click="query()"> 查詢 </b-button>
       </div>
     </template>
-    <keep-alive v-if="notReset">
+    <keep-alive exclude="TrainTimeDetail" v-if="notReset">
       <router-view></router-view>
     </keep-alive>
     <router-view v-else></router-view>
