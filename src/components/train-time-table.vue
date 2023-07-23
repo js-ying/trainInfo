@@ -114,7 +114,15 @@
                       <!-- <b-badge variant="secondary">
                         {{ $commonService.getFareClassName(fare.FareClass) }}
                       </b-badge> -->
-                      <div class="price">{{ fare.Price }} 元</div>
+                      <div class="price">
+                        <span
+                          v-b-tooltip.hover
+                          title="全票票價"
+                          :disabled="isTooltipShow()"
+                        >
+                          {{ fare.Price }} 元
+                        </span>
+                      </div>
                     </span>
                   </div>                
                 </b-col>
