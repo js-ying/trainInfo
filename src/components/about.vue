@@ -74,9 +74,16 @@
           </p>
 
           <div class="footer">
+            <div id="data-source">
+              <b-icon icon="link45deg" variant="secondary" class="mr-1"></b-icon>
+              資料來源：<a
+                href="https://tdx.transportdata.tw/"
+                target="_blank"
+              >TDX 運輸資料流通服務</a>
+            </div>
             <div id="icon-source">
-              <b-icon icon="link45deg" variant="secondary" class="mr-2"></b-icon
-              >素材來源：<a
+              <b-icon icon="link45deg" variant="secondary" class="mr-1"></b-icon>
+              素材來源：<a
                 :href="iconSource.link"
                 target="_blank"
                 v-for="(iconSource, $index) in iconSources"
@@ -97,7 +104,7 @@
                 variant="secondary"
                 class="mr-2"
               ></b-icon
-              >發行日：2020-04-13，最後更新：2023-02
+              >發行日：2020-04-13，最後更新：2023-07
             </div>
           </div>
         </b-col>
