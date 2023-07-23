@@ -12,9 +12,10 @@
         <b-col cols="12" md="6" class="mt-4 text-left">
           <p>
             作者：JS Ying<br />
-            個人網站：<a href="https://jsy.tw" target="_blanl"
+            個人網站：<a href="https://jsy.tw" target="_blank"
               >https://jsy.tw</a
-            >
+            ><br />
+            高鐵時刻查詢：<a href="https://hs-traintime.jsy.tw" target="_blank">https://hs-traintime.jsy.tw</a>
           </p>
           
           <p>
