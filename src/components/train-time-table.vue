@@ -109,6 +109,16 @@
                   </div>
                 </b-col>
                 <b-col cols="3">
+                  <div v-if="filterTrainTimetable.fareList">
+                    <span v-for="(fare, $index) in filterTrainTimetable.fareList" :key="$index">
+                      <!-- <b-badge variant="secondary">
+                        {{ $commonService.getFareClassName(fare.FareClass) }}
+                      </b-badge> -->
+                      <div class="price">{{ fare.Price }} 元</div>
+                    </span>
+                  </div>                
+                </b-col>
+                <div class="train-service" v-if="trainServices">
                   <span
                     v-for="(trainService, $index) in trainServices"
                     :key="$index"
@@ -128,7 +138,7 @@
                       "
                     />
                   </span>
-                </b-col>
+                </div>  
               </b-row>
             </div>
           </b-col>
@@ -320,7 +330,7 @@ export default {
       if (value === "all") {
         this.filterTrainTypesRegExp = "";
       } else if (value === "express") {
-        this.filterTrainTypesRegExp = `^${TrainTypes.TAROKO.value}$|^${TrainTypes.PUYUMA.value}$|^${TrainTypes.TZE_CHIANG.value}$|^${TrainTypes.CHU_KUANG.value}$|^${TrainTypes.FU_HSING.value}$`;
+        this.filterTrainTypesRegExp = `^${TrainTypes.TAROKO.value}$|^${TrainTypes.PUYUMA.value}$|^${TrainTypes.TZE_CHIANG.value}$|^${TrainTypes.CHU_KUANG.value}$|^${TrainTypes.FU_HSING.value}$|^${TrainTypes.TZE_CHIANG_3000.value}`;
       } else {
         this.filterTrainTypesRegExp = `^${TrainTypes.LOCAL.value}$|^${TrainTypes.ORDINARY.value}$|^${TrainTypes.FAST_LOCAL.value}$`;
       }
@@ -360,8 +370,19 @@ export default {
   color: #545b62;
 }
 
+.price {
+  font-size: 85%;
+}
+
+.train-service {
+  position: absolute;
+  right: 1.5rem;
+  top: 0;
+}
+
 .train-service-icon {
-  width: 20px;
+  width: 13px;
+  margin-left: 3px;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
     border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
     -webkit-box-shadow 0.15s ease-in-out;

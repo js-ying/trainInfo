@@ -38,7 +38,6 @@ export default {
     this.endStationId = this.$route.query.e;
     this.date = this.$route.query.d;
     this.time = this.$route.query.t;
-
     this.search();
   },
   beforeRouteUpdate (to, from, next) {
@@ -77,9 +76,12 @@ export default {
           return trainTimeTable.StopTimes[0].DepartureTime > this.time;
         });
 
-        // 處理誤點資訊
-        this.processDelayInfo(this.dailyTrainTimetable.TrainTimetables, () => {
-          this.isLoading = false;
+        // 處理票價
+        this.processFare(this.dailyTrainTimetable.TrainTimetables, () => {
+          // 處理誤點資訊
+          this.processDelayInfo(this.dailyTrainTimetable.TrainTimetables, () => {
+            this.isLoading = false;
+          });
         });
       });
     },
@@ -126,6 +128,27 @@ export default {
       } else {
         complete();
       }
+    },
+    processFare(trainTimetable, complete) {
+      this.$ajax({
+        method: 'get',
+        url: `https://ptx.transportdata.tw/MOTC/v3/Rail/TRA/ODFare/${this.getTrainStationIdByName(this.startStationId)}/to/${this.getTrainStationIdByName(this.endStationId)}`,
+        headers: this.$commonService.getAuthorizationHeader(),
+      }).then((res) => {
+        if (res?.data?.ODFares) {
+          console.log('Fare', res?.data?.ODFares);
+          console.log('trainTimetable', trainTimetable);
+
+          trainTimetable.forEach(train => {
+            // 先依照方向和車種篩選資料
+            const odFare = res.data.ODFares.find(fare => fare.Direction === train.TrainInfo.Direction && fare.TrainType	=== Number(train.TrainInfo.TrainTypeCode));
+
+            // 再篩選出一般票和、準座車箱的成人價資料
+            train.fareList = odFare.Fares.filter(fare => fare.TicketType === 1 && fare.CabinClass === 1 && [1].includes(fare.FareClass));
+          });
+        }
+        complete();
+      });
     },
   },
 }

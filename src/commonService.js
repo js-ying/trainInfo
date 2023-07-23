@@ -1,5 +1,5 @@
 import jsSHA from 'jssha';
-import { TrainTypes } from './assets/constants';
+import { TrainTypes, FareClass } from './assets/constants';
 
 export default {
 
@@ -86,5 +86,9 @@ export default {
     const diff = Math.abs(aDate - bDate);
     const minutes = Math.floor((diff/1000)/60);
     return minutes;
+  },
+
+  getFareClassName(fareClass) {
+    return FareClass[fareClass];
   }
 }

@@ -43,6 +43,11 @@ const TrainTypes = {
     value: '10',
     labelColorClass: 'primary',
   },
+  TZE_CHIANG_3000: {
+    name: '新自強',
+    value: '11',
+    labelColorClass: 'info',
+  },
 };
 
 const TripLines = {
@@ -60,7 +65,20 @@ const TripLines = {
   },
 };
 
+const FareClass = {
+  1: '全票',
+  2: '學生',
+  3: '孩童',
+  4: '敬老',
+  5: '愛心',
+  6: '愛心孩童',
+  7: '愛心優待/愛心陪伴',
+  8: '團體',
+  9: '軍警',
+};
+
 export {
   TrainTypes,
   TripLines,
+  FareClass,
 };
