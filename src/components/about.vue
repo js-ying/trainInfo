@@ -6,7 +6,7 @@
           <h5 id="web-title" @click="goHome()">
             台鐵時刻查詢
             <br />
-            <small>Ver.4</small>
+            <small>Ver.5</small>
           </h5>
         </b-col>
         <b-col cols="12" md="6" class="mt-4 text-left">
@@ -15,6 +15,12 @@
             個人網站：<a href="https://jsy.tw" target="_blanl"
               >https://jsy.tw</a
             >
+          </p>
+          
+          <p>
+            <b-alert show variant="warning">
+              本站所提供之資訊僅供參考，請依照現場鐵路狀況或臺鐵官方相關管理單位所公佈之資訊為準。
+            </b-alert>            
           </p>
 
           <p class="mt-4">

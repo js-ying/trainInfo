@@ -3,9 +3,9 @@
     <router-view></router-view>
     <!-- 關於台鐵時刻表 icon -->
     <b-icon
-      icon="house-door-fill"
-      variant="light"
-      class="rounded-circle bg-secondary p-2"
+      icon="info-circle-fill"
+      variant="secondary"
+      class="rounded-circle"
       id="about-me"
       @click="goAbout()">
     </b-icon>
