@@ -66,6 +66,11 @@ export default {
       }).then((res) => {
         this.dailyTrainTimetable = JSON.parse(JSON.stringify(res.data));
 
+        // 移除觀光列車
+        this.dailyTrainTimetable.TrainTimetables = this.dailyTrainTimetable.TrainTimetables.filter((trainTimeTable) => {
+          return trainTimeTable.TrainInfo.EndingStationID !== '1001' && !trainTimeTable.TrainInfo.EndingStationName.Zh_tw.includes('環島');
+        });
+
         // 依駛離日期由小到大排序
         this.dailyTrainTimetable.TrainTimetables.sort((a, b) => {
           return a.StopTimes[0].DepartureTime.localeCompare(b.StopTimes[0].DepartureTime);
@@ -83,6 +88,21 @@ export default {
             this.isLoading = false;
           });
         });
+      }).catch((error) => {
+        this.isLoading = false;
+
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          alert(`${error.response.status} ${error.response.data.message}，請通知系統管理員！`);
+        } else if (error.request) {
+          // The request was made but no response was received
+          alert(`API 無回應，請通知系統管理員！`);
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error          
+          alert(`異常錯誤，請通知系統管理員！`);
+          console.log('Error', error.message);
+        }
       });
     },
     getTrainStationIdByName(name) {

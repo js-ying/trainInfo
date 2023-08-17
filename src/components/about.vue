@@ -6,22 +6,34 @@
           <h5 id="web-title" @click="goHome()">
             台鐵時刻查詢
             <br />
-            <small>Ver.5</small>
+            <small>Ver.6</small>
           </h5>
         </b-col>
         <b-col cols="12" md="6" class="mt-4 text-left">
           <p>
             作者：JS Ying<br />
-            個人網站：<a href="https://jsy.tw" target="_blank"
-              >https://jsy.tw</a
-            ><br />
-            高鐵時刻查詢：<a href="https://hs-traintime.jsy.tw" target="_blank">https://hs-traintime.jsy.tw</a>
+            信箱：jsying1994@gmail.com<br />
+            <img src="https://jsy.tw/logo.png" width="15px" class="mr-2" />個人網站：<a href="https://jsy.tw"
+              target="_blank">https://jsy.tw</a><br />
+            <img src="https://hs-traintime.jsy.tw/logo.png" width="15px" class="mr-2" />高鐵時刻查詢：<a
+              href="https://hs-traintime.jsy.tw" target="_blank">https://hs-traintime.jsy.tw</a>
           </p>
-          
-          <p>
+
+          <p class="mt-4">
             <b-alert show variant="warning">
               本站所提供之資訊僅供參考，請依照現場鐵路狀況或臺鐵官方相關管理單位所公佈之資訊為準。
-            </b-alert>            
+            </b-alert>
+          </p>
+
+          <p id="pwa-tip" class="mt-4">
+            手機使用者可以把這個網頁變成 APP 放在桌面上。<a href="https://jsy.tw/blog/1370/" target="_blank">查看更多</a>
+          </p>
+
+          <p class="mt-4">
+            <u>Ver.6 版本更新資訊 (2023-08)</u><br />
+            1. 移除 觀光列車資訊，避免使用者誤會<br />
+            2. 新增 API 介接失敗提示訊息<br />
+            3. 新增 列車說明呈現於每一個列車時刻下方
           </p>
 
           <p class="mt-4">
@@ -51,9 +63,7 @@
             3. 移除 所有彈跳視窗<br />
             4. 更新 起迄站互換功能位置<br />
             5. 部落格介紹
-            <a href="https://jsy.tw/blog/1525/" target="_blank"
-              >【作品】台鐵時刻查詢——查詢火車時刻，簡單又快速。</a
-            >
+            <a href="https://jsy.tw/blog/1525/" target="_blank">【作品】台鐵時刻查詢——查詢火車時刻，簡單又快速。</a>
           </p>
 
           <p class="mt-4">
@@ -66,72 +76,32 @@
             5. 每次重新進入首頁，系統會自動帶入最後一次查詢車站
           </p>
 
-          <p class="pt-4">
-            手機使用者可以把這個網頁變成 APP 放在桌面上。<a
-              href="https://jsy.tw/blog/1370/"
-              target="_blank"
-              >查看更多</a
-            >
-          </p>
-
-          <div class="footer">
+          <div id="footer">
             <div id="data-source">
               <b-icon icon="link45deg" variant="secondary" class="mr-1"></b-icon>
-              資料來源：<a
-                href="https://tdx.transportdata.tw/"
-                target="_blank"
-              >TDX 運輸資料流通服務</a>
+              資料來源：<a href="https://tdx.transportdata.tw/" target="_blank">TDX 運輸資料流通服務</a>
             </div>
             <div id="icon-source">
               <b-icon icon="link45deg" variant="secondary" class="mr-1"></b-icon>
-              素材來源：<a
-                :href="iconSource.link"
-                target="_blank"
-                v-for="(iconSource, $index) in iconSources"
-                :key="$index"
-              >
-                <img
-                  class="mr-1"
-                  width="15px"
-                  :src="
-                    require('../assets/images/' + iconSource.imgName + '.png')
-                  "
-                />
+              素材來源：<a :href="iconSource.link" target="_blank" v-for="(iconSource, $index) in iconSources" :key="$index">
+                <img class="mr-1" width="15px" :src="require('../assets/images/' + iconSource.imgName + '.png')
+                  " />
               </a>
             </div>
             <div id="time">
-              <b-icon
-                icon="exclamation-circle-fill"
-                variant="secondary"
-                class="mr-2"
-              ></b-icon
-              >發行日：2020-04-13，最後更新：2023-07
+              <b-icon icon="exclamation-circle-fill" variant="secondary" class="mr-2"></b-icon>發行日：2020-04-13，最後更新：2023-08
             </div>
           </div>
         </b-col>
-        <b-col cols="12" class="mt-5">
+        <b-col cols="12" class="mt-4">
           <!-- 返回按鈕 -->
-          <button
-            type="button"
-            class="btn btn-secondary btn-sm mt-3 mb-4"
-            @click="goBack()"
-          >
-            <svg
-              width="1em"
-              height="1em"
-              viewBox="0 0 16 16"
-              class="bi bi-arrow-return-left"
-              fill="currentColor"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M5.854 5.646a.5.5 0 0 1 0 .708L3.207 9l2.647 2.646a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708 0z"
-              />
-              <path
-                fill-rule="evenodd"
-                d="M13.5 2.5a.5.5 0 0 1 .5.5v4a2.5 2.5 0 0 1-2.5 2.5H3a.5.5 0 0 1 0-1h8.5A1.5 1.5 0 0 0 13 7V3a.5.5 0 0 1 .5-.5z"
-              />
+          <button type="button" class="btn btn-secondary btn-sm mt-3 mb-4" @click="goBack()">
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-return-left" fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd"
+                d="M5.854 5.646a.5.5 0 0 1 0 .708L3.207 9l2.647 2.646a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708 0z" />
+              <path fill-rule="evenodd"
+                d="M13.5 2.5a.5.5 0 0 1 .5.5v4a2.5 2.5 0 0 1-2.5 2.5H3a.5.5 0 0 1 0-1h8.5A1.5 1.5 0 0 0 13 7V3a.5.5 0 0 1 .5-.5z" />
             </svg>
             返回
           </button>
@@ -177,7 +147,7 @@ export default {
   computed: {},
   methods: {
     goHome() {
-      this.$router.push({ name: "Home" }).catch(() => {});
+      this.$router.push({ name: "Home" }).catch(() => { });
     },
     goBack() {
       window.history.back();
@@ -187,9 +157,13 @@ export default {
 </script>
 
 <style scoped>
-.footer {
-  font-size: 0.85em;
+#pwa-tip {
   color: #6c757d;
+}
+
+#footer {
+  font-size: 0.9rem;
   margin-top: 2.5rem;
+  color: #6c757d;
 }
 </style>

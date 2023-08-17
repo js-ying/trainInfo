@@ -147,7 +147,13 @@
                     />
                   </span>
                 </div>  
-              </b-row>
+              </b-row>              
+            </div>
+            <div
+              class="train-note"
+              :class="{ 'train-is-pass': isTrainPass(filterTrainTimetable) }"
+            >
+              {{ filterTrainTimetable.TrainInfo.Note }}
             </div>
           </b-col>
         </b-row>
@@ -394,6 +400,13 @@ export default {
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
     border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
     -webkit-box-shadow 0.15s ease-in-out;
+}
+
+.train-note {
+  color: gray;
+  font-size: 0.8rem;
+  margin-top: 0.2rem;
+  text-align: justify;
 }
 
 @media screen and (max-width: 768px) {
