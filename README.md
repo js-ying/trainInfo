@@ -1,8 +1,8 @@
 # 台鐵時刻查詢
-查詢火車時刻，簡單又快速。
-
+查詢火車時刻，簡單又快速。<br />
 Demo: [https://traintime.jsy.tw](https://traintime.jsy.tw)
 
+## 版本更新
 Ver.6 版本更新資訊 (2023-08)
 1. 移除 觀光列車資訊
 2. 新增 API 介接失敗提示訊息
@@ -34,26 +34,3 @@ Ver.1 版本特色 (2020-04)
 3. 每一結果會簡單呈現車次、車種、起迄站、時間範圍與列車服務（哺乳室、身障旅客專用車、訂便當服務、人車同行……）
 4. 點擊任一結果可看到更詳細的列車資訊
 5. 每次重新進入首頁，系統會自動帶入最後一次查詢車站
-
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
