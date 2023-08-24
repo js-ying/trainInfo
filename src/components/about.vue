@@ -147,7 +147,11 @@ export default {
   computed: {},
   methods: {
     goHome() {
-      this.$router.push({ name: "Home" }).catch(() => { });
+      this.$router
+        .push({
+          path: "/"
+        })
+        .catch(() => { });
     },
     goBack() {
       window.history.back();

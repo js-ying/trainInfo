@@ -3,7 +3,7 @@
     <search-area></search-area>
 
     <!-- 免責聲明 -->
-    <div id="disclaimer" v-if="currentRouteName === 'SearchHistory'">
+    <div id="disclaimer" v-if="currentRoutePath === '/'">
       本站所提供之資訊僅供參考，請依照現場鐵路狀況或臺鐵官方相關管理單位所公佈之資訊為準。
     </div>
   </div>
@@ -26,8 +26,8 @@ export default {
   methods: {
   },
   computed: {
-    currentRouteName() {
-        return this.$route.name;
+    currentRoutePath() {
+        return this.$route.path;
     }
 }
 }
