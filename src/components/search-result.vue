@@ -1,24 +1,20 @@
 <template>
   <div id="search-result">
-    <loading
-      :active.sync="isLoading"
-      :is-full-page="true">
+    <loading :active.sync="isLoading" :is-full-page="true">
     </loading>
 
-    <train-time-table
-      :dailyTrainTimetable="dailyTrainTimetable" :date="date"
-      v-if="dailyTrainTimetable && !isLoading"
-    ></train-time-table>
+    <train-time-table :dailyTrainTimetable="dailyTrainTimetable" :date="date"
+      v-if="dailyTrainTimetable && !isLoading"></train-time-table>
   </div>
 </template>
 
 <script>
-import Loading from 'vue-loading-overlay';
-import TraStations from '../assets/traStations.js';
-import TrainTimeTable from './train-time-table.vue';
+import Loading from "vue-loading-overlay";
+import TraStations from "../assets/traStations.js";
+import TrainTimeTable from "./train-time-table.vue";
 
 export default {
-  name: 'SearchResult',
+  name: "SearchResult",
   components: {
     Loading,
     TrainTimeTable,
@@ -27,31 +23,31 @@ export default {
     return {
       isLoading: false,
       dailyTrainTimetable: null,
-      startStationId: null,
-      endStationId: null,
+      startStationName: null,
+      endStationName: null,
       date: null,
       time: null,
     };
   },
   mounted() {
-    this.startStationId = this.$route.query.s;
-    this.endStationId = this.$route.query.e;
+    this.startStationName = this.$route.query.s;
+    this.endStationName = this.$route.query.e;
     this.date = this.$route.query.d;
     this.time = this.$route.query.t;
     this.search();
   },
-  beforeRouteUpdate (to, from, next) {
+  beforeRouteUpdate(to, from, next) {
     // react to route changes...
     // don't forget to call next()
     if (to.query) {
-      this.startStationId = to.query.s;
-      this.endStationId = to.query.e;
+      this.startStationName = to.query.s;
+      this.endStationName = to.query.e;
       this.date = to.query.d;
       this.time = to.query.t;
       this.search();
       next();
     } else {
-      next({ name: 'Home', });
+      next({ name: "Home" });
     }
   },
   methods: {
@@ -60,116 +56,36 @@ export default {
       this.dailyTrainTimetable = null;
 
       this.$ajax({
-        method: 'get',
-        url: `https://ptx.transportdata.tw/MOTC/v3/Rail/TRA/DailyTrainTimetable/OD/Inclusive/${this.getTrainStationIdByName(this.startStationId)}/to/${this.getTrainStationIdByName(this.endStationId)}/${this.date}?$format=JSON`,
-        headers: this.$commonService.getAuthorizationHeader(),
-      }).then((res) => {
-        this.dailyTrainTimetable = JSON.parse(JSON.stringify(res.data));
+        method: "post",
+        url: `/api/getTrainTimeTable`,
+        data: {
+          startStationId: `${this.getTrainStationIdByName(
+            this.startStationName
+          )}`,
+          endStationId: this.getTrainStationIdByName(this.endStationName),
+          date: this.date,
+          time: this.time,
+        },
+      })
+        .then((res) => {
+          this.dailyTrainTimetable = JSON.parse(JSON.stringify(res.data))
+          this.isLoading = false;
+        })
+        .catch((error) => {
+          this.isLoading = false;
 
-        // 移除觀光列車
-        this.dailyTrainTimetable.TrainTimetables = this.dailyTrainTimetable.TrainTimetables.filter((trainTimeTable) => {
-          return trainTimeTable.TrainInfo.EndingStationID !== '1001' && !trainTimeTable.TrainInfo.EndingStationName.Zh_tw.includes('環島');
-        });
-
-        // 依駛離日期由小到大排序
-        this.dailyTrainTimetable.TrainTimetables.sort((a, b) => {
-          return a.StopTimes[0].DepartureTime.localeCompare(b.StopTimes[0].DepartureTime);
-        });
-
-        // 只顯示大於查詢條件【出發日期 HH:mm】的結果
-        this.dailyTrainTimetable.TrainTimetables = this.dailyTrainTimetable.TrainTimetables.filter((trainTimeTable) => {
-          return trainTimeTable.StopTimes[0].DepartureTime > this.time;
-        });
-
-        // 處理票價
-        this.processFare(this.dailyTrainTimetable.TrainTimetables, () => {
-          // 處理誤點資訊
-          this.processDelayInfo(this.dailyTrainTimetable.TrainTimetables, () => {
-            this.isLoading = false;
-          });
-        });
-      }).catch((error) => {
-        this.isLoading = false;
-
-        if (error.response) {
-          // The request was made and the server responded with a status code
-          alert(`${error.response.status} ${error.response.data.message}，請通知系統管理員！`);
-        } else if (error.request) {
-          // The request was made but no response was received
-          alert(`API 無回應，請通知系統管理員！`);
-          console.log(error.request);
-        } else {
-          // Something happened in setting up the request that triggered an Error          
-          alert(`異常錯誤，請通知系統管理員！`);
-          console.log('Error', error.message);
-        }
-      });
-    },
-    getTrainStationIdByName(name) {
-      return TraStations.filter(traStation => traStation.StationName.Zh_tw === name)[0].StationID;
-    },
-    processDelayInfo(trainTimetable, complete) {
-      // 若查詢日期與當下日期相同
-      if (this.date === this.$commonService.processDate(new Date())) {
-        // 從 trainTimeTable 中篩選出與當下時間相差一小時內的列車物件
-        const inOneHourTrainList = trainTimetable.filter(trainTime => {
-          const trainDatetime = new Date(`${this.date.replace(/-/g, "/")} ${trainTime.StopTimes[0].DepartureTime}`);
-          const nowDatetime = new Date();
-          if (trainDatetime > nowDatetime) {
-            return this.$commonService.getDateTimeDiff(trainDatetime, nowDatetime) <= 60;
+          if (error.response) {
+            alert(error.response.data);
+          } else {
+            alert("後台無回應，請聯繫系統管理員。");
           }
         });
-
-        // 若篩選出來有資料
-        if (inOneHourTrainList.length > 0) {
-          let count = inOneHourTrainList.length;
-          // 將相差一小時內的所有列車都發查指定[車次]的列車即時位置動態資料 API
-          inOneHourTrainList.forEach(train => {
-            this.$ajax({
-              method: 'get',
-              url: `https://ptx.transportdata.tw/MOTC/v3/Rail/TRA/TrainLiveBoard/TrainNo/${train.TrainInfo.TrainNo}?$format=JSON`,
-              headers: this.$commonService.getAuthorizationHeader(),
-            }).then((res) => {
-              // 在 trainTimeTable 裡建立 delayInfo 欄位存放發查回來的資料
-              train.delayInfo = JSON.parse(JSON.stringify(res.data.TrainLiveBoards));
-            
-              // 計數器 for 所有資料回傳回來才能 callback
-              count = count - 1;
-              if (count === 0) {
-                complete();
-              }
-            });
-          });
-
-          // 直接 callback
-        } else {
-          complete();
-        }
-      } else {
-        complete();
-      }
     },
-    processFare(trainTimetable, complete) {
-      this.$ajax({
-        method: 'get',
-        url: `https://ptx.transportdata.tw/MOTC/v3/Rail/TRA/ODFare/${this.getTrainStationIdByName(this.startStationId)}/to/${this.getTrainStationIdByName(this.endStationId)}`,
-        headers: this.$commonService.getAuthorizationHeader(),
-      }).then((res) => {
-        if (res?.data?.ODFares) {
-          console.log('Fare', res?.data?.ODFares);
-          console.log('trainTimetable', trainTimetable);
-
-          trainTimetable.forEach(train => {
-            // 先依照方向和車種篩選資料
-            const odFare = res.data.ODFares.find(fare => fare.Direction === train.TrainInfo.Direction && fare.TrainType	=== Number(train.TrainInfo.TrainTypeCode));
-
-            // 再篩選出一般票和、準座車箱的成人價資料
-            train.fareList = odFare.Fares.filter(fare => fare.TicketType === 1 && fare.CabinClass === 1 && [1].includes(fare.FareClass));
-          });
-        }
-        complete();
-      });
+    getTrainStationIdByName(name) {
+      return TraStations.filter(
+        (traStation) => traStation.StationName.Zh_tw === name
+      )[0].StationID;
     },
   },
-}
+};
 </script>
