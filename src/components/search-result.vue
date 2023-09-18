@@ -34,7 +34,9 @@ export default {
     this.endStationName = this.$route.query.e;
     this.date = this.$route.query.d;
     this.time = this.$route.query.t;
-    this.search();
+    this.checkDateNotInPast(this.date, () => {
+      this.search();
+    });
   },
   beforeRouteUpdate(to, from, next) {
     // react to route changes...
@@ -44,7 +46,9 @@ export default {
       this.endStationName = to.query.e;
       this.date = to.query.d;
       this.time = to.query.t;
-      this.search();
+      this.checkDateNotInPast(this.date, () => {
+        this.search();
+      });
       next();
     } else {
       next({ name: "Home" });
@@ -85,6 +89,19 @@ export default {
       return TraStations.filter(
         (traStation) => traStation.StationName.Zh_tw === name
       )[0].StationID;
+    },
+    checkDateNotInPast(date, complete) {
+      const selectedDate = new Date(date);
+
+      // 如果選擇的日期是過去
+      if (
+        new Date(selectedDate.toDateString()) <
+        new Date(new Date().toDateString())
+      ) {
+        alert(`無提供歷史資料。`);
+      } else {
+        complete();
+      }
     },
   },
 };
