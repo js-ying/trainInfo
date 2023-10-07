@@ -116,20 +116,14 @@
             </div>
           </b-col>
           <b-col cols="12" class="mb-3" v-if="showAdd($index)">
-            <div class="g-a-d-s bv-example-row-flex-cols p-2">
-              <ins class="adsbygoogle" style="display:block; width: 100%; height: 100%"
-                data-ad-client="ca-pub-7992139989807299" data-ad-slot="1622239321"></ins>
-            </div>
-            <div class="train-note">
-              台鐵資料即將收費，不得以加上廣告補貼，請見諒。
-            </div>
+            <AdBanner />
           </b-col>
         </b-row>
       </div>
       <!-- 查無火車 -->
       <div v-else>
         <b-row>
-          <b-col cols="12" class="mb-3">
+          <b-col cols="12">
             <b-alert variant="warning" class="text-left" show>
               沒有找到台鐵車次！有以下兩種可能：
               <ol class="mt-2 mb-0">
@@ -137,6 +131,9 @@
                 <li>起迄車站設定錯誤。</li>
               </ol>
             </b-alert>
+          </b-col>
+          <b-col cols="12" class="mb-3">
+            <AdBanner />
           </b-col>
         </b-row>
       </div>
@@ -146,11 +143,12 @@
 
 <script>
 import { TripLines, TrainTypes } from "../assets/constants";
+import AdBanner from "../components/ad-banner.vue";
 
 export default {
   name: "TrainTimeTable",
   props: ["dailyTrainTimetable", "date"],
-  components: {},
+  components: { AdBanner },
   data() {
     return {
       trainTypeFilterBtns: [
@@ -207,7 +205,7 @@ export default {
           flagName: "ExtraTrainFlag",
           description: "為加班車"
         }
-      ]
+      ],
     };
   },
   mounted() {
@@ -396,18 +394,6 @@ export default {
 @media screen and (max-width: 768px) {
   .train-time-left-side {
     font-size: 75%;
-  }
-}
-
-.g-a-d-s {
-  border: 1px solid #343a40;
-  border-radius: 0.25rem;
-  height: 94px;
-}
-
-@media screen and (max-width: 768px) {
-  .g-a-d-s {
-    height: 82px;
   }
 }
 </style>
