@@ -38,6 +38,13 @@
       gtag("js", new Date());
 
       gtag("config", "UA-48330157-6");
+
+      window["addAds"] = function() {
+        let childList = document.getElementsByClassName("g-a-d-s");
+        for (let i = 0; i < childList.length; i++) {
+          (adsbygoogle = window.adsbygoogle || []).push({});
+        }
+      };
     </script>
   </body>
 </html>

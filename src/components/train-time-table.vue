@@ -5,12 +5,8 @@
       <div class="d-flex justify-content-between">
         <!-- 車種篩選按鈕群組 -->
         <b-button-group size="sm" class="mb-3" id="train-Type-filter-btns">
-          <b-button
-            v-for="trainTypeFilterBtn in trainTypeFilterBtns"
-            :key="trainTypeFilterBtn.value"
-            :class="{ active: trainTypeFilterBtn.actived }"
-            @click="filterTrainType(trainTypeFilterBtn.value)"
-          >
+          <b-button v-for="trainTypeFilterBtn in trainTypeFilterBtns" :key="trainTypeFilterBtn.value"
+            :class="{ active: trainTypeFilterBtn.actived }" @click="filterTrainType(trainTypeFilterBtn.value)">
             {{ trainTypeFilterBtn.name }}
           </b-button>
         </b-button-group>
@@ -26,18 +22,12 @@
       </div>
       <!-- 列車資訊 -->
       <div v-if="dailyTrainTimetable.TrainTimetables.length > 0">
-        <b-row>
-          <b-col
-            cols="12"
-            class="mb-3"
-            v-for="(filterTrainTimetable, $index) in filterTrainTimetables"
-            :key="$index"
-          >
-            <div
-              class="train-time-col bv-example-row-flex-cols p-2"
+        <b-row v-for="(filterTrainTimetable, $index) in filterTrainTimetables"
+          :key="filterTrainTimetable.TrainInfo.TrainNo">
+          <b-col cols="12" class="mb-3">
+            <div class="train-time-col bv-example-row-flex-cols p-2"
               :class="{ 'train-is-pass': isTrainPass(filterTrainTimetable) }"
-              @click="showTrainTimeDetail(filterTrainTimetable)"
-            >
+              @click="showTrainTimeDetail(filterTrainTimetable)">
               <b-row align-v="center">
                 <b-col cols="3">
                   <div class="train-time-left-side">
@@ -49,44 +39,31 @@
                     }}
                   </div>
                   <div class="mb-1">
-                    <b-badge
-                      :variant="
-                        getTrainTypeVariant(
+                    <b-badge :variant="getTrainTypeVariant(
                           filterTrainTimetable.TrainInfo.TrainTypeCode
                         )
-                      "
-                      >{{
-                        $commonService.transformTrainTypeCodeToName(
-                          filterTrainTimetable.TrainInfo.TrainTypeCode
-                        )
-                      }}</b-badge
-                    >
+                        ">{{
+      $commonService.transformTrainTypeCodeToName(
+        filterTrainTimetable.TrainInfo.TrainTypeCode
+      )
+    }}</b-badge>
                   </div>
                   <div class="train-time-left-side">
                     {{
                       filterTrainTimetable.TrainInfo.StartingStationName.Zh_tw
                     }}-{{
-                      filterTrainTimetable.TrainInfo.EndingStationName.Zh_tw
-                    }}
+  filterTrainTimetable.TrainInfo.EndingStationName.Zh_tw
+}}
                   </div>
                 </b-col>
                 <b-col cols="6">
-                  <template
-                    v-if="
-                      filterTrainTimetable.delayInfo &&
+                  <template v-if="filterTrainTimetable.delayInfo &&
                       filterTrainTimetable.delayInfo.length > 0
-                    "
-                  >
-                    <div
-                      style="color: #198754"
-                      v-if="filterTrainTimetable.delayInfo[0].DelayTime === 0"
-                    >
+                      ">
+                    <div style="color: #198754" v-if="filterTrainTimetable.delayInfo[0].DelayTime === 0">
                       準點
                     </div>
-                    <div
-                      style="color: #dc3545"
-                      v-if="filterTrainTimetable.delayInfo[0].DelayTime > 0"
-                    >
+                    <div style="color: #dc3545" v-if="filterTrainTimetable.delayInfo[0].DelayTime > 0">
                       延誤
                       {{ filterTrainTimetable.delayInfo[0].DelayTime }} 分鐘
                     </div>
@@ -115,45 +92,36 @@
                         {{ $commonService.getFareClassName(fare.FareClass) }}
                       </b-badge> -->
                       <div class="price">
-                        <span
-                          v-b-tooltip.hover
-                          title="全票票價"
-                          :disabled="isTooltipShow()"
-                        >
+                        <span v-b-tooltip.hover title="全票票價" :disabled="isTooltipShow()">
                           {{ fare.Price }} 元
                         </span>
                       </div>
                     </span>
-                  </div>                
+                  </div>
                 </b-col>
                 <div class="train-service" v-if="trainServices">
-                  <span
-                    v-for="(trainService, $index) in trainServices"
-                    :key="$index"
-                  >
-                    <img
-                      :src="
-                        require('../assets/images/' +
-                          trainService.imgName +
-                          '.png')
-                      "
-                      class="train-service-icon"
-                      v-b-tooltip.hover
-                      :title="trainService.description"
-                      :disabled="isTooltipShow()"
-                      v-if="
-                        filterTrainTimetable.TrainInfo[trainService.flagName]
-                      "
-                    />
+                  <span v-for="(trainService, $index) in trainServices" :key="$index">
+                    <img :src="require('../assets/images/' +
+                      trainService.imgName +
+                      '.png')
+                      " class="train-service-icon" v-b-tooltip.hover :title="trainService.description"
+                      :disabled="isTooltipShow()" v-if="filterTrainTimetable.TrainInfo[trainService.flagName]
+                        " />
                   </span>
-                </div>  
-              </b-row>              
+                </div>
+              </b-row>
             </div>
-            <div
-              class="train-note"
-              :class="{ 'train-is-pass': isTrainPass(filterTrainTimetable) }"
-            >
+            <div class="train-note" :class="{ 'train-is-pass': isTrainPass(filterTrainTimetable) }">
               {{ filterTrainTimetable.TrainInfo.Note }}
+            </div>
+          </b-col>
+          <b-col cols="12" class="mb-3" v-if="showAdd($index)">
+            <div class="g-a-d-s bv-example-row-flex-cols p-2">
+              <ins class="adsbygoogle" style="display:block; width: 100%; height: 100%"
+                data-ad-client="ca-pub-7992139989807299" data-ad-slot="1622239321"></ins>
+            </div>
+            <div class="train-note">
+              台鐵資料即將收費，不得以加上廣告補貼，請見諒。
             </div>
           </b-col>
         </b-row>
@@ -242,7 +210,9 @@ export default {
       ]
     };
   },
-  mounted() {},
+  mounted() {
+    window.addAds();
+  },
   computed: {
     filterTrainTimetables() {
       return this.dailyTrainTimetable.TrainTimetables.filter(trainTimetable =>
@@ -250,15 +220,14 @@ export default {
           new RegExp(this.filterTrainTypesRegExp)
         )
       );
-    }
+    },
   },
   methods: {
     isTrainPass(trainTime) {
       // 若查詢日期與當下日期相同
       if (this.date === this.$commonService.processDate(new Date())) {
         const trainDatetime = new Date(
-          `${this.date.replace(/-/g, "/")} ${
-            trainTime.StopTimes[0].DepartureTime
+          `${this.date.replace(/-/g, "/")} ${trainTime.StopTimes[0].DepartureTime
           }`
         );
         const nowDatetime = new Date();
@@ -357,9 +326,24 @@ export default {
             trainTime: trainTime
           }
         })
-        .catch(() => {});
+        .catch(() => { });
+    },
+    showAdd(index) {
+      if (this.filterTrainTimetables.length >= 3 && index === 2) {
+        return true;
+      }
+
+      if (this.filterTrainTimetables.length == 2 && index === 1) {
+        return true;
+      }
+
+      if (this.filterTrainTimetables.length <= 1 && index === 0) {
+        return true;
+      }
+
+      return false;
     }
-  }
+  },
 };
 </script>
 
@@ -412,6 +396,18 @@ export default {
 @media screen and (max-width: 768px) {
   .train-time-left-side {
     font-size: 75%;
+  }
+}
+
+.g-a-d-s {
+  border: 1px solid #343a40;
+  border-radius: 0.25rem;
+  height: 94px;
+}
+
+@media screen and (max-width: 768px) {
+  .g-a-d-s {
+    height: 82px;
   }
 }
 </style>
