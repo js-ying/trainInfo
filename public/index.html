@@ -1,35 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7992139989807299"
+      crossorigin="anonymous"
+    ></script>
+    <meta name="description" content="簡單又快速。" />
+    <title>台鐵時刻查詢</title>
+    <link rel="apple-touch-icon" href="<%= BASE_URL %>logo.png" />
+    <link rel="icon" href="<%= BASE_URL %>logo.png" />
+  </head>
 
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="description" content="簡單又快速。">
-  <title>台鐵時刻查詢</title>
-  <link rel="apple-touch-icon" href="<%= BASE_URL %>logo.png" />
-  <link rel="icon" href="<%= BASE_URL %>logo.png">
-</head>
+  <body>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
 
-<body>
-  <div id="app"></div>
-  <!-- built files will be auto injected -->
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-48330157-6"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
 
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-48330157-6"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
 
-    function gtag() {
-      dataLayer.push(arguments);
-    }
-    gtag('js', new Date());
-
-    gtag('config', 'UA-48330157-6');
-  </script>
-
-</body>
-
+      gtag("config", "UA-48330157-6");
+    </script>
+  </body>
 </html>
