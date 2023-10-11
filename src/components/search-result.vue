@@ -77,11 +77,10 @@ export default {
         })
         .catch((error) => {
           this.isLoading = false;
-
-          if (error.response) {
-            alert(error.response.data);
+          if (error.response?.data?.code) {
+            alert(`${error.response.data.message}`);
           } else {
-            alert("後台無回應，請聯繫系統管理員。");
+            alert(`${error.response.status ? error.response.status + " " : ""}後台暫無回應，請稍後再試，或請聯繫系統管理員。`);
           }
         });
     },
@@ -98,7 +97,7 @@ export default {
         new Date(selectedDate.toDateString()) <
         new Date(new Date().toDateString())
       ) {
-        alert(`無提供歷史資料。`);
+        alert(`無提供歷史資料，請將查詢日期調整為今日(含)以後的兩個月內。`);
       } else {
         complete();
       }
