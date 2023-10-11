@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="g-a-d-s bv-example-row-flex-cols p-2">
+    <div class="g-a-d-s p-2">
       <ins class="adsbygoogle" style="display:block; width: 100%; height: 100%" data-ad-client="ca-pub-7992139989807299"
         data-ad-slot="1622239321"></ins>
     </div>
@@ -30,12 +30,12 @@ export default {
 .g-a-d-s {
   border: 1px solid #343a40;
   border-radius: 0.25rem;
-  height: 94px;
+  height: 108px;
 }
 
 @media screen and (max-width: 768px) {
   .g-a-d-s {
-    height: 82px;
+    height: 68px;
   }
 }
 
