@@ -115,7 +115,7 @@
               {{ filterTrainTimetable.TrainInfo.Note }}
             </div>
           </b-col>
-          <b-col cols="12" class="mb-3" v-if="showAdd($index)">
+          <b-col cols="12" class="mb-3" v-if="showAd($index)">
             <AdBanner />
           </b-col>
         </b-row>
@@ -155,56 +155,56 @@ export default {
         {
           actived: true,
           name: "全部",
-          value: "all"
+          value: "all",
         },
         {
           actived: false,
           name: "對號列車",
-          value: "express"
+          value: "express",
         },
         {
           actived: false,
           name: "非對號列車",
-          value: "non-express"
-        }
+          value: "non-express",
+        },
       ],
       filterTrainTypesRegExp: "",
       trainServices: [
         {
           imgName: "disability",
           flagName: "WheelChairFlag",
-          description: "身障旅客專用座位車"
+          description: "身障旅客專用座位車",
         },
         {
           imgName: "suitcase",
           flagName: "PackageServiceFlag",
-          description: "行李服務"
+          description: "行李服務",
         },
         {
           imgName: "lunch",
           flagName: "DiningFlag",
-          description: "訂便當服務"
+          description: "訂便當服務",
         },
         {
           imgName: "breast-feeding",
           flagName: "BreastFeedFlag",
-          description: "哺(集)乳室車廂"
+          description: "哺(集)乳室車廂",
         },
         {
           imgName: "bicycle",
           flagName: "BikeFlag",
-          description: "人車同行"
+          description: "人車同行",
         },
         {
           imgName: "car",
           flagName: "CarFlag",
-          description: "小汽車上火車"
+          description: "小汽車上火車",
         },
         {
           imgName: "train",
           flagName: "ExtraTrainFlag",
-          description: "為加班車"
-        }
+          description: "為加班車",
+        },
       ],
     };
   },
@@ -213,7 +213,7 @@ export default {
   },
   computed: {
     filterTrainTimetables() {
-      return this.dailyTrainTimetable.TrainTimetables.filter(trainTimetable =>
+      return this.dailyTrainTimetable.TrainTimetables.filter((trainTimetable) =>
         trainTimetable.TrainInfo.TrainTypeCode.match(
           new RegExp(this.filterTrainTypesRegExp)
         )
@@ -299,7 +299,7 @@ export default {
       this.filterTrainTypesRegExp = "";
 
       // 1. 控制按鈕 actived 狀態
-      this.trainTypeFilterBtns.forEach(trainTypeFilterBtn => {
+      this.trainTypeFilterBtns.forEach((trainTypeFilterBtn) => {
         if (trainTypeFilterBtn.value === value) {
           trainTypeFilterBtn.actived = true;
         } else {
@@ -321,12 +321,16 @@ export default {
         .push({
           name: "TrainTimeDetail",
           params: {
-            trainTime: trainTime
-          }
+            trainTime: trainTime,
+          },
         })
         .catch(() => { });
     },
-    showAdd(index) {
+    showAd(index) {
+      if (this.filterTrainTimetables.length >= 8 && (index + 4) % 6 === 0 && index !== 0) {
+        return true;
+      }
+
       if (this.filterTrainTimetables.length >= 3 && index === 2) {
         return true;
       }
@@ -340,7 +344,7 @@ export default {
       }
 
       return false;
-    }
+    },
   },
 };
 </script>
