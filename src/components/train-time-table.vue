@@ -327,9 +327,9 @@ export default {
         .catch(() => { });
     },
     showAd(index) {
-      if (this.filterTrainTimetables.length >= 8 && (index + 8) % 10 === 0 && index !== 0) {
-        return true;
-      }
+      // if (this.filterTrainTimetables.length >= 8 && (index + 8) % 10 === 0 && index !== 0) {
+      //   return true;
+      // }
 
       if (this.filterTrainTimetables.length >= 3 && index === 2) {
         return true;

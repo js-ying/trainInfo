@@ -5,7 +5,8 @@
         data-ad-slot="1622239321"></ins>
     </div>
     <div class="g-a-d-s-note">
-      台鐵資料即將收費，以廣告減少部份負擔，請見諒。
+      台鐵資料即將收費，以廣告減少部份負擔，請見諒。<br />
+      點擊廣告，即可幫助網站作者繼續提供優質的使用體驗給大家。
     </div>
   </div>
 </template>
@@ -30,13 +31,15 @@ export default {
 .g-a-d-s {
   border: 1px solid #343a40;
   border-radius: 0.25rem;
-  height: 108px;
+  /* height: 108px; */
+  height: 268px;
   padding: 0.5rem;
 }
 
 @media screen and (max-width: 768px) {
   .g-a-d-s {
-    height: 68px;
+    /* height: 68px; */
+    height: 268px;
   }
 }
 
