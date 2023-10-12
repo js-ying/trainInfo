@@ -9,7 +9,7 @@
             <small>Ver.6</small>
           </h5>
         </b-col>
-        <b-col cols="12" md="6" class="mt-4 text-left">
+        <b-col cols="12" md="8" class="mt-4 text-left">
           <p>
             作者：JS Ying<br />
             信箱：jsying1994@gmail.com<br />
@@ -27,6 +27,13 @@
 
           <p id="pwa-tip" class="mt-4">
             手機使用者可以把這個網頁變成 APP 放在桌面上。<a href="https://jsy.tw/blog/1370/" target="_blank">查看更多</a>
+          </p>
+
+          <p class="mt-4">
+            <u>Ver.7 版本更新資訊 (2023-10)</u><br />
+            1. 增設後台程式進行資料介接與處理，提高系統穩定度與彈性，並避免原先的流量上限問題<br />
+            2. 因應台鐵資料即將收費的政策，本站以新增廣告區域的作法來減少部份負擔，還請見諒<br />
+            （您的順手點擊廣告，可給予網站作者一臂之力，繼續提供優質的使用體驗給大家）
           </p>
 
           <p class="mt-4">
@@ -89,7 +96,7 @@
               </a>
             </div>
             <div id="time">
-              <b-icon icon="exclamation-circle-fill" variant="secondary" class="mr-2"></b-icon>發行日：2020-04-13，最後更新：2023-08
+              <b-icon icon="exclamation-circle-fill" variant="secondary" class="mr-2"></b-icon>發行日：2020-04-13，最後更新：2023-10
             </div>
           </div>
         </b-col>
@@ -156,6 +163,11 @@ export default {
     goBack() {
       window.history.back();
     }
+  },
+  mounted() {
+    window.scrollTo({
+      top: 0,
+    });
   }
 };
 </script>

@@ -2,13 +2,11 @@
   <div id="app">
     <router-view></router-view>
     <!-- 關於台鐵時刻表 icon -->
-    <b-icon
-      icon="info-circle-fill"
-      variant="secondary"
-      class="rounded-circle"
-      id="about-me"
-      @click="goAbout()">
+    <b-icon icon="info-circle-fill" variant="secondary" class="rounded-circle" id="about-me" @click="goAbout()">
     </b-icon>
+    <!-- 預載入圖片 -->
+    <img src="https://jsy.tw/logo.png" style="display: none;" />
+    <img src="https://hs-traintime.jsy.tw/logo.png" style="display: none;" />
   </div>
 </template>
 
@@ -27,12 +25,12 @@ export default {
     }
   },
   mounted() {
-    
+
   },
   methods: {
     goAbout() {
       this.$router.push({ name: 'About' }).catch(() => { });
-    }
+    },
   },
 }
 </script>
