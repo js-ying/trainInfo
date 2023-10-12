@@ -327,7 +327,7 @@ export default {
         .catch(() => { });
     },
     showAd(index) {
-      if (this.filterTrainTimetables.length >= 8 && (index + 4) % 6 === 0 && index !== 0) {
+      if (this.filterTrainTimetables.length >= 8 && (index + 8) % 10 === 0 && index !== 0) {
         return true;
       }
 

@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="g-a-d-s p-2">
+  <div class="ad-banner">
+    <div class="g-a-d-s">
       <ins class="adsbygoogle" style="display:block; width: 100%; height: 100%" data-ad-client="ca-pub-7992139989807299"
         data-ad-slot="1622239321"></ins>
     </div>
@@ -31,6 +31,7 @@ export default {
   border: 1px solid #343a40;
   border-radius: 0.25rem;
   height: 108px;
+  padding: 0.5rem;
 }
 
 @media screen and (max-width: 768px) {
