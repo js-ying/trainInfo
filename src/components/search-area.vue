@@ -10,216 +10,118 @@
           <b-row class="justify-content-md-center">
             <!-- 出發車站 -->
             <b-col cols="6" md="4" class="pr-4 mb-3">
-              <b-button
-                variant="outline-dark"
-                class="menu"
-                :class="{
-                  active: isShowStartMainLine || isShowStartStation,
-                  'error-border': errorShow.startStation.show,
-                }"
-                @click="toggleSelectArea('startMainLine')"
-              >
+              <b-button variant="outline-dark" class="menu" :class="{
+                active: isShowStartMainLine || isShowStartStation,
+                'error-border': errorShow.startStation.show,
+              }" @click="toggleSelectArea('startMainLine')">
                 出發車站<br />
                 {{ selected.start.stationName }}
               </b-button>
-              <error-msg
-                :msg="errorShow.startStation.msg"
-                v-if="errorShow.startStation.show"
-              ></error-msg>
-              <div
-                id="reverse-train-station-button"
-                @click="swapSeletedStation()"
-              >
-                <svg
-                  width="1em"
-                  height="1em"
-                  viewBox="0 0 16 16"
-                  class="bi bi-arrow-left-right"
-                  fill="currentColor"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M10.146 7.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L12.793 11l-2.647-2.646a.5.5 0 0 1 0-.708z"
-                  />
-                  <path
-                    fill-rule="evenodd"
-                    d="M2 11a.5.5 0 0 1 .5-.5H13a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 11zm3.854-9.354a.5.5 0 0 1 0 .708L3.207 5l2.647 2.646a.5.5 0 1 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708 0z"
-                  />
-                  <path
-                    fill-rule="evenodd"
-                    d="M2.5 5a.5.5 0 0 1 .5-.5h10.5a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"
-                  />
+              <error-msg :msg="errorShow.startStation.msg" v-if="errorShow.startStation.show"></error-msg>
+              <div id="reverse-train-station-button" @click="swapSeletedStation()">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-left-right" fill="currentColor"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd"
+                    d="M10.146 7.646a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L12.793 11l-2.647-2.646a.5.5 0 0 1 0-.708z" />
+                  <path fill-rule="evenodd"
+                    d="M2 11a.5.5 0 0 1 .5-.5H13a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 11zm3.854-9.354a.5.5 0 0 1 0 .708L3.207 5l2.647 2.646a.5.5 0 1 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708 0z" />
+                  <path fill-rule="evenodd" d="M2.5 5a.5.5 0 0 1 .5-.5h10.5a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
                 </svg>
               </div>
             </b-col>
             <!-- 抵達車站 -->
             <b-col cols="6" md="4" class="pl-4 mb-3">
-              <b-button
-                variant="outline-dark"
-                class="menu"
-                :class="{
-                  active: isShowEndMainLine || isShowEndStation,
-                  'error-border': errorShow.endStation.show,
-                }"
-                @click="toggleSelectArea('endMainLine')"
-              >
+              <b-button variant="outline-dark" class="menu" :class="{
+                active: isShowEndMainLine || isShowEndStation,
+                'error-border': errorShow.endStation.show,
+              }" @click="toggleSelectArea('endMainLine')">
                 抵達車站<br />
                 {{ selected.end.stationName }}
               </b-button>
-              <error-msg
-                :msg="errorShow.endStation.msg"
-                v-if="errorShow.endStation.show"
-              ></error-msg>
+              <error-msg :msg="errorShow.endStation.msg" v-if="errorShow.endStation.show"></error-msg>
             </b-col>
             <!-- 出發日期 -->
             <b-col cols="12" md="4" class="mb-3">
-              <button
-                class="btn btn-outline-dark menu"
-                :class="{ 'error-border': errorShow.datetime.show }"
-                @click="toggleSelectArea('datetimePicker')"
-              >
+              <button class="btn btn-outline-dark menu" :class="{ 'error-border': errorShow.datetime.show }"
+                @click="toggleSelectArea('datetimePicker')">
                 出發日期<br />
                 {{ $commonService.processDate(selected.datetime) }}
                 {{ $commonService.processTime(selected.datetime) }}
               </button>
-              <error-msg
-                :msg="errorShow.datetime.msg"
-                v-if="errorShow.datetime.show"
-              ></error-msg>
+              <error-msg :msg="errorShow.datetime.msg" v-if="errorShow.datetime.show"></error-msg>
             </b-col>
           </b-row>
         </b-container>
       </div>
       <!-- 參數調整區域 -->
       <b-container class="mb-2 bv-example-row" id="param-adjustment-area">
-        <b-form-input
-          v-model="queryInput"
-          @update="filterStations()"
-          :placeholder="queryInputPlaceHoder"
-          class="mb-3"
-          @keyup.enter="setStation()"
-          ref="queryInputRef"
-          v-show="
-            isShowStartMainLine ||
+        <b-form-input v-model="queryInput" @update="filterStations()" :placeholder="queryInputPlaceHoder" class="mb-3"
+          @keyup.enter="setStation()" ref="queryInputRef" v-show="isShowStartMainLine ||
             isShowStartStation ||
             isShowEndMainLine ||
             isShowEndStation
-          "
-        ></b-form-input>
+            "></b-form-input>
         <b-row v-if="isShowStartMainLine">
-          <b-col
-            cols="6"
-            md="4"
-            lg="3"
-            class="mb-3"
-            v-for="(mainLine, $index) in mainLines"
-            :key="$index"
-          >
-            <b-button
-              variant="secondary"
-              class="w100"
-              @click="selectStartMainLine(mainLine)"
-            >
+          <b-col cols="6" md="4" lg="3" class="mb-3" v-for="(mainLine, $index) in mainLines" :key="$index">
+            <b-button variant="secondary" class="w100" @click="selectStartMainLine(mainLine)">
               {{ mainLine }}
             </b-button>
           </b-col>
         </b-row>
         <b-row v-if="isShowStartStation">
-          <b-col
-            cols="6"
-            md="4"
-            lg="3"
-            class="mb-3"
-            v-for="(filterTraStartStation, $index) in filterTraStartStations"
-            :key="$index"
-          >
-            <b-button
-              variant="secondary"
-              :value="filterTraStartStation.StationID"
-              class="w100"
-              :class="{
-                'high-level-station':
-                  filterTraStartStation.StationClass === '0' ||
-                  filterTraStartStation.StationClass === '1',
-              }"
-              @click="
-                selectStartStation(
-                  filterTraStartStation.StationID,
-                  filterTraStartStation.StationName.Zh_tw
-                )
-              "
-            >
+          <b-col cols="6" md="4" lg="3" class="mb-3" v-for="(filterTraStartStation, $index) in filterTraStartStations"
+            :key="$index">
+            <b-button variant="secondary" :value="filterTraStartStation.StationID" class="w100" :class="{
+              'high-level-station':
+                filterTraStartStation.StationClass === '0' ||
+                filterTraStartStation.StationClass === '1',
+            }" @click="
+  selectStartStation(
+    filterTraStartStation.StationID,
+    filterTraStartStation.StationName.Zh_tw
+  )
+  ">
               {{
                 filterTraStartStation.StationClass === "0" ||
                 filterTraStartStation.StationClass === "1"
-                  ? "＊"
-                  : ""
+                ? "＊"
+                : ""
               }}
               {{ filterTraStartStation.StationName.Zh_tw }}
             </b-button>
           </b-col>
         </b-row>
         <b-row v-if="isShowEndMainLine">
-          <b-col
-            cols="6"
-            md="4"
-            lg="3"
-            class="mb-3"
-            v-for="(mainLine, $index) in mainLines"
-            :key="$index"
-          >
-            <b-button
-              variant="secondary"
-              class="w100"
-              @click="selectEndMainLine(mainLine)"
-              >{{ mainLine }}</b-button
-            >
+          <b-col cols="6" md="4" lg="3" class="mb-3" v-for="(mainLine, $index) in mainLines" :key="$index">
+            <b-button variant="secondary" class="w100" @click="selectEndMainLine(mainLine)">{{ mainLine }}</b-button>
           </b-col>
         </b-row>
         <b-row v-if="isShowEndStation">
-          <b-col
-            cols="6"
-            md="4"
-            lg="3"
-            class="mb-3"
-            v-for="(filterTraEndStation, $index) in filterTraEndStations"
-            :key="$index"
-          >
-            <b-button
-              variant="secondary"
-              :value="filterTraEndStation.StationID"
-              class="w100"
-              :class="{
-                'high-level-station':
-                  filterTraEndStation.StationClass === '0' ||
-                  filterTraEndStation.StationClass === '1',
-              }"
-              @click="
-                selectEndStation(
-                  filterTraEndStation.StationID,
-                  filterTraEndStation.StationName.Zh_tw
-                )
-              "
-            >
+          <b-col cols="6" md="4" lg="3" class="mb-3" v-for="(filterTraEndStation, $index) in filterTraEndStations"
+            :key="$index">
+            <b-button variant="secondary" :value="filterTraEndStation.StationID" class="w100" :class="{
+              'high-level-station':
+                filterTraEndStation.StationClass === '0' ||
+                filterTraEndStation.StationClass === '1',
+            }" @click="
+  selectEndStation(
+    filterTraEndStation.StationID,
+    filterTraEndStation.StationName.Zh_tw
+  )
+  ">
               {{
                 filterTraEndStation.StationClass === "0" ||
                 filterTraEndStation.StationClass === "1"
-                  ? "＊"
-                  : ""
+                ? "＊"
+                : ""
               }}
               {{ filterTraEndStation.StationName.Zh_tw }}
             </b-button>
           </b-col>
         </b-row>
         <b-row class="justify-content-center mb-4" v-if="isShowDatetime">
-          <date-picker
-            mode="datetime"
-            color="blue"
-            :min-date="$commonService.getNowDate()"
-            :max-date="$commonService.getMaxDate()"
-            v-model="selected.datetime"
-          ></date-picker>
+          <date-picker mode="datetime" color="blue" :min-date="$commonService.getNowDate()"
+            :max-date="$commonService.getMaxDate()" v-model="selected.datetime"></date-picker>
         </b-row>
       </b-container>
       <!-- 查詢按鈕 -->
@@ -450,7 +352,7 @@ export default {
           .push({
             path: "/"
           })
-          .catch(() => {});
+          .catch(() => { });
       }
     },
     selectStartMainLine(mainLine) {
@@ -592,8 +494,8 @@ export default {
     },
     isPastDate(date) {
       return (
-        date < this.$commonService.getYesterdayYYYYMMDD() ||
-        date > this.$commonService.getTwoMonthsLaterYYYYMMDD()
+        date < this.$commonService.getYesterday() ||
+        date > this.$commonService.getTwoMonthsLater()
       );
     },
     checkRequired(complete) {
@@ -656,7 +558,7 @@ export default {
                   t: this.$commonService.processTime(this.selected.datetime)
                 }
               })
-              .catch(() => {});
+              .catch(() => { });
           }
         );
       });

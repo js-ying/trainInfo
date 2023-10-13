@@ -43,7 +43,7 @@
                           filterTrainTimetable.TrainInfo.TrainTypeCode
                         )
                         ">{{
-      $commonService.transformTrainTypeCodeToName(
+      $commonService.getTrainNameByTrainTypeCode(
         filterTrainTimetable.TrainInfo.TrainTypeCode
       )
     }}</b-badge>
@@ -89,7 +89,7 @@
                   <div v-if="filterTrainTimetable.fareList">
                     <span v-for="(fare, $index) in filterTrainTimetable.fareList" :key="$index">
                       <!-- <b-badge variant="secondary">
-                        {{ $commonService.getFareClassName(fare.FareClass) }}
+                        {{ $commonService.getNameByFareClass(fare.FareClass) }}
                       </b-badge> -->
                       <div class="price">
                         <span v-b-tooltip.hover title="全票票價" :disabled="isTooltipShow()">

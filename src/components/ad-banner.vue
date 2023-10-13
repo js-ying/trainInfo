@@ -32,14 +32,14 @@ export default {
   border: 1px solid #343a40;
   border-radius: 0.25rem;
   /* height: 108px; */
-  height: 268px;
+  height: 298px;
   padding: 0.5rem;
 }
 
 @media screen and (max-width: 768px) {
   .g-a-d-s {
     /* height: 68px; */
-    height: 268px;
+    height: 298px;
   }
 }
 

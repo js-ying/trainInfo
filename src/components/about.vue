@@ -6,13 +6,12 @@
           <h5 id="web-title" @click="goHome()">
             台鐵時刻查詢
             <br />
-            <small>Ver.6</small>
+            <small>Ver.7</small>
           </h5>
         </b-col>
         <b-col cols="12" md="8" class="mt-4 text-left">
           <p>
-            作者：JS Ying<br />
-            信箱：jsying1994@gmail.com<br />
+            作者：JS Ying (jsying1994@gmail.com)<br />
             <img src="https://jsy.tw/logo.png" width="15px" class="mr-2" />個人網站：<a href="https://jsy.tw"
               target="_blank">https://jsy.tw</a><br />
             <img src="https://hs-traintime.jsy.tw/logo.png" width="15px" class="mr-2" />高鐵時刻查詢：<a
@@ -26,7 +25,9 @@
           </p>
 
           <p id="pwa-tip" class="mt-4">
-            手機使用者可以把這個網頁變成 APP 放在桌面上。<a href="https://jsy.tw/blog/1370/" target="_blank">查看更多</a>
+            <b-alert show variant="info">
+              手機使用者可以把這個網頁變成 APP 放在桌面上。<a href="https://jsy.tw/blog/1370/" target="_blank">查看更多</a>
+            </b-alert>
           </p>
 
           <p class="mt-4">
