@@ -1,7 +1,7 @@
 # 台鐵時刻查詢
 查詢火車時刻，簡單又快速。<br />
 此為舊版，以 vue2 + bootstrap-vue 打造。<br />
-Demo: [https://traintime.jsy.tw](https://portfolio.jsy.tw/traintime)
+Demo: [https://portfolio.jsy.tw/traintime](https://portfolio.jsy.tw/traintime)
 
 ## 版本更新
 Ver.6 版本更新資訊 (2023-08)
