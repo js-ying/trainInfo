@@ -11,7 +11,7 @@
         </b-col>
         <b-col cols="12" md="8" class="mt-4 text-left">
           <p>
-            作者：JS Ying (jsying1994@gmail.com)<br />
+            作者：JS Ying (hi@jsy.tw)<br />
             <img src="https://jsy.tw/logo.png" width="15px" class="mr-2" />個人網站：<a href="https://jsy.tw"
               target="_blank">https://jsy.tw</a><br />
             <img src="https://hs-traintime.jsy.tw/logo.png" width="15px" class="mr-2" />高鐵時刻查詢：<a
@@ -26,7 +26,7 @@
 
           <p id="pwa-tip" class="mt-4">
             <b-alert show variant="info">
-              手機使用者可以把這個網頁變成 APP 放在桌面上。<a href="https://jsy.tw/blog/1370/" target="_blank">查看更多</a>
+              手機使用者可以把這個網頁變成 APP 放在桌面上。<a href="https://blog.jsy.tw/1370/" target="_blank">查看更多</a>
             </b-alert>
           </p>
 
@@ -71,7 +71,7 @@
             3. 移除 所有彈跳視窗<br />
             4. 更新 起迄站互換功能位置<br />
             5. 部落格介紹
-            <a href="https://jsy.tw/blog/1525/" target="_blank">【作品】台鐵時刻查詢——查詢火車時刻，簡單又快速。</a>
+            <a href="https://blog.jsy.tw/1525/" target="_blank">【作品】台鐵時刻查詢——查詢火車時刻，簡單又快速。</a>
           </p>
 
           <p class="mt-4">
